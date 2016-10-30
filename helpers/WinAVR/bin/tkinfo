@@ -1,0 +1,5136 @@
+#!/bin/sh
+# This is a Tcl/Tk script to be interpreted by wish (Tk4.0 or better): \
+exec wish "$0" "$@"
+
+
+##########################################################################
+# Version of TkInfo:
+set tki_version 2.6
+#
+# Authors:	Kennard White <kennard@ohm.eecs.berkeley.edu> (up to 0.7)
+# 		Axel Boldt <axelboldt@yahoo.com> (beginning with 0.8 through 2.5)
+# Copyright:	BSD-type license, see below
+# RCS:		$Id: tkinfo,v 1.85 2003-06-26 00:24:27+00 lbayuk Exp $
+#
+# A graphical browser for files in the GNU hypertext "info" format,
+# written in Tcl/Tk.
+#
+# Please see the "About" and "Info" file sections below.  (search for
+# "README" to find these sections quickly).  These explain much more
+# about what tkInfo is and what info files are, and gives references to
+# other programs and sources of info.  For information on the internals
+# of tkInfo, see the roadmap below.
+#
+# The program provides on-line help about itself: start it and hit `h'.
+#
+# This release should work with tcl7.4/tk4.0 or later.  tkInfo no
+# longer works with older versions (sorry).  tkInfo has gone through
+# several releases, but it is by no means complete.  Feel free to make
+# suggestions, or better yet, send me patch files.
+#
+# See below for copyright.  Basically you can re-distribute this any
+# way you like, just don't sue me and don't pretend you wrote tkInfo.
+#
+# Contributions and/or good ideas (some minor, some major) by Larry
+# Virden <lvirden@cas.org>, Bob Bagwill <bagwill@swe.ncsl.nist.gov>,
+# ??? <tlukka@snakemail.hut.fi>, Kurt Hornik
+# <hornik@neuro.tuwien.ac.at>, Hume Smith <850347s@dragon.acadiau.ca>,
+# Stephen Gildea <gildea@x.org>, Warren Jones <wjones@tc.fluke.COM>,
+# Robert Wilensky <wilensky@CS.Berkeley.EDU>, Frank Joachim Leitner
+# <ldvhp47@ldv.e-technik.tu-muenchen.de>, John Haxby <jch@pwd.hp.com>,
+# Craig Sanders <cas@taz.net.au>.
+# Tom Phelps <phelps@CS.Berkeley.EDU> contributed the searching code, as
+# well as many other good ideas.
+# L J Bayuk <bayuk@mindspring.com> patched 2.5 for Tcl/Tk 8.4.
+
+set tki_help_usage \
+{
+TkInfo: Stand-alone usage
+-------------------------
+
+    (requires the wish shell (Tk version 4.0 or better))
+
+When invoked with no arguments, tkInfo looks for an "info tree" (a
+collection of info files installed on your system) and displays the
+top level node.  On a well maintained system, you can get to every
+info file starting from this top level node.  Alternatively, you can
+specify the file and node you want to see on the command line.
+
+Usage: tkinfo [--help] [[-|+]headers] [[-|+]buttons]
+              [[-|+]scrollthrough] [[-|+]showdir] [[-|+]pagesep]
+              [-linklook type] [-highlight type] [-searchlook type] 
+              [-geometry geom] [-display display] [-iconic] 
+              [-dir dir1] [-dir dir2] ... [node]
+Options:
+ --help           Produces this help message.
+ -/+headers       Turns on/off display of the raw info node headers.
+ -/+buttons       Turns on/off display of the button row.
+ -/+balloons      Turns on/off balloonhelp for the buttons.
+ -/+scrollthrough Turns on/off going to successor when scrolling through end.
+ -/+showdir       Turns on/off showing the full pathname of the info file.
+ -/+pagesep       Turns on/off inserting page separators when scrolling.
+ -linklook        Specifies how to display xrefs and menu entries.  Must
+                  be one of "color", "font", or "underline".
+ -highlight       How to highlight links. Can be "color", "underline", or 
+                  "inverse".
+ -searchlook      How to highlight the matches after searches. Can be "color",
+                  "underline", or "inverse".
+ -geometry        Geometry of the window. format: XxY+A+B or XxY or +A+B.
+                  X,Y specify size in characters, A,B give location in pixels.
+ -display         X display to use for the tkInfo window.
+ -iconic          Start the first window in iconic state.
+ -dir             Specifies a directory to search for info files, in addition 
+                  to those contained in the INFOPATH environment variable.
+                  Several -dir options can be present; the directories will be
+                  searched before INFOPATH, in the order given.
+ node	          Specifies the node to visit initially. Possible formats:
+                    "(filename)nodename"  most general
+                    "(filename)"          equivalent to (filename)Top
+                    "filename"            equivalent to (filename).
+                  If filename is not absolute, the info directories (from 
+                  INFOPATH and -dir) will be searched. If filename cannot be 
+                  found, its lower case version will be tried.
+                  An alternative way to specify the node "(FILE)NODE" is 
+                  with "-file FILE -node NODE".
+                  If no node is given, the default "(dir)Top" is used.
+
+Environment variables:
+ INFOPATH         A colon (`:') separated list of directories to search
+      	          for info files. More directories can be given with -dir 
+                  option, above. If not set, TkInfo will try various
+                  standard directories that should be ok for most systems.
+ INFOSUFFIX	  A colon separated list of file suffixes to try when searching
+      	          for an info file. If not set, tkinfo will try the suffixes
+                  "", ".info", and "-info". In addition, tkinfo will
+                  always automatically try the suffixes .Z, .z, bz2, and .gz
+                  and uncompress transparently if necessary.
+}; set tki_custom \
+{
+How to customize tkInfo
+-----------------------
+
+The colors, fonts, and geometry of tkInfo can be customized using the
+usual X options database. A random example follows. You can either put
+(parts of) this in your .Xdefaults or .Xresources file or you can
+create a global file /usr/lib/X11/app-defaults/tkinfo that will apply
+to all users of your site. To have the new options take effect,
+restart your X server or use the program xrdb. More information about
+the X options mechanism is available from the X man page. Use tkman
+for reading man pages or you lose.
+
+Windows and Mac users can't do this, but they can change the "option" 
+lines in the procedure tkiInit in the tkInfo script itself.
+
+
+=========== snip ==================================================
+! These tkInfo settings are annoying on purpose, just to demonstrate 
+! what harm an evil mind can do.
+!
+! Specify the size in characters, the position in dots. You can also
+! leave the position out. Default geometry is 80x28 to fit on 640x480
+! screens.
+tkinfo.geometry:                80x40+10+10
+! How many entries to keep in the info node history list.
+! Default is 20.
+tkinfo*history:                 28
+! How many entries to keep in the history list for the prompt window.
+! Defaults to 35.
+tkinfo*prompthistory:           20
+! Whether to jump to the successor node when attempting to scroll at the
+! bottom of a node. Can be 1 (default) or 0.
+tkinfo*scrollthrough:           0
+! Whether to show the directory of the displayed node. Can be 0 (default)
+! or 1.
+tkinfo*showdir:                 1
+! Whether to insert page separators when scrolling. Defaults to 1.
+tkinfo*pagesep:                 0
+! How the links are displayed. Can be one of "color" (default),
+! "underline" (default on b&w terminals), or "font".
+tkinfo*linklook:                font
+! The following is only used if linklook is set to "color"
+tkinfo*linkcolor:               red
+! The following is only used if linklook is set to "font".
+tkinfo*linkfont:                -*-courier-bold-o-normal-*-16-*-*-*-*-*-*-*
+! How a link is highlighted. Can be one of "inverse" (default), "underline",
+! or "color".
+tkinfo*highlight:               color
+! Set this if highlight = color:
+tkinfo*highlightcolor:          green
+! Set this if highlight = font:
+tkinfo*highlightfont:           -*-courier-bold-o-normal-*-16-*-*-*-*-*-*-*
+! How to display the matches after a search. Can be "color", "font", or 
+! "inverse" (default).
+tkinfo*searchlook:              font
+tkinfo*searchfont:              -*-courier-bold-o-normal-*-16-*-*-*-*-*-*-*
+tkinfo*searchcolor:             violet
+! To switch off the lower row of buttons. (The default is "1" which means 
+! display the buttons.)
+tkinfo*showbuttons:             0
+! To switch off balloonhelp for the buttons. (Default is "1" which means
+! display balloonhelp.)
+tkinfo*showballoons:            0
+! Delay after which balloonhelp appears, in thousands of a second.
+! Default: 400
+tkinfo*balloondelay:            300
+! To switch off display of the full info file headers. (The default is "1" 
+! which means show the info headers).
+tkinfo*showheaders:             0
+! You can specify colors either as names (on my system, they are defined in 
+! /usr/lib/X11/rgb.txt), or in the format #C0F1DD as a sequence of three 
+! hex numbers giving the red-green-blue components.
+tkinfo*background:              yellow
+tkinfo*Text.background:         orange
+! The "trough" is the area where the scrollbar moves.
+tkinfo*troughColor:             blue
+! This is for disabled menuentries and buttons.
+tkinfo*disabledForeground:      #F00909
+tkinfo*activeBackground:        blue
+tkinfo*foreground:              black
+! Backgroundcolor of balloons (default: LightGoldenrodYellow)
+tkinfo*balloonbackground:       violet
+! Font for the buttons and messages. You can find nice fonts with the program
+! xfontsel.
+tkinfo*font:                    -*-helvetica-bold-r-normal-*-16-*-*-*-*-*-*-*
+tkinfo*Text.font:               -*-courier-medium-r-normal-*-16-*-*-*-*-*-*-*
+! If you don't like that the window which owns the focus is highlighted:
+tkinfo*highlightThickness:      0
+! Change the different mouse pointers here; the available cursornames
+! are contained in the file /usr/include/X11/cursorfont.h on my system.
+tkinfo*linkcursor:              "double_arrow"
+tkinfo*normcursor:              "fleur"
+tkinfo*waitcursor:              "heart"
+! This one appears on Button-2:
+tkinfo*handcursor:              "double_arrow"
+=========== snip ==================================================
+
+
+You can disable the X default mechanism altogether by setting the tcl 
+variable $Priority to "interactive" in the procedure tkiInit.
+
+}; set tki_roadmap \
+{
+Roadmap to the tkInfo source code
+---------------------------------
+
+TkInfo is a Tcl/Tk script.  The following information is for people
+familiar with Tcl/Tk who want to hack on tkInfo.  You should read the
+tkinfo source along with this roadmap.
+
+We keep a global array of variables tki() to store things such as the
+current status of the user-toggable options, the current window, list
+of all windows, the mouse position at button-press events, and the
+extracted information of already parsed info files (including their
+full node text, see below). We also have a global array of variables
+for every toplevel window; the array has the same name as the window
+and is usually called wvars() through a call to upvar. We use wvars() to
+store displayed status messages, the name of the displayed node, the
+list of previously visited nodes, the string being searched for etc.
+
+The widget tree looks like this: the toplevel windows are called
+.tki1, .tki2, etc. .tki1.bar is the menubar with buttons .file, .node,
+.search, .options, and .help. The associated menus are called
+.tki1.bar.file.m and so on. The main text window is called
+.tki1.main.text and its scrollbar is .tki1.main.vsb. Then there is the
+the button row .tki1.buts with buttons .next, .prev, .up, and .last
+and the status line .tki1.s with filename window .tki1.s.filename and
+status message .tki1.s.status. If the user is prompted for an input,
+.tki1.s.filename contains the prompt and .tki1.s.input is the entry
+area.  Then there is the pop-up menu .tki1.transientmenu which appears
+on Button-3.
+
+
+tkInfo requires the following global variables:
+ tki		This is a huge array where all the loaded info-files
+		are stored.  It also contains some configuration state.
+		The contents of this is described below.
+ .tki##		Each toplevel info window has a global variable associated
+		with it.  The name of the variable is the same as the
+		toplevel window name, which is ".tki" followed by some number.
+ tkiEmbed	tkInfo can operate stand-alone (like the "info" program) or
+		embedded (part of your application).  Embedded mode is
+		used iff this variable exists.  When this file is
+		sourced in the stand-alone case, the argv options will be
+		parsed (see tkiBoot() below) and a new toplevel window
+	 	will be opened.
+
+
+tkInfo may be used in one of three modes: stand alone, embedded or
+as a server tool.  These modes are described below:
+
+Stand-alone
+	In this mode, the user directly invokes tkinfo, and directly
+	manipulates it to display the nodes of interest.  This mode
+	requires that the shell script "tkinfo" be proper configured,
+	and that the info path be properly configured, either 
+	by editing the default info path in "tkinfo.tcl"/tkiInit(),
+	or by the user's INFOPATH environment variable.  The file
+	"tkinfo.tcl", as well as the built-in help contains additional
+	information (command line arguments) for this mode.
+
+Embedded
+	In this mode, your application will include tkinfo as part of
+	its distribution, and tkinfo will run within the same process
+	and the the same TCL interpreter as your application.  tkInfo
+	is written with this in mind, and avoids name space pollution.
+	In this mode, tkInfo doesn't do anything until the application
+	explicitly request an action by calling tkiWinShow(); normally
+	the application will do this in response to the user selecting
+	a "Help" button or pressing a "Help" key.
+
+	To use this mode, your application must set the global variable
+	``tkiEmbed'' to any value and then source "tkinfo.tcl" (the
+	auto-load facility may replace explicitly source'ing
+	"tkinfo.tcl", but ``tkiEmbed'' must be set before this
+	happens). 
+
+	tkiAddInfoPaths() should be called by the application to let
+	tkInfo know where the application's info files are installed.
+	The application should call tkiWinShow() to display a window.
+	Also, the application may find tkiWinContextHelp() useful
+	for processing "Help" key bindings.
+
+Server Tool
+	From the user's perspective, this is very similar to the
+	Embedded mode, but the implementation is different.  In this
+	mode, tkInfo runs as in the stand-alone mode, but responds to
+	requests from other applications via Tk's "send" mechanism.
+	The application must rendezvous with tkInfo (locating the
+	existing server or starting a new server running) and makes
+	calls to tkiAddInfoPaths() and tkiWinShow() as in the embedded
+	case (but via "send").  The application may wish tkInfo to
+	dedicate a single window to the application, the "window tag"
+	feature of tkiWinShow() may be useful for this.
+
+
+The core structure of an info file is a {node}.  Each info file
+consists of a set of nodes separated by a magic character.  Each nodes
+consists of of a headerline and a body, which can contain a menu.
+There are also special nodes that contain control information used to
+reference "split" files and speed up access.  A node may be specified
+in one of several ways (called a {nodeSpec}):
+	(filename)nodename      Explicit.
+	nodename		The given node within the current file.
+	(filename)		The "Top" node of the file.
+If a filename can't be found, we try the lower case version; if a nodename 
+can't be found we try case insensitive match.
+
+In the implementation below, the info format consists of {nodes} stored 
+in files.  A given info file has three identifiers associated with it:
+ -	The {filename}, which is the name used either by the user to
+	reference a file, or by one info file to reference another.
+	Such a reference could be complete UNIX path name (either
+	absolute or relative), or may be a partial specification (see below).
+ -	The {filepath}, which is a valid UNIX path name to access the
+	file.  The filepath is derived from the filename.  If the filename
+	is already a valid path, no work needs be done.  Otherwise,
+	the filepath is formed by prepending a path prefix and appending
+	a file suffix.  These are defined by the INFOPATH and INFOSUFFIX
+	variables.
+ -	The {filekey}, which is an internal, auto-generated token associated
+	with each file.
+A typical (filename,filepath,filekey) would be 
+(emacs-2,/usr/info/emacs-2.gz,fk3). This file has the info file called "emacs" 
+as a parent.
+
+The global array "tki" contains the following elements about the
+already parsed files:
+  fileKeys-$fileName	The fileKeys for $fileName. If there are info files 
+                        of the same name in different directories, they will 
+                        get differnet fileKeys.
+  fileinfo-$fileKey	The fileinfo struct for $fileKey. Each fileinfo is
+			{ fileKey fileName filePath pntKey }
+                        pntKey is the filekey of the parent, or the empty
+                        list if there is no parent.
+  incore-$fileKey	Boolean 0/1; true if file has been loaded into core.
+  nodesinfo-$fileKey	A list of nodeinfo for every node in $fileKey.
+			Each nodeinfo is a list { idx node file up prev next }.
+                        Node, file, up, prev, next are the names given
+                        in the info node's first line.
+  nodesbody-$fileKey	A list of the textual body for every node in $fileKey.
+                        The nodes are given in the same order as in nodesinfo.
+  indirf-$fileKey	List of indirect-file-info for $fileKey.  Each
+			info is a list { indirFileKey byteOfs }.
+  indirn-$fileKey	List of indirect-node-info for $fileKey.  Each
+			info is a list { nodeName byteOfs fileKey }.
+  xrefinfo-$fileKey-$nodeIdx
+			A list of all cross reference
+			pointers within the node body's text. Every element
+                        has the form { idx toNode stpos endpos label } 
+                        stpos and endpos give the position of the link in 
+                        the text.
+  menuinfo-$fileKey-$nodeIdx
+			Contains information on all menu entries
+			within the node's menu text.  Consists of list of:
+			 { linecnt menucnt toNode nBeg nEnd menutxt }
+                        nBeg and nEnd give the positions of the menu entry
+                        in its line.
+
+Notes (some important, some not).
+1.	Because of the graphical system, there may be several parallel
+	info windows active.  These windows must operate independently.
+	Because of this, there can be no concept of the "current file"
+	or "current node" within the tkinfo core.  Rather, this information
+	must be maintained by the window.
+2.	Because of #1, we must maintain multiple files in core.  Currently
+	we never flush.
+3.	The background color used in tkiInit() is BISQUE1, from tk/defaults.h
+4.	The byte offsets in the indirect tables are not used as such;
+	this is because we parse the file when loaded.  However, they are
+	used to identify which indirect file the node is in.
+5.	The function tkiLoadFile() attempts to deal with compressed files.
+	Currently it uses "zcat" for .Z files, "bunzip2 -c" for .bz2
+        and "gunzip -c" for .z and .gz files.
+	If you have better suggestions, please let me know.
+
+
+Here are descriptions of the more important procedures:
+
+tkiInit 
+   Initializes the default INFOPATH and other global variables such as
+   the default geometry, link color, cursor etc.  It also sets the
+   regular expression used for parsing info files by calling
+   _tkiNodeParseInit and sets up the builtin info pages by calling
+   _tkiBuiltinFile (which does its job by setting up the relevant
+   tki() variables so that it looks like tkInfo has actually parsed
+   the builtin info "files").
+
+tkiTimeStatus
+   takes a script as argument, executes it, and prints the time it
+   took on stdout. This can be used to profile tkinfo if the option
+   "Time Status" is enabled from the option menu. Several crucial
+   calls are wrapped in a tkiTimeStatus.
+
+tkiInfoWindow
+   Accepts the same arguments as tkinfo. It first parses the options
+   using topgetopt, processes them, and then calls tkiWinShow to
+   actually create the new window and display the node.
+
+tkiWinShow
+   The main entry point: takes the specification of an info node and a
+   window, creates that window if necessary, and displays the
+   node. This is also suitable for being called from other tcl
+   programs via send.
+
+tkiWinCreate
+   creates a toplevel window with all its subwindows. Also initializes
+   the winfo() variables for that window. Creates all bindings except
+   those for the main text window which are handled by _tkiWinBind.
+
+_tkiWinBind
+   Creates all the bindings for the text window and search entry
+   boxes. Many of these bindings are created automatically via
+   _tkiBindAccels from the accelerators of the various menu
+   entries. If you have bindings to add, here's the place.
+
+_tkiWinAction
+   The central manager of all actions that can be performed by the user
+   on a window, such as quitting, scrolling, searching, and moving to
+   other nodes. The actions themselves are actually handled by other
+   procedures.  This function is designed to be bound to various
+   events.
+
+_tkiWinPromptMap
+   Brings up the lower prompt area for searches etc.
+
+_tkiWinPromptOk
+   Is called when the user presses Enter in the lower prompt area. It
+   takes the appropriate action and unmaps the prompt area using 
+   _tkiWinPromptUnmap. 
+
+tkiWinDpy
+   Inserts a node into the current text window, complete with
+   tags. Updates the history and last lists. The actual parsing is
+   done in tkiNodeParseBody. Also updates the Next/Previous/Last
+   button bindings and enables/disables menu entries as appropriate
+   for the displayed node.
+
+tkiWinContextHelp
+   helper function for the case where tkinfo is embedded in a larger
+   application. The app can associate an infonode spec to every major
+   window, and this function will display the associated node in a new
+   tkinfo window.
+
+tkiFileGet
+   loads a file into memory and returns the filekey using tkiFileFind
+   and tkiFileLoad.
+
+tkiFileFind
+   returns the full filename of a partially specified info file using
+   the list of info directories and info suffixes and compression
+   suffixes.
+
+tkiFileLoad
+   loads an info file and parses its nodes using tkiFileParseNode in
+   order to fill up the respective entries in tki(). tkiFileParseNode
+   has to deal with tag tables (which describe where in a file a node
+   is located) and indirect tables which point to other info files.
+
+tkiGetNodeRef
+   locates an info node wherever it is; loads the info file if
+   necessary. Info files can be split; for example, emacs.info is only
+   a short table containing pointers to the info files emacs-1 to
+   emacs-29. This is called an "Indirect" table, and emacs.info is
+   called the parent of the other emacs info files. tkiGetNodeRef
+   deals with this mess transparently, calling itself recursively on a
+   child if necessary.
+
+tkiNodeParseBody
+   parses the body of a node to locate all crossreferences, and
+   returns a list of them and stores it in tki().
+
+tkiNodeParseMenu
+   parses the body of a node to locate all menu entries, and returns a
+   list of them and stores it in tki().
+
+_tkiWinManPage
+   displays a man page in a tkman window. Either starts a new tkman or
+   contacts an existing one. Communication is via the tcl send
+   mechanism. This does not work if you X server is insecure; use xdm
+   to get a secure session.
+
+_tkiBindAccels
+   a nice utility function to support accelerator keys in menus.
+
+searchboxSearch and searchboxNext
+   support for searching, regexp or normal, ready to be bound to
+   events.
+
+TextSearch and regexpTextSearch
+   used by the searchbox functions to locate all matching strings in a
+   text window and to apply a given tag to them.
+}
+
+#
+# README: You might want to customize "defInfoPath" below for your site,
+#	  just put your paths there and remove the others for faster 
+#         startup. 
+#	  If you feel there is a "standard" location not listed below,
+#	  please send me mail.
+#
+proc tkiInit { } {
+    global tki env auto_path tkiEmbed geometry
+
+    set defInfoPath [list . \
+      /usr/info /usr/local/info /usr/local/gnu/info \
+      /usr/local/emacs/info /usr/local/lib/emacs/info \
+      /usr/lib/xemacs/info /usr/local/lib/xemacs/info \
+      /usr/gnu/info \
+      ]
+
+    set defInfoSuffix [list .info -info ""]
+
+    if { [info exist tki(sn)] } return
+
+    set Priority startupFile
+    # If you want to disallow overriding the following options 
+    # from the user's .Xdefaults, uncomment the next line:
+    #set Priority interactive
+
+    option add *geometry                80x28    $Priority
+    option add *scrollthrough           1        $Priority
+    option add *showdir                 0        $Priority
+    option add *pagesep                 1        $Priority
+    option add *background		#d9d9d9  $Priority
+    option add *foreground		Black    $Priority
+    option add *history                 20       $Priority
+    option add *prompthistory           35       $Priority
+    option add *Text.background		#d9d9d9  $Priority
+    option add *Text.foreground		Black    $Priority
+    option add *font			"-*-helvetica-bold-r-normal-*-12-*-*-*-*-*-*-*" $Priority
+    option add *Text.font		"-*-courier-medium-r-normal-*-12-*-*-*-*-*-*-*" $Priority
+    option add *linklook                "color" $Priority
+    if { [info commands winfo] != "" } {
+	if { [winfo depth .] == 1 } {
+	    option add *linklook "underline" $Priority
+	}
+    }
+    option add *linkcolor               blue    $Priority
+    option add *linkfont                "-*-courier-bold-o-normal-*-12-*-*-*-*-*-*-*" $Priority
+    option add *highlight               inverse  $Priority
+    option add *highlightfont           "-*-courier-bold-o-normal-*-12-*-*-*-*-*-*-*" $Priority
+    option add *highlightcolor          violet  $Priority
+    option add *searchlook              inverse $Priority
+    option add *searchfont              "-*-courier-bold-o-normal-*-12-*-*-*-*-*-*-*" $Priority
+    option add *searchcolor             red $Priority
+    option add *showbuttons             "1" $Priority
+    option add *showballoons            "1" $Priority
+    option add *showheaders             "1" $Priority
+    option add *linkcursor		"hand2" $Priority
+    option add *normcursor		"left_ptr" $Priority
+    option add *waitcursor		"watch" $Priority
+    option add *handcursor              "sb_v_double_arrow" $Priority
+    option add *balloondelay            400
+    option add *balloonbackground       LightGoldenrodYellow
+
+
+    set tki(sn)			0
+    set tki(self)		[info script]
+    set tki(timestatusB)	0
+    set tki(iconic)             0
+    set tki(compresscat-Z)	"zcat"
+    set tki(compresscat-z)	"gunzip -c"
+    set tki(compresscat-gz)	"gunzip -c"
+    set tki(compresscat-bz2)    "bunzip2 -c"
+    set tki(rawHeadersB)	[option get . showheaders Showheaders]
+    set tki(showButtonsB)	[option get . showbuttons Showbuttons]
+    set tki(showBalloonsB)      [option get . showballoons Showballoons]
+    set tki(scrollThroughB)     [option get . scrollthrough Scrollthrough]
+    set tki(showDirB)           [option get . showdir Showdir]
+    set tki(pageSepB)           [option get . pagesep Pagesep]
+    set tki(nodeSep)		"\037"
+    set tki(nodeByteSep)	"\177"
+    set tki(topLevelNode)	"Top"
+    set tki(lastNodes)          ""
+    set tki(promptHistory)      ""
+    set tki(dirs)               ""
+    set tki(history)            ""
+    set tki(historyLength)      [option get . history History]
+    set tki(promptHistoryLength) [option get . prompthistory PromptHistory]
+
+    # The global $geometry is set by wish if -geometry was given on
+    # the command line. The command line option is eaten by wish and
+    # we will never see it.
+    set tki(geometry)           [option get . geometry Geometry]
+    if { [info exists geometry] } {
+        if { [string match "+*" $geometry] } {
+            regexp "\[^\\+\]*" $tki(geometry) dummy
+            set tki(geometry) $dummy$geometry
+        } else {
+            set tki(geometry) $geometry
+        }
+    }
+
+    set tki(linklook)		[option get . linklook Linklook]
+    set tki(linklookColor)	[option get . linkcolor Linkcolor]
+    set tki(linklookFont)	[option get . linkfont Linkfont]
+    set tki(highlight)		[option get . highlight Highlight]
+    set tki(highlightColor)	[option get . highlightcolor Highlightcolor]
+    set tki(highlightFont)	[option get . highlightfont Highlightfont]
+    set tki(searchlook)		[option get . searchlook Searchlook]
+    set tki(searchColor)	[option get . searchcolor Searchcolor]
+    set tki(searchFont)		[option get . searchfont Searchfont]
+    set tki(linkCursor)		[option get . linkcursor Linkcursor]
+    set tki(normCursor)		[option get . normcursor Normcursor]
+    set tki(waitCursor)		[option get . waitcursor Waitcursor]
+    set tki(handCursor)         [option get . handcursor Handcursor]
+    set tki(balloonBackground)  [option get . balloonbackground Balloonbackground]
+    set tki(balloonDelay)       [option get . balloondelay Balloondelay]
+
+    tkiBalloonInit
+
+    set tki(windows)		""
+    set tki(breakBindings) 0
+    set tki(curWindow)		""
+
+    if [info exist env(INFOSUFFIX)] {
+	set tki(infoSuffix) [split $env(INFOSUFFIX) ":"]
+    } else {
+	set tki(infoSuffix) $defInfoSuffix
+    }
+
+    if [info exist env(INFOPATH)] {
+      tkiAddInfoPaths [split $env(INFOPATH) ":"]
+    } else {
+      tkiAddInfoPaths $defInfoPath
+    }
+
+    _tkiNodeParseInit
+    rename _tkiNodeParseInit ""
+
+    _tkiBuiltinFile
+    rename _tkiBuiltinFile ""
+
+    trace var tki(rawHeadersB) w "_tkiTraceOptionsCB"
+    trace var tki(showDirB) w "_tkiTraceOptionsCB"
+    trace var tki(pageSepB) w "_tkiTraceOptionsCB"
+    trace var tki(showButtonsB) w "_tkiTraceOptionsCB"
+    trace var tki(linklook) w "_tkiTraceOptionsCB"
+}
+
+proc _tkiTraceOptionsCB { n1 n2 op } {
+    tkiWinRefreshAll
+}
+
+proc tkiUninit { } {
+    global tki
+    # Must destroy all existing windows so that there is no trace
+    # on anything in $tki.  Note that the "Options" menu does direct
+    # traces on stuff in tki.
+    catch {eval destroy $tki(windows)}
+    catch {unset tki}
+}
+
+proc tkiReset { } {
+    global tk_version
+        
+    if { [info exists tk_version]} {
+        tkiUninit
+        tkiInit
+    }
+}
+
+proc tkiStatus { msg {w ""} {permanent 1}} {
+    global tki
+    if { $w == "" } {
+        set w $tki(curWindow)
+    }
+    if { $w == "" } {
+        puts stdout "tkInfo: $msg"
+    } else {
+        upvar #0 $w wvars
+        if { $permanent == 1} {
+            set wvars(oldStatus) $msg
+        }
+        set wvars(statusPermanent) $permanent
+        $w.s.status conf -text $msg
+	# idletasks should be sufficient, but the geometry management
+	# apparently needs some X-events to make the redisplay occur
+	#update
+        update idletasks
+    }
+}
+proc tkiStatusUpdate { w } {
+    upvar #0 $w wvars
+    if {$wvars(statusPermanent) == 1} { return }
+    set wvars(statusPermanent) 1
+    $w.s.status conf -text $wvars(oldStatus)
+}
+proc tkiScrollUpdate { w } {
+    upvar #0 $w wvars
+    set wvars(scrollBackwardHitTop) 0
+    set wvars(scrollForwardHitBottom) 0
+}
+proc tkiWarning { msg } {
+    # Warnings always go to stderr
+    puts stderr "tkInfo Warning: $msg"
+}
+proc tkiFileWarning { fileSpec msg } {
+    global tki
+    if [info exist tki(fileinfo-$fileSpec)] {
+	set fileSpec [lindex $tki(fileinfo-$fileSpec) 2]
+    }
+    tkiWarning "$fileSpec: $msg"
+}
+proc tkiError { msg } {
+    global tki
+    if { $tki(curWindow) == "" } {
+        puts stdout "tkInfo Error: $msg"
+    } else {
+	set infowin $tki(curWindow)
+	upvar #0 $infowin wvars
+        $infowin conf -cursor  $tki(normCursor)
+        $infowin.main.text conf -cursor $tki(normCursor)
+        tkiBell
+        tkiStatus "Error: $msg" $infowin 0
+    }
+}
+
+#
+# This is complicated by the fact that "time" doesn't provide access to
+# the return value.  Thus "cnt" is used as follows:
+#	0 ==> Do once for timing, and repeat for return value (no side-affects)
+#	1 ==> Do once for timing&side-affects, empty return value
+#
+proc tkiTimeStatus { msg cnt args } {
+    global tki
+    if { $tki(timestatusB) } {
+	puts stdout "tkInfo time: $msg [lindex [time $args] 0] microseconds"
+	if { $cnt == 0 } {
+	    return [eval $args]
+	} else {
+	    return ""
+	}
+    } else {
+	return [eval $args]
+    }
+}
+
+#
+# This proc is called once during initialization, and then destroyed.
+# (It is destroyed to save memory).
+# Currently we fake all the appropriate table entires to create a "builtin"
+# file.  It might be easier, however, to just pass one large text string
+# into the parser and have it be dealt with like any other file.
+#
+
+proc _tkiBuiltinFile { } {
+    global tki tki_help_usage tki_roadmap tki_version tki_custom
+
+    set fileKey			builtin
+    set tki(fileKeys-$fileKey)	[list $fileKey]
+    set tki(fileinfo-$fileKey)	[list $fileKey $fileKey $fileKey ""]
+    set tki(incore-$fileKey)	1
+    set tki(nodesinfo-$fileKey) ""
+    set tki(nodesbody-$fileKey) ""
+
+
+    tkiFileParseNode $fileKey "
+File: builtin, Node: Top, Up: (dir)Top, Next: About
+
+TkInfo
+======
+
+TkInfo is a browser for files in the info documentation format, such
+as the very file you are reading right now. If you need help on using
+tkInfo, try selecting \"Quick Help\" or \"Info\" below. Select an item
+by moving the mouse over the highlighted text and pressing the left or
+middle mouse button.
+
+* Menu:
+
+* About::         Which version of tkInfo you use, who wrote it, and when.
+* Info::          The structure of Info files.
+* Quick Help::    What the keys and mouse buttons do.
+* Usage Tips::    How to use tkInfo efficiently.
+* Command Line::  Telling tkInfo where to search for info files, and more.
+* Customization:: Changing tkInfo's colors, fonts, and default behaviors.
+* Source::        Hacking on tkInfo and embedding it into other programs.
+* Copyright::     TkInfo is free. See here for more information.
+"
+
+#VERSION README
+    tkiFileParseNode $fileKey "
+File: builtin, Node: About, Up: Top, Next: Info, Prev: Top
+
+About tkInfo
+============
+
+This is tkInfo version $tki_version, built on \$Date: 2003-06-26 00:24:27+00 $.
+TkInfo is a browser for documentation in the info file format.
+
+The versions of tkInfo up to 0.7-beta were written by Kennard White
+(kennard@ohm.eecs.Berkeley.EDU).  You can obtain the tkInfo
+distribution up to version 0.7-beta by anonymous ftp from:
+
+	ftp://ptolemy.eecs.berkeley.edu/pub/misc
+
+Axel Boldt (axelboldt@yahoo.com) adapted tkInfo in 1997 for newer
+tcl/tk versions and added some features. The versions 0.8 and later
+can be gotten from http://math-www.uni-paderborn.de/~axel/tkinfo/
+
+Version 2.6 is needed for Tcl/Tk 8.4 and higher.
+
+Please report any and all problems, fixes, and suggestions to 
+axelbold@yahoo.com.
+
+TkInfo may be freely modified and distributed; for details, *note 
+Copyright::. 
+
+
+RCS: \$Id: tkinfo,v 1.85 2003-06-26 00:24:27+00 lbayuk Exp $
+    "
+
+    tkiFileParseNode $fileKey {
+File: builtin, Node: Info, Up: Top, Prev: About, Next: Quick Help
+
+Info Files
+==========
+
+
+tkInfo is a browser for "info" files, a file format that supports a
+robust hypertext system which is ideal for on-line help.  
+
+Each info file consists of several "nodes", units of information that
+can contain crossreferences to other nodes. TkInfo displays one node
+per window at a time, and highlights the crossreferences.
+
+The entry point and top most node of an info file is usually called
+"Top" and contains the table of contents for the info file. Many
+nodes, including Top, contain menus pointing to subnodes, thus
+creating a tree of nodes. The subnodes specify their parent as their
+"up node". Furthermore, most nodes specify a "next node" and a
+"previous node" on the same level, and this yields a convenient way to
+traverse the tree.
+
+The top-level info file is called "dir" and contains only a single
+node "Top" which is a directory listing all the other info files on
+your system. This is where tkInfo starts out by default.
+
+GNU programs such as the editor emacs, the compiler gcc and the shell
+bash are documented in the texinfo format, which can be transformed
+into info files using the makeinfo program. It is also possible to
+print out high quality hardcopies from texinfo sources via the TeX
+system.
+
+}
+
+    tkiFileParseNode $fileKey {
+File: builtin, Node: Quick Help, Up: Top, Prev: Info, Next: Usage Tips
+
+tkInfo Quick Help
+=================
+
+The name of the current info node is given in the bottom left. Links
+to other nodes are highlighted.
+
+
+Mouse operations
+----------------
+
+Left click on link or button    Show node in current window.
+Middle click on link or button  Show node in new window.
+Middle button drag              Scroll.
+Right click on link or button   Show node in new window; future right clicks in
+                                current window will send output to that window.
+Right click elsewhere           Pop up menu with often used commands.
+
+
+Displaying other nodes
+----------------------
+
+n       Move to the "next" node of this node.
+p       Move to the "previous" node of this node.
+u       Move "up" from this node.
+l       Move back to the "last" node you were at, stack based.
+t       Move to current info file's "top" node, with the table of contents.
+d       Move to the "directory" node which lists all installed info files.
+],[     Move to logical successor (resp. predecessor) of this node.
+1-9     Move to first, second, etc, item in node's menu and show in current
+Tab     Mark next link. Shift-Tab marks previous link.
+Enter   Move to marked link. Ctrl-Enter shows node in new window.
+        window. Ctrl-1 - Ctrl-9 shows node in a new window.
+m,f     Enter beginning of a menu entry (resp. crossreference) to move to.
+        If several links match, then the first currently visible one wins. 
+        Case does not matter. Crsr-Up recalls previous inputs. 
+g,(     Enter file or node name to move to. Crsr-Up recalls previous inputs.
+        Syntax: NODENAME or (FILENAME) or (FILENAME)NODENAME
+
+
+Searching
+---------
+
+i       Look up a substring in current info file's indices and node names.
+,       Continue previous index lookup.
+s,/     Search for text in current file literally (resp. by grep-style
+        regular expression, using the special characters .*+?^$[]()|\ ).
+        At the end of the file, search will wrap around to the beginning.
+        Ctrl-g aborts; Crsr-Up recalls previous search strings.
+Ctrl-s  Continue previous search forward.
+r,\     Search backwards, literally resp. by regular expression.
+Ctrl-r  Continue previous search backward.
+
+
+Scrolling
+---------
+
+b, HOME, <			Jump to the beginning of the node.
+e, END,  >			Jump to the end of the node.
+SPACE, Ctrl-f, Ctrl-v, PgDn	Scroll down one page. If at end of node,
+                                jump to logical successor node.
+DEL, Ctrl-b, Alt-v, PgUp        Scroll up one page. If at beginning
+                                of node, jump to logical predecessor node.
+Crsr DOWN, j, Ctrl-n		Scroll down one line.
+Crsr UP, k, Ctrl-p		Scroll up one line.
+Ctrl-m				Jump to beginning of current node's menu.
+
+
+Miscellaneous
+-------------
+
+?       Show this quick help message.
+h       Show builtin tkinfo documentation.
+M       Show manual page using tkman.  Uses selection or prompts.
+A       Show unix apropos using tkman. Uses selection or prompts.
+!       Issue tcl command, results printed on stdout.
+c       Close the current window.
+q       Quit the tkInfo program.
+
+You can access a menu from the menubar by holding down ALT and pressing 
+the underlined letter. Get rid of posted menus with ESC.
+
+
+Type "u" now in order to go up from this node and obtain more
+information on tkInfo and the info system in general, or type "n" to
+go to the next node with usage tips for tkInfo, or close this help
+window with "c".
+    }
+
+
+    tkiFileParseNode $fileKey {
+File: builtin, Node: Usage Tips, Up: Top, Prev: Quick Help, Next: Command Line
+
+Usage Tips for TkInfo
+=====================
+
+
+Next, Previous, Last and Back
+-----------------------------
+
+The most important thing to understand is the function of the "Next"
+and "Previous" buttons. They have nothing to do with netscape's "Back"
+and "Forward" buttons. Rather, every info node specifies a "next node"
+and a "previous node" in its first line, and the "Next" and "Previous"
+buttons simply jump there. Most info files are organized in such a
+fashion that the next node is on the same hierarchical level than the
+current one, so that all menu entries of the current node are skipped
+when you click on "Next". Think of nodes as pages of a book: "Next"
+jumps from one section's title page to the next section's title page
+(which need not be the immediately following page). That's why
+continually hitting "Next" will generally NOT visit all the nodes of
+an info file in order. If you want to do that, simply keep hitting
+Space, or choose "Logical Successor" from the popup menu that's bound
+to the right mouse button.
+
+If you want to go to wherever you were before, use the "Last" button
+or the History menu. This is the functional equivalent to netscape's
+"Back".
+
+
+Redirection Windows
+-------------------
+
+If you do not want to visit all nodes in order, you have to navigate
+through the menus by clicking on entries. This can become confusing,
+unless you make use of the middle and right mouse buttons. Clicking on
+a link with the middle button will bring up that node in a new
+window. This comes handy when you quickly want to check out a cross
+reference that would only distract if brought up in the main window.
+
+Clicking on a link with the right button creates a "redirection
+window" for the current window and displays the node there. If you
+continue to use the right button in the current window, the output
+will also be sent to that redirection window. Every window (even
+redirection windows) can have one redirection window associated with
+them in this manner. This is nice because it avoids too many tkinfo
+windows cluttering up your desktop and it is useful when browsing
+through large menus: I usually keep the menu visible in one main
+window and explore the interesting menu entries in its redirection
+window, which I place right next to the main window.
+
+
+Top and Dir
+-----------
+
+"Top" is the topmost node of the current info file and will usually
+contain the table of contents. The "Top" nodes of bigger info files
+often contain a detailed node listing following the menu of immediate
+subnodes. This way, you can access every node of the info file with a
+single click and there's no need to navigate the hierarchy at all.
+
+"Dir" is the toplevel info file which contains a listing and short
+description of all the installed info files on the system. Some
+systems have several Dir files because they store their info files in
+several directories; if tkInfo knows about these, they will show up
+under the Directories Menu entry.
+
+
+Working quickly, with and without the mouse
+-------------------------------------------
+
+Don't forget that you can scroll the current window by dragging with
+the middle button. I think this is more comfortable than using the
+scrollbar. The mouse bindings are designed so that most functions of
+the program can be used easily with one hand on the mouse, and without
+much need for the other hand or for mouse movements (right-click
+brings up a popup menu).
+
+If you are more of a keyboard person, get used to TAB, Shift-Tab, and
+RET to walk through a menu and to select a link. Also, selecting the
+forth menu entry for instance is most quickly done by simply hitting
+`4'.
+
+If you like working efficiently, you should try TkMan for reading unix
+manpages.
+
+
+Searching
+---------
+
+When prompted for a string in the input box below, remember that you
+can recall the previous inputs with the cursor UP key. If a search
+takes too long, you can interrupt it with Ctrl-g. The search will
+start at the beginning of the current node and will wrap around to the
+beginning of the info file if you continue to hit Ctrl-s. You can
+always jump back to the last match with Ctrl-r.
+
+Instead of doing a full-text search of the whole info file with `s',
+it's usually better to start with an index lookup (`i'), which will
+try to locate the term in the index nodes and then jump to the
+relevant nodes explaining the term. If you want to browse through the
+full index, hit `i RET'.
+
+
+Printing
+--------
+
+If you feel the urge to print out an info file, don't. Rather, get
+your hands on the corresponding texinfo source and print that one
+using the TeX system. The output is much prettier. Info files are not
+meant to be printed, and that's why tkInfo doesn't have a print
+option.
+
+
+Info Tutorial
+-------------
+
+There is a GNU program called "info" that is similar to tkInfo, but
+completely text based.  A tutorial info file written for this program
+is available on most systems.  This tutorial is useful if you want to
+learn tkInfo's accelerator keys, since the keybindings of tkInfo and
+info are almost identical. It will also tell you more about info files
+in general. To see this tutorial, select the menu entry below.
+
+* Menu:
+* Plain Info Tutorial: (info)Help.
+    }
+
+    tkiFileParseNode $fileKey "
+File: builtin, Node: Command Line, Up: Top, Next: Customization, Prev: Usage Tips
+$tki_help_usage"
+
+    tkiFileParseNode $fileKey "
+File: builtin, Node: Customization, Up: Top, Next: Source, Prev: Command Line
+$tki_custom"
+
+    tkiFileParseNode $fileKey "
+File: builtin, Node: Source, Up: Top, Next: Copyright, Prev: Customization
+$tki_roadmap"
+
+#README
+    tkiFileParseNode $fileKey {
+File: builtin, Node: Copyright, Up: Top, Prev: Source
+
+TkInfo's Copyright
+==================
+
+This copyright applies to the tkInfo system only.  If tkInfo is
+embedded within a larger system, that system will most likely have
+a different copyright.
+
+Sorry this is so long.  Basically, do whatever you want with this
+software, just don't sue me and don't pretend you wrote it -- kennard.
+
+The parts I added are Copyright (c) 1997-2003 Axel Boldt and are covered 
+by the same license below -- Axel.
+
+Copyright (c) 1993 The Regents of the University of California.
+All rights reserved.
+
+Permission is hereby granted, without written agreement and without
+license or royalty fees, to use, copy, modify, and distribute this
+software and its documentation for any purpose, provided that the above
+copyright notice and the following two paragraphs appear in all copies
+of this software.
+
+IN NO EVENT SHALL THE UNIVERSITY OF CALIFORNIA BE LIABLE TO ANY PARTY 
+FOR DIRECT, INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES 
+ARISING OUT OF THE USE OF THIS SOFTWARE AND ITS DOCUMENTATION, EVEN IF 
+THE UNIVERSITY OF CALIFORNIA HAS BEEN ADVISED OF THE POSSIBILITY OF 
+SUCH DAMAGE.
+
+THE UNIVERSITY OF CALIFORNIA SPECIFICALLY DISCLAIMS ANY WARRANTIES,
+INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE SOFTWARE
+PROVIDED HEREUNDER IS ON AN "AS IS" BASIS, AND THE UNIVERSITY OF
+CALIFORNIA HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES,
+ENHANCEMENTS, OR MODIFICATIONS.
+    }
+
+# Does this save memory? Who knows, it can't hurt.
+set tki_custom ""
+set tki_roadmap ""
+
+}
+
+
+#
+# Do stand-alone help window
+# The -node option is for compatibility to the info program only.
+#
+
+proc tkiInfoWindow { args } {
+    global  tki_help_usage tki tk_version
+
+    set w ""
+    set nodeSpec ""
+    set fileSpec ""
+    set fileSpec2 ""
+    set dirList ""
+    set linklook ""
+    set highlight ""
+    set searchlook ""
+    set headersB -1
+    set buttonsB -1
+    set balloonsB -1
+    set scrollthroughB -1
+    set showDirB -1
+    set pageSepB -1
+    set help -1
+    set initialIconic -1
+    set opt_list { 
+        { "window" w } 
+        { "dir" dirList append } 
+        { "file" fileSpec }
+        { "headers" headersB bool }
+        { "buttons" buttonsB bool }
+        { "balloons" balloonsB bool }
+        { "help" help bool }
+        { "h" help bool }
+        { "-help" help bool }
+        { "iconic" initialIconic bool }
+        { "scrollthrough" scrollthroughB bool }
+        { "showdir" showDirB bool }
+        { "pagesep" pageSepB bool }
+        { "linklook" linklook }
+        { "searchlook" searchlook }
+        { "highlight" highlight }
+        { "infofile" fileSpec2 }
+        { "node" nodeSpec append }
+    }
+
+    set args [topgetopt $opt_list $args]
+
+    if { $help != -1 } {puts $tki_help_usage; exit}
+    set tki_help_usage ""
+
+    if { ![info exists tk_version] } {
+        puts "TkInfo needs the X Window system."
+        exit
+    }
+
+    if { ![info exist tki] } { tkiInit }
+
+    if { $dirList != "" } {
+        tkiAddInfoPaths $dirList
+    }
+    
+    if { $linklook != "" }	{ set tki(linklook) $linklook }
+    if { $searchlook != "" }	{ set tki(searchlook) $searchlook }
+    if { $highlight != "" }	{ set tki(highlight) $highlight }
+    if { $initialIconic != -1 } { set tki(iconic) $initialIconic }
+    if { $headersB != -1 }	{ set tki(rawHeadersB) $headersB }
+    if { $buttonsB != -1 }	{ set tki(showButtonsB) $buttonsB }
+    if { $balloonsB != -1 }     { set tki(showBalloonsB) $balloonsB }
+    if { $scrollthroughB != -1 } { set tki(scrollThroughB) $scrollthroughB }
+    if { $showDirB != -1 }      { set tki(showDirB) $showDirB }
+    if { $pageSepB != -1 }      { set tki(pageSepB) $pageSepB }
+    if { $fileSpec == "" }	{ set fileSpec $fileSpec2 }
+
+    if { $args != "" } {
+	eval lappend nodeSpec $args
+    }
+    if { [llength $nodeSpec] > 1 } {
+	error "tkiInfoWindow: Only one node may be specified"
+    }
+    set nodeSpec [lindex $nodeSpec 0]
+    if { $fileSpec == "" && $nodeSpec != "" && ![string match "(*" $nodeSpec] } {
+        set fileSpec $nodeSpec
+        set nodeSpec ""
+    }
+    if { [tkiFileIsAbsolute $fileSpec] } {
+            tkiAddInfoPaths [file dirname $fileSpec]
+    }
+
+    set result [tkiWinShow $nodeSpec $fileSpec $w]
+    set noderef [lindex $result 0]
+    set win [lindex $result 1]
+    if {$noderef == ""} {
+        tkiWinShow {(builtin)Top} {} $win
+        tkiStatus "Error: requested info file not found. Showing tkinfo docs instead." $win 0
+    } else {
+        tkiStatus "Welcome to tkInfo!    Hit `?' for help." $win 0
+    }
+    return ""
+}
+
+#
+# We are operating in one of two modes:
+#   1)  Stand-alone.  Popup an initial window, filling it according to argv.
+#	Kill the stupid "." window.
+#   2)	Embedded within a larger application.  Don't do anything automatically;
+#	instead, let that application's startup script handle things.
+#
+# We are operating in embedded mode iff the global tkiEmbed exists.
+#
+
+proc tkiBoot { } {
+    global argv tki tkiEmbed tk_version
+
+    if { [info exists tkiEmbed] } return
+
+    # We need the following 'if' only for the -help command line option;
+    # apparently, Tk is not loaded if -help is given to wish...
+    if { [info exists tk_version]} {
+        wm withdraw .
+    }
+#    if { [lindex $argv 0] != "" && [file isfile [lindex $argv 0]] } {
+#	# Some wishs pass the filename as argv[0].  Kill it off.
+#	set argv [lreplace $argv 0 0]
+#    }
+     
+    eval tkiInfoWindow $argv
+}
+
+##########################################################################
+# The following material was formerly contained in the file tkiwin.tcl
+#
+#  In the function names below, I use the abbreviations:
+#  	Show	Display a node specified by a nodeSpec and optional fileSpec.
+#  		This provides the external interface, and requires
+#  		processing by the tkicore functions to retrieve the
+#  		actual data for display.
+#  	Dpy	Display a node specified by a fileKey and an internal
+#  		representation of the node.  This is an internal interface.
+#
+
+
+
+#
+# Support calling a running tkman (or starting one up). Adapted from
+# remote.tcl that comes with tkman. This supports both regular man pages
+# and apropos searches (if $apropos == 1).
+#
+
+proc _tkiWinManPage { w manpage {apropos 0}} {
+   global tki
+ 
+   if {[set found [lsearch [winfo interps] tkman*]]==-1} {
+      # if TkMan doesn't already exist, start one up
+      if {[catch {exec tkman &}]} {tkiError "Tkman cannot be started"; return}
+
+      # wait for it to be registered
+      for {set found -1} {$found==-1} {after 200} {
+         set found [lsearch [winfo interps] tkman*]
+      }
+      
+      # check whether server is secure
+      catch {send tkman set manx(init)} error
+      if {[string match "*insecure*" $error]} {
+          tkiError \
+"Cannot communicate with tkman:
+X server is insecure.
+Use xauth or xdm."
+          return
+      }
+      
+      # wait for it to initialize
+      for {set ready 0} {!$ready} {after 200} {
+         catch {if {[send tkman set manx(init)]=="1"} {set ready 1}}
+      }
+   }
+   set tkman [lindex [winfo interps] $found]
+
+   # .man is the main window, guaranteed to exist
+   send $tkman raise .man
+   if { $apropos } {
+       send $tkman manApropos $manpage
+   } else {
+       send $tkman manShowMan $manpage
+   }
+
+   return
+}
+
+#
+# Various functions for manipulating the "prompting" window.  This
+# is the entry widget at the bottom of the info window used for entering
+# node names and search text.
+#
+
+#
+# Create the prompt window, and enter the text "extra" into it.
+#
+proc _tkiWinPromptMap { w mode promptstring {extra ""} } {
+    upvar #0 $w wvars
+
+    set wvars(promptmode) $mode
+    set wvars(promptHistoryIdx) -1
+    set dd $w.s
+    $dd.input delete 0 end
+    $dd.input insert end $extra
+    $dd.filename conf -text $promptstring
+    pack forget $dd.status
+    pack $dd.input -after $dd.filename -side left -expand 1 -fill both
+    switch $mode {
+        search {
+            pack $dd.regexp -after $dd.input -side left -fill y
+            pack $dd.case -after $dd.regexp -side left -fill y
+            pack $dd.back -after $dd.case -side left -fill y
+        }
+        manual {
+            pack $dd.man -after $dd.input -side left -fill y
+            pack $dd.apropos -after $dd.man -side left -fill y
+        }
+    }
+    focus $dd.input
+}
+#
+# Unmap the prompt window.
+#
+proc _tkiWinPromptUnmap { w } {
+    upvar #0 $w wvars
+    if { $wvars(promptmode) != "" } {
+        set wvars(promptmode) ""
+        set dd $w.s
+        focus $w.main.text
+        pack forget $dd.input
+        pack forget $dd.regexp
+        pack forget $dd.case
+        pack forget $dd.back
+        pack forget $dd.apropos
+        pack forget $dd.man
+
+        pack $dd.status -after $dd.filename -side left -fill x -expand 1
+        $dd.filename conf -text $wvars(nodeSpec)
+    }
+}
+
+#
+# add the specified text to the history list of the prompt window.
+# Make sure that prompt history list contains no doubles and doesn't grow
+# to long.
+# Do nothing if text is empty. 
+#
+
+proc _tkiWinPromptHistoryAdd { w text mode } {
+    global tki
+    upvar #0 $w wvars
+    if { $text == "" } {
+        return
+    }
+
+    set wvars(promptHistory) [linsert $wvars(promptHistory) 0 [list $mode $text]]
+    for {set idx 1} {$idx < [llength $wvars(promptHistory)]} {incr idx} {
+        if {[lindex $wvars(promptHistory) $idx] == [list $mode $text]} {
+            set wvars(promptHistory) [lreplace $wvars(promptHistory) $idx $idx]
+            break
+        }
+    }
+    if { [llength $wvars(promptHistory)] == $tki(promptHistoryLength) } {
+        set wvars(promptHistory) [lreplace $wvars(promptHistory) end end]
+    }
+}
+
+#
+# scroll the text in the prompt window according to the prompt history list.
+#
+
+proc _tkiWinPromptScroll { w dir } {
+    upvar #0 $w wvars
+
+    if { $dir == "up" } {
+        set length [llength $wvars(promptHistory)]
+        for { set idx [expr $wvars(promptHistoryIdx) + 1] } { $idx < $length } {incr idx} {
+            set entry [lindex $wvars(promptHistory) $idx]
+            if { [lindex $entry 0] == $wvars(promptmode) } {
+                set wvars(promptHistoryIdx) $idx
+                $w.s.input del 0 end
+                $w.s.input insert end [lindex $entry 1]
+                return
+            }
+        }
+    } else {
+        for { set idx [expr $wvars(promptHistoryIdx) - 1] } { $idx >= 0 } { incr idx -1} {
+            set entry [lindex $wvars(promptHistory) $idx]
+            if { [lindex $entry 0] == $wvars(promptmode) } {
+                set wvars(promptHistoryIdx) $idx
+                $w.s.input del 0 end
+                $w.s.input insert end [lindex $entry 1]
+                return
+            }
+        }
+        set wvars(promptHistoryIdx) -1
+        $w.s.input del 0 end
+    }
+}           
+
+
+#
+# This is called when <Return> is pressed in the "goto" text window.
+# We could either be in a goto-node command, or a search, or an 
+# exec-tcl, or an indexlookup, or a manual command.
+# We take the appropriate action and cleanup.
+#
+
+proc _tkiWinPromptOk { w } {
+    global tki
+    upvar #0 $w wvars
+    set dd $w.s
+    set input [$dd.input get]
+    if { $wvars(promptmode) != "search" && $wvars(promptmode) != "indexlookup" } {
+        set input [string trim $input]
+    }
+    if { $input == ""} {
+        if { $wvars(promptmode) == "search"} {
+            set tki(curWindow) $w
+            _tkiWinPromptUnmap $w
+            if { $wvars(searchBackB) == "1" } {
+                _tkiWinAction $w search backIncr
+            } else {
+                _tkiWinAction $w search forwIncr
+            }
+            return
+        } elseif { $wvars(promptmode) != "indexlookup" } {
+            _tkiWinPromptUnmap $w
+            return
+        }
+    }
+    _tkiWinPromptHistoryAdd $w $input $wvars(promptmode) 
+    set tw $w.main.text
+    $tw conf -cursor $tki(waitCursor)
+    $w conf -cursor $tki(waitCursor)
+    switch $wvars(promptmode) {
+      search {
+          set tki(curWindow) $w
+          _tkiWinPromptUnmap $w
+          if { $wvars(searchBackB) } {
+              set cnt [searchboxSearchBackw $input $wvars(searchRegexpB) \
+                        $wvars(searchCaseB) searchkey $w]
+          } else {
+              set cnt [searchboxSearch $input $wvars(searchRegexpB) \
+                        $wvars(searchCaseB) searchkey $w]
+          }
+          set wvars(searchStr) $input
+      }
+      goto {
+          _tkiWinPromptUnmap $w
+          set result [tkiWinShow $input $wvars(fileKey) $w]
+          if { [lindex $result 0] == "" } {
+              set wvars(gotoStr) $input
+          } else {
+              set wvars(gotoStr) ""
+          }
+      }
+      indexlookup {
+          _tkiWinPromptUnmap $w
+          set infoFileKey $tki(infoFileKey-$wvars(fileKey))
+          _tkiIndexEntries $w $wvars(fileKey) $infoFileKey $input
+          if { $wvars(indexEntries) == "" } {
+              if {$input == ""} {
+                  tkiStatus "No index in this info file." $w 1
+              } else {
+                  tkiStatus "No index entries contain \"$input\"." $w 1
+              }
+          } else {
+              _tkiWinAction $w indexnext
+          }
+      }
+      tclcmd {
+        if [catch {uplevel #0 $input} error] {
+            puts stdout "Error: $error"
+        } else {
+            puts stdout [expr { $error == "" ? "Ok" : "$error" }]
+        }
+        _tkiWinPromptUnmap $w
+      }
+      manual {
+          set tki(curWindow) $w
+          _tkiWinPromptUnmap $w
+          if { $wvars(manB) } {
+              _tkiWinManPage $w $input
+          } else {
+              _tkiWinManPage $w $input 1
+          }
+      }
+      menu {
+          set toNode [_tkiFindRef $w $input 0]
+          _tkiWinPromptUnmap $w
+          if { $toNode == ""} {
+              tkiStatus "No such menu entry!" $w 0
+          } else {
+              tkiWinShow $toNode $wvars(fileKey) $w
+          }
+      }
+      xref {
+          set toNode [_tkiFindRef $w $input 1]
+          _tkiWinPromptUnmap $w
+          if { $toNode == ""} {
+              tkiStatus "No such crossreference!" $w 0
+          } else {
+              tkiWinShow $toNode $wvars(fileKey) $w
+          }
+      }
+    }
+    $tw conf -cursor $tki(normCursor)
+    $w conf -cursor $tki(normCursor)
+}
+
+proc _tkiWinPromptAbort { w } {
+    upvar #0 $w wvars
+    _tkiWinPromptUnmap $w
+}
+
+#
+# This updates the global $tki(geometry) variable to the size of the
+# specified window.
+#
+
+proc _tkiWinGetGeom { w } {
+  global tki
+  scan [wm geometry [winfo toplevel $w]] "%dx%d+%s"  x y leftover
+  set tki(geometry) "${x}x$y"
+}
+
+#
+# returns the indices of the first visible character and the last
+# visible character of the text widget $tw. Furthermore, it is
+# determined if the first and last lines are wrapped.
+#
+proc _tkiWinVisibleInfo { tw } {
+    set topindex [$tw index @0,0]
+    if {[$tw bbox "$topindex linestart"] == "" } {
+        set firstiswrapped 1
+    } else {
+        set firstiswrapped 0
+    }
+    scan [wm geometry [winfo toplevel $tw]] "%dx%d+%s"  columns lines leftover
+    #This is so complicated because of possible wrapping.
+    set charactergeom [$tw bbox $topindex]
+    set xmiddlefirst [expr [lindex $charactergeom 0] +2]
+    set ymiddlefirst [expr [lindex $charactergeom 1] +2]
+    set characterheight [lindex $charactergeom 3]
+    
+    set lastindex [$tw index "@${xmiddlefirst},[expr $ymiddlefirst + ($lines - 1) * $characterheight]"]
+    if {[$tw bbox "$lastindex lineend"] != ""} {
+        set lastiswrapped 0
+        set lastonpageindex [$tw index "$lastindex lineend"]
+    } else {
+        set lastlineinfo [$tw dlineinfo $lastindex]
+        if {$lastlineinfo == ""} {
+            tkiError "Couldn't scan text widget information correctly."
+            return
+        }
+        scan $lastlineinfo "%d %d %d %s" x y width leftover
+        set lastonpageindex [$tw index "@[expr $x+$width -2],[expr $y+2]"]
+        set lastiswrapped 1
+    }
+    return [list $topindex $lastonpageindex $firstiswrapped $lastiswrapped $columns $lines]
+}
+
+#
+# Add information about currently displayed node to the end of
+# wvars(lastNodes), but only if it is different from
+# (oldinfo,oldfileKey).  Return the result.
+#
+
+proc _tkiLastInfo { w oldinfo oldfileKey} {
+    upvar #0 $w wvars
+
+    set result $wvars(lastNodes)
+
+    if { $wvars(noLastInfoUpdate) == 1 } {
+        set wvars(noLastInfoUpdate) 0
+        return $result
+    }
+        
+    if { $wvars(fileKey) == "" } {
+        return $result
+    }
+    
+    # We don't want doubles
+    if { $wvars(fileKey) == $oldfileKey && $wvars(nodeinfo) == $oldinfo } {
+        return $result
+    }
+
+    # Get topline
+    set topline [$w.main.text index @0,0]
+
+    lappend result [list $wvars(fileKey) [lindex $wvars(nodeinfo) 1] $topline $wvars(cursorInfo)]
+    return $result
+}
+
+#
+# Return the node in the current node's menu whose label starts with 
+# $labelstart. We assume that the current node has a menu resp. 
+# crossreferences. If there are more than one matching node, the first 
+# currently visible one wins. Case does not matter.
+# If xref is 1, look for crossreferences instead.
+# Returns "" if nothing can be found.
+#
+
+proc _tkiFindRef { w labelstart xref } {
+    upvar #0 $w wvars
+    if {$xref == 1} {
+        set nodeIdx 1
+        set labelIdx 4
+        set indexIdx 0
+        set listvar "xrefinfo"
+        set type "xref"
+    } else {
+        set nodeIdx 2
+        set labelIdx 5
+        set indexIdx 1
+        set listvar "menuinfo"
+        set type "menu"
+    }
+    set labelstart [string tolower $labelstart]
+    set found ""
+    foreach mi $wvars($listvar) {
+        set label [lindex $mi $labelIdx]
+        set label [string tolower $label]
+        if { [string first $labelstart $label] == 0 } {
+            lappend found $mi
+        }
+    }
+    if { $found != "" } {
+        set tw $w.main.text
+        set geom [_tkiWinVisibleInfo $tw]
+        set top [lindex $geom 0]
+        set bottom [lindex $geom 1]
+        foreach mi $found {
+            # Now determine whether this element is currently visible.
+            if {$xref == 0} {
+                set currentindex [$w.main.text index "menu.first + [lindex $mi 0] lines - 2 lines"]
+            } else {
+                set currentindex [$w.main.text index "1.0 + [lindex $mi 2] c"]
+            }
+            if { [$tw compare $currentindex > $bottom] } {
+                break
+            } else {
+                if { [$tw compare $currentindex >= $top] } {
+                    tkiSetCursor $w [list $type [lindex $mi $indexIdx]]
+                    return [lindex $mi $nodeIdx]
+                }
+            }   
+        }
+        # none is visible; return first one.
+        set entry [lindex $found 0]
+        tkiSetCursor $w [list $type [lindex $entry $indexIdx]]
+        return [lindex $entry $nodeIdx]
+    }
+    return ""
+}
+
+#
+# Perform various actions on the info window.  
+# Note that if the action requires prompting (searching or goto-node)
+# then we have to play with the focus.  This can badly interact with
+# the focus games played when unmapping popup menus, so the "idle"
+# option should be used when called from a menu.
+# (I don't know what this is about --A.B.)
+#
+
+proc _tkiWinAction { w args } {
+    upvar #0 $w wvars
+    global tki
+
+    set arg0 [lindex $args 0]
+    set arg1 [lindex $args 1]
+
+    _tkiWinPromptUnmap $w
+    tkiStatusUpdate $w
+    if {$arg0 != "scroll" && $arg0 != "nextlink"} {
+        tkiScrollUpdate $w
+    }
+
+    set toNode ""
+    set toFile $wvars(fileKey) 
+    set toWindow $w
+
+    case $arg0 {
+        idle {
+            after 1 _tkiWinAction $w [lrange $args 1 end]
+            return
+        }
+        quit {
+            catch {unset wvars}
+            catch {destroy $w}
+            # XXX: !!This is a major hack!!
+            global tkiEmbed
+            if { ![info exist tkiEmbed] && [winfo children .] == "" } {
+                destroy .
+            }
+            return
+        }
+        goto {
+            _tkiWinPromptMap $w goto "Go to (FILE) or NODE:" $arg1
+            return
+        }
+        tclcmd {
+            _tkiWinPromptMap $w tclcmd "Tcl cmd:" $arg1
+            return
+        }
+        search {
+            case $arg1 {
+                "forwIncr" {
+                    if {$wvars(inSearch) == 0} {
+                        tkiStatus "No search to continue. Hit `s' to start one." $w 0
+                    } else {
+                        set tki(curWindow) $w
+                        if {[searchboxNext searchkey $w]==-1} {
+                            _tkiSearchFileForw $w $wvars(searchStr) $wvars(searchRegexpB) $wvars(searchCaseB) 1
+                        }
+                    }
+                }
+                "backIncr" {
+                    if {$wvars(inSearch) == 0} {
+                        tkiStatus "No search to continue. Hit `r' to start one." $w 0
+                    } else {
+                        set tki(curWindow) $w
+                        if {[searchboxPrev searchkey $w]==-1} {
+                            _tkiSearchFileBackw $w $wvars(searchStr) $wvars(searchRegexpB) $wvars(searchCaseB) 1
+                        }
+                    }
+                }
+                "forwRegexp" {
+                    set wvars(searchRegexpB) 1
+                    set wvars(searchBackB) 0
+                    _tkiWinPromptMap $w search "Search:"
+                }
+                "forwExact" {
+                    set wvars(searchRegexpB) 0
+                    set wvars(searchBackB) 0
+                    _tkiWinPromptMap $w search "Search:"
+                }
+                "backExact" {
+                    set wvars(searchRegexpB) 0
+                    set wvars(searchBackB) 1
+                    _tkiWinPromptMap $w search "Search:"
+                }
+                "backRegexp" {
+                    set wvars(searchRegexpB) 1
+                    set wvars(searchBackB) 1
+                    _tkiWinPromptMap $w search "Search:"
+                }
+            }
+            return
+        }
+        indexlookup {
+            _tkiWinPromptMap $w indexlookup "Index lookup (RET jumps to Index):"
+            return
+        }
+        indexnext {
+            set infoFileKey $tki(infoFileKey-$wvars(fileKey))
+            if { $wvars(indexInfoFileKey) != $infoFileKey } {
+                tkiStatus "No index lookup to continue. Hit `i' to start one." $w 0
+                return
+            }
+            set number [expr [llength $wvars(indexEntries)] - $wvars(indexEntriesIndex) - 1]
+            if { $number < 0 } {
+                tkiStatus "No more index matches. Hit `i' to start new lookup." $w 0
+            } else {
+                set toNode [lindex [lindex $wvars(indexEntries) $wvars(indexEntriesIndex)] 0]
+                if {[lindex [tkiWinShow $toNode $wvars(fileKey) $w] 0]!=""} {
+                    TextSearch $w.main.text $wvars(indexString) searchkey 0
+                    searchboxNext searchkey $w 0.0
+                    if { $number == 1 } {
+                        tkiStatus "Found \"[lindex [lindex $wvars(indexEntries) $wvars(indexEntriesIndex)] 1]\". Hit `,' for 1 more index match." $w 1
+                    } elseif { $number > 1 } {
+                        tkiStatus "Found \"[lindex [lindex $wvars(indexEntries) $wvars(indexEntriesIndex)] 1]\". Hit `,' for $number more index matches." $w 1
+                    } else {
+                        tkiStatus "Found \"[lindex [lindex $wvars(indexEntries) $wvars(indexEntriesIndex)] 1]\". No more index matches." $w 1
+                    }
+                }
+                incr wvars(indexEntriesIndex)
+            }
+            return
+        }
+        manual {
+            set tki(curWindow) $w
+            if {[catch {selection get} manpage] || $manpage == "" } {
+                set wvars(manB) [expr { $arg1 != "apropos"}]
+                _tkiWinPromptMap $w manual "Unix manual page:"
+            } else {
+                $w conf -cursor $tki(waitCursor)
+                $w.main.text conf -cursor $tki(waitCursor)
+                _tkiWinManPage $w $manpage [expr { $arg1 == "apropos"}]
+                $w conf -cursor  $tki(normCursor)
+                $w.main.text conf -cursor $tki(normCursor)
+            }
+            return
+        }
+        last {
+            set idx [expr { [llength $wvars(lastNodes)] - 1 } ]
+            if { $idx >= 0 } {
+                set lastinfo [lindex $wvars(lastNodes) $idx]
+                set toFile [lindex $lastinfo 0]
+                set toNode [lindex $lastinfo 1]
+                set topline [lindex $lastinfo 2]
+                set cursorInfo [lindex $lastinfo 3]
+                set dummy $wvars(lastNodes)
+                set wvars(lastNodes) [lreplace $wvars(lastNodes) $idx end]
+                if { $arg1 == "redirect" } {
+                    set wvars(noLastInfoUpdate) 1
+                    _tkiWinAction $w redirect [list $toNode $toFile]
+                    set wvars(lastNodes) $dummy
+                    return
+                }
+                if { $arg1 == "other" } {
+                    set wvars(noLastInfoUpdate) 1
+                    _tkiWinAction $w newwin [list $toNode $toFile]
+                    set wvars(lastNodes) $dummy
+                    return
+                }
+                set wvars(noLastInfoUpdate) 1
+                _tkiJumpTo $w $toNode $toFile $topline $cursorInfo
+                return
+            } else {
+                tkiStatus "Can't go back any further." $w 0
+                return
+            }
+        }
+        up {
+            set toNode [lindex $wvars(nodeinfo) 3]
+            if { $toNode == "" } {
+                tkiStatus "This node does not specify an \"up\" node." $w 0
+                return
+            }
+            if { $arg1 == "other" } {
+                set toWindow ""
+            } else {
+                if { $arg1 == "redirect" } {
+                    _tkiWinAction $w redirect [list $toNode $toFile]
+                    return
+                }
+            }
+        }
+        prev {
+            set toNode [lindex $wvars(nodeinfo) 4]
+            if { $toNode == "" } {
+                tkiStatus "No previous section. Hit `\[' for predecessor node." $w 0
+                return
+            }
+            if { $arg1 == "other" } {
+                set toWindow ""
+            } else {
+                if { $arg1 == "redirect" } {
+                    _tkiWinAction $w redirect [list $toNode $toFile]
+                    return
+                }
+            }
+        }
+        next {
+            set toNode [lindex $wvars(nodeinfo) 5]
+            if { $toNode == "" } {
+                tkiStatus "No next section. Hit `]' for successor node." $w 0
+                return
+            }
+            if { $arg1 == "other" } {
+                set toWindow ""
+            } else {
+                if { $arg1 == "redirect" } {
+                    _tkiWinAction $w redirect [list $toNode $toFile]
+                    return
+                }
+            }
+        }
+        dir  { 
+            if { $arg1 =="" } {
+                if { [lindex $wvars(nodeinfo) 2] != "dir" } {
+                    set toNode "(dir)"
+                } else {
+                    tkiStatus "This is already the dir info file." $w 0
+                    return
+                }
+            } else {
+                set toNode "($arg1/dir)"
+            }
+        }
+        otherdir {
+            set toNode "(dir)"
+            if { $arg1 == "redirect" } {
+                _tkiWinAction $w redirect [list $toNode $toFile]
+                return
+            } else {
+                set toWindow ""
+            }
+        }
+        top {
+            if { $arg1 == "other" } {
+                set toWindow ""
+                set toNode "Top"
+            } else {
+                if { $arg1 == "redirect" } {
+                    _tkiWinAction $w redirect [list Top $toFile]
+                    return
+                } elseif { [lindex $wvars(nodeinfo) 1] != "Top" } {
+                    set toNode "Top"
+                } else {
+                    tkiStatus "This is already the top node." $w 0
+                    return
+                }
+            }
+        }
+        nextlink {
+            if { [tkiNextLink $w $arg1] == ""} {
+                _tkiWinAction $w scroll $arg1
+                tkiNextLink $w $arg1
+            } else {
+                tkiScrollUpdate $w
+            }
+            return
+        }
+        followlink {
+            set toNode [tkiCursorLink $w]
+            if { $toNode == ""} {
+                return
+            }
+            if { $arg1 == "new"} {
+                set toWindow ""
+            }
+        }
+        othermenu {
+            if { [info exist wvars(menuinfo)] } {
+                set menuitem [lindex $wvars(menuinfo) $arg1]
+                set toNode [lindex $menuitem 2]
+                if { $toNode != "" } {
+                    tkiSetCursor $w [list menu $arg1]
+                    _tkiWinAction $w newwin [list $toNode $toFile]
+                    return
+                }
+            }
+        }
+        successor {
+            if { $arg1 == "forw" } {
+                set toNode [_tkiLogicalNext $w]
+                if { $toNode == "" } {
+                    tkiStatus "No logical successor node." $w 0
+                    return
+                }
+            } else {
+                set toNode [_tkiLogicalPrev $w]
+                if { $toNode == "" } {
+                    tkiStatus "No logical predecessor node." $w 0
+                    return
+                }
+            }
+        }
+        newwin {
+            set tw $w.main.text
+            $tw conf -cursor $tki(waitCursor)
+            $w conf -cursor $tki(waitCursor)
+            # Information to be passed to the new window:
+            _tkiWinGetGeom $tw
+            set tki(lastDir) $wvars(lastDir)
+            set tki(promptHistory) $wvars(promptHistory)
+            if { $arg1 ==""} {
+                set tki(lastNodes) $wvars(lastNodes)
+                set tki(history) $wvars(history)
+                tkiWinShow [lindex $wvars(nodeinfo) 1] $wvars(fileKey)
+            } else {
+                set tki(lastNodes) [_tkiLastInfo $w "" ""]
+                set tki(history) [_tkiWinHistoryAdd $w "" "" 1]
+                eval tkiWinShow $arg1
+            }
+            $tw conf -cursor $tki(normCursor)
+            $w conf -cursor $tki(normCursor)
+            return
+        }
+        redirect {
+            set tw $w.main.text
+            $tw conf -cursor $tki(waitCursor)
+            $w conf -cursor $tki(waitCursor)
+            if { $wvars(redirectWindow) == "" || ![winfo exist $wvars(redirectWindow)] } {
+                # Information to be passed to the new window:
+                _tkiWinGetGeom $tw
+                set tki(lastDir) $wvars(lastDir)
+                set tki(lastNodes) [_tkiLastInfo $w "" ""]
+                set tki(history) [_tkiWinHistoryAdd $w "" "" 1]
+                set tki(promptHistory) $wvars(promptHistory)
+                set wvars(redirectWindow) ""
+            } else {
+                # This is necessary if redirect was called from last...
+                set wvars(noLastInfoUpdate) 0
+                
+                set tki(lastNodes) ""
+                set tki(history) ""
+                set tki(promptHistory) ""
+                set tki(lastDir) $wvars(lastDir)
+            }
+            if { $arg1 == ""} {
+                set result [tkiWinShow [lindex $wvars(nodeinfo) 1] $wvars(fileKey) $wvars(redirectWindow)]
+            } else {
+                set result [eval tkiWinShow $arg1 $wvars(redirectWindow)]
+            }
+            set wvars(redirectWindow) [lindex $result 1]
+            $tw conf -cursor $tki(normCursor)
+            $w conf -cursor $tki(normCursor)
+            return
+        }
+        transientmenu {
+            $w.transientmenu post [expr [winfo pointerx $w] +4] [winfo pointery $w]
+            grab $w.transientmenu
+            return
+        }
+        menu {
+            if { [info exist wvars(menuinfo)] } {
+                if { $arg1 =="" } {
+                    set tki(curWindow) $w
+                    _tkiWinPromptMap $w menu "Beginning of Menu entry:"
+                    return
+                } else {
+                    set menuitem [lindex $wvars(menuinfo) $arg1]
+                    if { $menuitem == "" } {
+                        tkiStatus "No such menu entry." $w 0
+                        return
+                    } else {
+                        set toNode [lindex $menuitem 2]
+                        tkiSetCursor $w [list menu $arg1]
+                    }
+                }
+            } else {
+                tkiStatus "No menu in this node." $w 0
+                return
+            }
+        }
+        xref {
+            if { $wvars(xrefinfo) != "" } {
+                set tki(curWindow) $w
+                _tkiWinPromptMap $w xref  "Beginning of Xref label:"
+                return
+            } else {
+                tkiStatus "No crossreferences in this node." $w 0
+                return
+            }
+        }
+        scroll {
+            if { $wvars(scrollForwardHitBottom) == 1 && $arg1 != "forw" } {
+                set wvars(scrollForwardHitBottom) 0
+            }
+            if { $wvars(scrollBackwardHitTop) == 1 && $arg1 != "back" } {
+                set wvars(scrollBackwardHitTop) 0
+            }
+            case $arg1 {
+                forw     { _tkiScroll $w forw; return }
+                back     { _tkiScroll $w back; return }
+                top      { $w.main.text yview moveto 0; return }
+                bottom   { $w.main.text yview moveto 1; return }
+                lineup   { $w.main.text yview scroll 1 units; return }
+                linedown { $w.main.text yview scroll -1 units; return }
+                menu     {
+                    if [info exist wvars(menuinfo)] {
+                        $w.main.text yview [$w.main.text index "menu.first - 1 lines"]
+                        return
+                    }
+                }
+            }
+        }
+    }
+    if { $toNode == "" } {
+        tkiBell
+    } else {
+        if { $toWindow == "" } {
+            _tkiWinAction $w newwin [list $toNode $toFile]
+        } else {
+            tkiWinShow $toNode $toFile $toWindow
+        }
+    }
+}
+
+proc tkiBell {} {
+    bell
+}
+
+proc tkiInterrupt {} {
+    global tki
+    set tki(interrupt) 1
+    tkiBell
+}
+
+#
+# Scroll one page down resp. up. If already at end, determine the
+# logical successor of the current page and jump there.
+#
+
+proc _tkiScroll { w direction } {
+    global tki; upvar #0 $w wvars
+
+    set tki(curWindow) $w
+    if { $tki(scrollThroughB) } {
+        if { $direction == "forw"} {
+            if { $wvars(scrollForwardHitBottom) } {
+                _tkiWinAction $w successor forw
+            } else {
+                if { [$w.main.text dlineinfo "end - 1 lines"] == "" } {
+                    _tkiInsertMarkScroll $w 1
+                }
+                if { [$w.main.text dlineinfo "end - 1 lines"] != "" } {
+                    tkiStatus "At end. Hit key again for successor node." $w 0
+                    set wvars(scrollForwardHitBottom) 1
+                }
+            }
+        } else {
+            if { $wvars(scrollBackwardHitTop) } {
+                _tkiWinAction $w successor back
+            } else {
+                if { [$w.main.text dlineinfo "0.1"] == "" } {
+                    _tkiInsertMarkScroll $w -1
+                }
+                if { [$w.main.text dlineinfo "0.1"] != "" } {
+                    tkiStatus "At beginning. Hit key again for predecessor node." $w 0
+                    set wvars(scrollBackwardHitTop) 1
+                }
+            }
+        }
+    } else {
+        if { $direction == "forw"} {
+            if { [$w.main.text dlineinfo "end - 1 lines"] == "" } {
+                _tkiInsertMarkScroll $w 1
+            }
+            if { [$w.main.text dlineinfo "end - 1 lines"] != "" } {
+                tkiStatus "At end. Hit `]' for successor node." $w 0
+            }
+        } else {
+            if { [$w.main.text dlineinfo "0.1"] == "" } {
+                _tkiInsertMarkScroll $w -1
+            }
+            if { [$w.main.text dlineinfo "0.1"] != "" } {
+                tkiStatus "At beginning. Hit `\[' for predecessor node." $w 0
+            }
+        }
+    }
+}    
+
+#
+# Scroll the textwindow $w dir pages, inserting the page separator
+# correctly.
+#
+proc _tkiInsertMarkScroll {w dir} {
+    global tki
+    if {$tki(pageSepB)} {
+        upvar #0 $w wvars
+        set tw $w.main.text
+        set geom [_tkiWinVisibleInfo $tw]
+        set topleft [lindex $geom 0]
+        set bottomright [lindex $geom 1]
+        set columns [lindex $geom 4]
+        set insertString ""
+        for {set idx 1} {$idx <= $columns} {incr idx} {
+            set insertString "${insertString}_"
+        }
+        set ranges [$tw tag ranges separator]
+        $tw conf -state normal
+        if {$dir == "1"} {
+            $tw mark set insertPos  "$bottomright + 1 c"
+            if {$ranges != ""} {
+                eval $tw delete $ranges
+                $tw yview scroll -1 units
+            }
+            $tw yview scroll 1 pages
+            $tw insert insertPos "${insertString}\n" separator
+        } else {
+            $tw mark set insertPos  "$topleft"
+            if {$ranges != ""} {
+                eval $tw delete $ranges
+                $tw yview scroll 1 units
+            }
+            $tw yview scroll -1 pages
+            $tw insert insertPos "${insertString}\n" separator
+        }
+        $tw conf -state disabled
+    } else {
+        $w.main.text yview scroll $dir pages;
+    }
+}
+
+#
+# Highlight the next link. Return "" if no next link on the current page.
+# In that case, if the cursor text is not currently visible on the screen,
+# remove it everywhere.
+#
+proc tkiNextLink { w direction } {
+    set tw $w.main.text
+    set geom [_tkiWinVisibleInfo $tw]
+    set top [lindex $geom 0]
+    set bottom [lindex $geom 1]
+    
+    set cursorranges [$tw tag ranges cursor]
+    if { $cursorranges == ""} {
+        set cursorStart "end"
+        set cursorEnd "1.0"
+    } else {
+        set cursorStart [lindex $cursorranges 0]
+        set cursorEnd [lindex $cursorranges 1]
+    }
+    if { $direction == "forw" } {
+        if { [$tw compare $top < $cursorEnd] } {
+            if { [$tw compare $bottom >= $cursorEnd] } {
+                set start $cursorEnd
+            } else {
+                set start $top
+            }
+        } else {
+            set start $top
+        }
+        
+        set menu [$tw tag nextrange menukey $start $bottom]
+        set cross [$tw tag nextrange xrefkey $start $bottom]
+        if { $menu == "" } {
+            set link $cross
+        } elseif { $cross == "" } {
+            set link $menu
+        } elseif { [lindex $cross 0] < [lindex $menu 0] } {
+            set link $cross
+        } else {
+            set link $menu
+        }
+    } else {
+        if { [$tw compare $top <= $cursorStart] } {
+            if { [$tw compare $bottom > $cursorStart] } {
+                set start $cursorStart
+            } else {
+                set start $bottom
+            }
+        } else {
+            set start $bottom
+        }
+
+        set menu [_tkiprevrange $tw menukey $start $top]
+        set xref [_tkiprevrange $tw xrefkey $start $top]
+        if { $menu == "" } {
+            set link $xref
+        } elseif { $xref == "" } {
+            set link $menu
+        } elseif { [lindex $xref 0] > [lindex $menu 0] } {
+            set link $xref
+        } else {
+            set link $menu
+        }
+    }
+    if { $link == "" } {
+        if { [$tw compare $top > $cursorEnd] || [$tw compare $bottom <= $cursorStart] } {
+            $tw tag remove cursor $cursorStart $cursorEnd
+        }
+        return ""
+    }
+    $tw tag remove cursor $cursorStart $cursorEnd
+    $tw tag add cursor [lindex $link 0] [lindex $link 1]
+    $tw tag raise cursor
+    return 1
+}
+
+
+# Return the info node corresponding to the highlighted link
+proc tkiCursorLink { w } {
+    upvar #0 $w wvars
+
+    set tw $w.main.text
+    set cursorranges [$tw tag ranges cursor]
+    if { $cursorranges == ""} {
+        return ""
+    } else {
+        set cursorStart [lindex $cursorranges 0]
+    }    
+    set taglist [$tw tag names $cursorStart]
+    set length [llength $taglist]
+    set tagindex ""
+    foreach tag $taglist {
+        if [regexp {^menu([0-9]+)} $tag dummy tagindex] {
+            set wvars(cursorInfo) [list "menu" $tagindex]
+            return [lindex [lindex $wvars(menuinfo) $tagindex] 2]
+        } elseif [regexp {^xref([0-9]+)} $tag dummy tagindex] {
+            set wvars(cursorInfo) [list "xref" $tagindex]
+            return [lindex [lindex $wvars(xrefinfo) $tagindex] 1]
+        }
+    }
+    return ""
+}
+proc tkiHighlightCursor { w cursorInfo } {
+    upvar #0 $w wvars
+
+    if { $cursorInfo == "" } {
+        return
+    }
+
+    set tw $w.main.text
+    set type [lindex $cursorInfo 0]
+    set index [lindex $cursorInfo 1]
+    set ranges [$tw tag ranges "${type}key"]
+    set start [lindex $ranges [expr 2 * $index ]]
+    set end [lindex $ranges [expr 1+ 2 * $index ]]
+    set cursorranges [$tw tag ranges cursor]
+    if { $cursorranges != "" } {
+        eval $tw tag remove cursor $cursorranges
+    }
+    $tw tag add cursor $start $end
+    $tw tag raise cursor
+}
+proc tkiSetCursor { w cursorInfo } {
+    upvar #0 $w wvars
+
+    tkiHighlightCursor $w $cursorInfo
+    set wvars(cursorInfo) $cursorInfo
+}
+
+# Find the logical successor of the node displayed in window w.
+
+proc _tkiLogicalNext { w } {
+    global tki; upvar #0 $w wvars
+
+    if { [info exist wvars(menuinfo)]
+         && ![string match "*Index" [lindex $wvars(nodeinfo) 1]] } {
+        return [lindex [lindex $wvars(menuinfo) 0] 2 ]
+    } else {
+        set next [lindex $wvars(nodeinfo) 5]
+        set up [lindex $wvars(nodeinfo) 3]
+        if { $next != "" && $next != $up } {
+            return $next
+        } else {
+            while { $up != "" } {
+                set upNodeRef [tkiGetNodeRef $up $wvars(fileKey) "" $wvars(lastDir)]
+                set upNodeInfo [lindex $tki(nodesinfo-[lindex $upNodeRef 1]) [lindex $upNodeRef 0]]
+                set upNext [lindex $upNodeInfo 5]
+                if { $upNext != ""} {
+                    return $upNext
+                } else {
+                    set up [lindex $upNodeInfo 3]
+                }
+            }
+            return ""
+        }
+    }
+}
+
+
+# Find the logical predecessor of the node displayed in window w.
+proc _tkiLogicalPrev { w } {
+    global tki; upvar #0 $w wvars
+
+    set prev [lindex $wvars(nodeinfo) 4]
+    set up [lindex $wvars(nodeinfo) 3]
+    if { $prev == "" && $up == "" } {
+        return ""
+    }
+    if { $prev == "" || $prev == $up } { 
+        return $up
+    }
+    set node $prev
+    set fileKey $wvars(fileKey)
+    while 1 {
+        set nodeRef [tkiGetNodeRef $node $fileKey "" $wvars(lastDir)]
+        set nodeIdx [lindex $nodeRef 0]
+        set fileKey [lindex $nodeRef 1]
+        if { ![info exist tki(menuinfo-$fileKey-$nodeIdx) ] } {
+            return $node
+        }
+        set nodeMenu $tki(menuinfo-$fileKey-$nodeIdx)
+        set lastEntry [lindex $nodeMenu end]
+        set node [lindex $lastEntry 2]
+    }
+}
+
+#
+# Utility function for turning the "-acc" options from
+# menus into actual bindings.
+# Traverse {menu}, and install accelerators onto {winSpec}.
+# {winSpec} may be a list of windows.  {menu} may be a menu, a
+# menu button, or a frame containing menu buttons.
+# Accelerator sequences may be any sequence of "normal" characters,
+# or a normal char prefixed by "^" for Control.
+# This code is cut&pasted from "tkgraph/lib/topwin.tcl topWin.BindAccels()".
+#
+
+proc _tkiBindAccels { winSpec menu } {
+    switch [winfo class $menu] {
+      Frame {
+	foreach submenu [winfo children $menu] {
+	    _tkiBindAccels $winSpec $submenu
+	}
+      }
+      Menubutton {
+	_tkiBindAccels $winSpec [lindex [$menu conf -menu] 4]
+      }
+      Menu {
+	set lastIdx [$menu index last]
+        if { $lastIdx == "none" } { return }
+	for {set idx 0} {$idx <= $lastIdx} {incr idx} {
+	    if [catch {$menu entryconf $idx -acc} acc] continue
+	    set acc [lindex $acc 4]
+	    if { $acc != "" && $acc != "==>" } {
+		regsub -all "\\^(.)" $acc "<Control-\\1>" acc
+		regsub -all "<(.)>" $acc "<Key-\\1>" acc
+		foreach win $winSpec {
+                   bind $win $acc "[$menu entrycget $idx -command] ;break"
+		}
+	    }
+	    if { ! [catch {$menu entryconf $idx -menu} submenu] } {
+		set submenu [lindex $submenu 4]
+		if { $submenu != "" } {
+		    _tkiBindAccels $winSpec $submenu
+		}
+	    }
+	}
+      }
+    }
+}
+proc _tkiWinBind { w } {
+    global tki tkiEmbed;
+    
+    set tw $w.main.text
+    _tkiBindAccels "$w.main.text" $w.bar
+    foreach win "$w.main.text" {
+        # Caution: Don't bind the keysyms SunPageDown and SunFind: it will
+        # break on Win95.
+        bind $win <Key-Help>    {tkiWinShow {(builtin)Quick Help} {} {Docs}
+                                 break}
+        bind $win <Key-F1>      {tkiWinShow {(builtin)Quick Help} {} {Docs}
+                                 break}
+	bind $win <Key-1>	"_tkiWinAction $w menu 0"
+	bind $win <Key-2>	"_tkiWinAction $w menu 1"
+	bind $win <Key-3>	"_tkiWinAction $w menu 2"
+	bind $win <Key-4>	"_tkiWinAction $w menu 3"
+	bind $win <Key-5>	"_tkiWinAction $w menu 4"
+	bind $win <Key-6>	"_tkiWinAction $w menu 5"
+	bind $win <Key-7>	"_tkiWinAction $w menu 6"
+	bind $win <Key-8>	"_tkiWinAction $w menu 7"
+	bind $win <Key-9>	"_tkiWinAction $w menu 8"
+	bind $win <Control-Key-1>	"_tkiWinAction $w othermenu 0;break"
+	bind $win <Control-Key-2>	"_tkiWinAction $w othermenu 1;break"
+	bind $win <Control-Key-3>	"_tkiWinAction $w othermenu 2;break"
+	bind $win <Control-Key-4>	"_tkiWinAction $w othermenu 3;break"
+	bind $win <Control-Key-5>	"_tkiWinAction $w othermenu 4;break"
+	bind $win <Control-Key-6>	"_tkiWinAction $w othermenu 5;break"
+	bind $win <Control-Key-7>	"_tkiWinAction $w othermenu 6;break"
+	bind $win <Control-Key-8>	"_tkiWinAction $w othermenu 7;break"
+	bind $win <Control-Key-9>	"_tkiWinAction $w othermenu 8;break"
+	bind $win <Key-space>		"_tkiWinAction $w scroll forw"
+	bind $win <Control-Key-f>	"_tkiWinAction $w scroll forw"
+	bind $win \}                   "_tkiWinAction $w scroll forw"
+	bind $win <Control-Key-d>	"return"
+	bind $win <Control-Key-v>	"_tkiWinAction $w scroll forw
+                                         break"
+        bind $win <Key-Next>            "_tkiWinAction $w scroll forw
+                                         break"
+        # PgDn on Sun Keypads:
+	bind $win <Key-F35>		"_tkiWinAction $w scroll forw"
+	bind $win <Key-Delete>		"_tkiWinAction $w scroll back
+                                         break"
+        bind $win <Key-Prior>           "_tkiWinAction $w scroll back
+                                         break"
+	bind $win <Key-BackSpace>	"_tkiWinAction $w scroll back
+                                         break"
+	bind $win <Control-Key-b>	"_tkiWinAction $w scroll back"
+	bind $win <Alt-Key-v>		"_tkiWinAction $w scroll back"
+	bind $win \{			"_tkiWinAction $w scroll back"
+	bind $win <Meta-Key-v>		"_tkiWinAction $w scroll back"
+        bind $win "<Key-Escape> v"      "_tkiWinAction $w scroll back"
+        # PgUp on Sun Keypads:
+	bind $win <Key-F29>		"_tkiWinAction $w scroll back"
+        bind $win <Key-less>            "_tkiWinAction $w scroll top"
+        bind $win <Key-b>               "_tkiWinAction $w scroll top"
+        bind $win <Key-Home>            "_tkiWinAction $w scroll top
+                                         break"
+        # Home on Sun Keypads:
+        bind $win <Key-F27>             "_tkiWinAction $w scroll top
+                                         break"
+        bind $win <Key-End>             "_tkiWinAction $w scroll bottom 
+                                         break"
+        # End on Sun Keypads:
+        bind $win <Key-F33>             "_tkiWinAction $w scroll bottom 
+                                         break"
+        bind $win <Key-greater>         "_tkiWinAction $w scroll bottom"
+        bind $win <Key-G>               "_tkiWinAction $w scroll bottom"
+        bind $win <Key-e>               "_tkiWinAction $w scroll bottom"
+        bind $win <Control-Key-m>       "_tkiWinAction $w scroll menu"
+        bind $win <Key-j>               "_tkiWinAction $w scroll lineup"
+        bind $win <Key-Down>            "_tkiWinAction $w scroll lineup
+                                         break"
+        bind $win <Key-Right>           "_tkiWinAction $w scroll lineup
+                                         break"
+        bind $win <Control-Key-n>       "_tkiWinAction $w scroll lineup
+                                         break"
+        bind $win <Key-k>               "_tkiWinAction $w scroll linedown"
+        bind $win <Control-Key-p>       "_tkiWinAction $w scroll linedown
+                                         break"
+        bind $win <Key-Up>              "_tkiWinAction $w scroll linedown
+                                         break"
+        bind $win <Key-Left> 	        "_tkiWinAction $w scroll linedown
+                                         break"
+        bind $win <Alt-Key-Left>        "_tkiWinAction $w last; break"
+        bind $win <Meta-Key-Left>       "_tkiWinAction $w last; break"
+        bind $win <Key-C>               "_tkiWinAction $w quit; break"
+        if { ![info exists tkiEmbed] } {
+            bind $win <Key-Q>               "exit"
+        }
+        bind $win <Key-Tab>             "_tkiWinAction $w nextlink forw;break"
+        bind $win <Control-Key-Tab>     "_tkiWinAction $w nextlink back;break"
+        bind $win <Shift-Key-Tab>       "_tkiWinAction $w nextlink back;break"
+        bind $win <Meta-Key-Tab>        "_tkiWinAction $w nextlink back;break"
+        bind $win <Alt-Key-Tab>         "_tkiWinAction $w nextlink back;break"
+	bind $win (		        "_tkiWinAction $w goto ("
+        bind $win <Key-Return>          "_tkiWinAction $w followlink; break"
+        bind $win <Key-KP_Enter>        "_tkiWinAction $w followlink; break"
+        bind $win <Control-Key-Return>  "_tkiWinAction $w followlink new;break"
+        bind $win <Control-Key-KP_Enter> "_tkiWinAction $w followlink new;break"
+        bind $win <Control-Key-c>       "tkiInterrupt"
+        bind $win <Control-Key-g>       "tkiInterrupt"
+        bind $win <Button-3>  "_tkiButton3 $w; break"
+        bind $win <Button-2> "_tkiButton2 $w"
+        bind $win <ButtonRelease-2> "_tkiButtonRelease2main $w"
+
+        # This is really ugly but I don't know how else to prohibit
+        # the key "Alt-f" (used to access the menu bar) from executing
+        # the script associated with "f" -- A.B.
+        bind $win <Control-Key-l>       "return"
+        bind $win <Alt-F1>              "return"
+        bind $win <Meta-F1>             "return"
+        bind $win <Alt-f>               "return"
+        bind $win <Meta-f>              "return"
+        bind $win <Alt-d>               "return"
+        bind $win <Meta-d>              "return"
+        bind $win <Alt-n>               "return"
+        bind $win <Meta-n>              "return"
+        bind $win <Alt-s>               "return"
+        bind $win <Meta-s>              "return"
+        bind $win <Alt-o>               "return"
+        bind $win <Meta-o>              "return"
+        bind $win <Alt-h>               "return"
+        bind $win <Meta-h>              "return"
+        bind $win <Alt-p>               "return"
+        bind $win <Meta-p>              "return"                         
+    }
+    focus $w.main.text
+}
+
+#
+# Functions to be bound to mouse events
+#
+
+proc _tkiButton2 {w} {
+    global tki; upvar #0 $w wvars
+
+    if { [$w.main.text cget -cursor] == $tki(normCursor) } {
+        $w.main.text configure -cursor $tki(handCursor)
+    }
+    if { $wvars(scrollForwardHitBottom) } {
+        set wvars(scrollForwardHitBottom) 0
+    }
+    if { $wvars(scrollBackwardHitTop) } {
+        set wvars(scrollBackwardHitTop) 0
+    }
+}
+
+proc _tkiButton3 {w} {
+    global tki
+    if {$tki(breakBindings) == 0} {
+        _tkiWinAction $w transientmenu
+    }
+    set tki(breakBindings) 0
+}
+
+proc _tkiButtonRelease2main {w} {
+    global tki
+    
+    tkiStatusUpdate $w
+    tkiScrollUpdate $w
+    if { [$w.main.text cget -cursor] == $tki(handCursor) } {
+        $w.main.text configure -cursor $tki(normCursor)
+    }
+}
+
+proc _tkiLeaveLink {tw} {
+    global tki
+    if { [$tw cget -cursor] == $tki(linkCursor) } {
+        $tw configure -cursor $tki(normCursor)
+    }
+}
+
+proc _tkiButtonRelease2 {w y idx toNode fileKey type} {
+    global tki
+    if {abs($y - $tki(y)) < 7} {
+        tkiSetCursor $w [list $type $idx]
+        _tkiWinAction $w newwin [list $toNode $fileKey]
+    }
+}
+
+proc _tkiShiftButtonRelease1 {w idx toNode fileKey type} {
+    tkiSetCursor $w [list $type $idx]
+    _tkiWinAction $w newwin [list $toNode $fileKey]
+}
+
+proc _tkiButtonRelease3 {w idx toNode fileKey type} {
+    tkiSetCursor $w [list $type $idx]
+    _tkiWinAction $w redirect [list $toNode $fileKey]
+}
+
+proc _tkiButtonRelease1 {w x y idx toNode fileKey type} {
+    global tki
+    if {abs($x - $tki(x)) + abs($y - $tki(y)) < 8} {
+        tkiSetCursor $w [list $type $idx]
+        tkiWinShow $toNode $fileKey $w
+    }
+}
+
+# Bind to mouse events for the action buttons. This removes the use of
+# and dependency on internal Tk procedure names like tkButtonDown
+# (before tk8.4) or tk::ButtonDown (starting with tk8.4).
+proc _tkiBindToButton {w b op {op2 ""} {op3 ""}} {
+    if {$op3 == ""} {
+      set op3 "$op redirect"
+    }
+    if {$op2 == ""} {
+      set op2 "$op other"
+    }
+    set press [bind Button <Button-1>]
+    set release [bind Button <ButtonRelease-1>]
+
+    bind $b <Button-1> "$press; break"
+    bind $b <ButtonRelease-1> "$release; _tkiWinAction $w $op;break"
+    bind $b <Button-2> "$press; break"
+    bind $b <ButtonRelease-2> "$release; _tkiWinAction $w $op2; break"
+    bind $b <Shift-Button-1> "$press; break"
+    bind $b <Shift-ButtonRelease-1> "$release; _tkiWinAction $w $op2; break"
+    bind $b <Control-Button-1> "$press; break"
+    bind $b <Control-ButtonRelease-1> "$release; _tkiWinAction $w $op2; break"
+    bind $b <Button-3> "$press; break"
+    bind $b <ButtonRelease-3> "$release; _tkiWinAction $w $op3; break"
+}
+
+
+#
+# Make a new toplevel info window (with class ``TkInfo''),
+# filled with buttons and bindings.
+#
+# If the argument {w} is non-empty, it specifies either the path name
+# of the info window to create (if {w} doesn't already exist),
+# or the parent of the info window to create (if {w} does already exist).
+# It is an error for both {w} and {w}'s parent to not exist.
+# If {w} is empty, the info window will be created as a child of the
+# root window.
+#
+# If given, {tag} is some text that will appear in the window title and
+# icon title.
+#
+# The path name of the new info window will be returned.
+#
+
+proc tkiWinCreate { {w ""} {tag ""} } {
+    global tki balloonHelp tk_version tkiEmbed
+
+    if { $w == "" || [winfo exist $w] } {
+	if { $w != "" && [winfo class $w] == "TkInfo" } {
+	    # This check isn't strictly required, but it helps catch
+	    # problems with Tk's multi-phase window destruction process.
+	    error "Can't nest TkInfo windows."
+	}
+	set parent $w
+	while 1 {
+	    # I think (but I dont really remember) that I use [winfo parent]
+	    # here instead of [winfo exist] b/c multi-phase destroy.
+	    set w $parent.tki[tkiGetSN]
+	    if { [catch {winfo parent $w}] } break
+	}
+    }
+    lappend tki(windows) $w
+    upvar #0 $w wvars
+    set wvars(nodeinfo) ""
+    set wvars(nodeSpec) ""
+    set wvars(fileKey) ""
+    set wvars(infonodename) "(builtin)Top"
+    set wvars(lastDir) $tki(lastDir)
+    set wvars(gotoStr) ""
+    set wvars(promptmode) ""
+    set wvars(searchStr) ""
+    set wvars(statusPermanent) 0
+    set wvars(oldStatus) ""
+    set wvars(indexInfoFileKey) ""
+    set wvars(noLastInfoUpdate) 0
+    set wvars(redirectWindow) ""
+    set wvars(searchOriginFileKey) ""
+    set wvars(searchOriginNodeIdx) ""
+    set wvars(promptHistory) $tki(promptHistory)
+    set wvars(lastNodes) $tki(lastNodes)
+    set wvars(history) $tki(history)
+    set wvars(title) [expr {( $tag == "") ? "tkInfo" : "tkInfo:$tag"}]
+
+    toplevel $w -class TkInfo
+    wm title $w $wvars(title)
+    wm iconname $w $wvars(title)
+    wm protocol $w WM_DELETE_WINDOW "_tkiWinAction $w quit"
+    # iconbitmap only accepts xbm files, but xman.xpm is a pixmap.
+    # wm iconbitmap $w "@xman.xpm"
+    
+    set dd $w.bar; pack [frame $dd -borderwidth 2 -relief raised] \
+      -side top -fill x
+
+    set ddm $dd.file.m
+    pack [menubutton $dd.file -text "File" -und 0 -menu $ddm] -side left
+    # tk4.0 doesn't know tear-off menus:
+    if {$tk_version > 4.0} {
+        if {$tk_version < 8} {
+            menu $ddm -tearoffcommand "_tkiMenuTearOff $w"
+        } else {
+            menu $ddm
+        }
+    } else {
+        menu $ddm -tearoff 0
+    }
+    $ddm add com -lab "Directory" -und 0 -acc d -command "_tkiWinAction $w dir"
+    $ddm add com -lab "Go to File/Node... " -und 0 -acc g -command "_tkiWinAction $w goto"
+    $ddm add com -lab "New Window " -und 0 -acc N -command "_tkiWinAction $w newwin"
+    $ddm add com -lab "Man Page..." -und 0 -acc M -command "_tkiWinAction $w manual"
+    $ddm add com -lab "Apropos..." -und 0 -acc A -command "_tkiWinAction $w manual apropos"
+    $ddm add com -lab "Tcl Cmd..." -und 0 -acc ! -command "_tkiWinAction $w tclcmd"
+    $ddm add sep
+    $ddm add com -lab "Close Window" -und 0 -acc c -command "_tkiWinAction $w quit"
+
+    if { ![info exists tkiEmbed] } {
+        $ddm add com -lab "Quit TkInfo" -und 0 -acc q -command "exit"
+    }
+
+    if { [llength $tki(dirs)] > 1 } {
+        set ddd $dd.dirs.m
+        pack [menubutton $dd.dirs -text "Directories" -und 0 -menu $ddd] -side left
+        menu $ddd
+        foreach pp $tki(dirs) {
+            $ddd add com -label "   $pp" \
+                    -command [list _tkiWinAction $w dir $pp]
+        }
+    }
+    set ddm $dd.node.m
+    pack [menubutton $dd.node -text "Node" -und 0 -menu $ddm] -side left
+    if {$tk_version > 4.0} {
+        if {$tk_version < 8} {
+            menu $ddm -tearoffcommand "_tkiMenuTearOff $w"
+        } else {
+            menu $ddm
+        }
+    } else {
+        menu $ddm -tearoff 0
+    }
+    $ddm add com -lab "Next Section" -und 0 -acc n -command "_tkiWinAction $w next"
+    $ddm add com -lab "Previous Section  " -und 0 -acc p -command "_tkiWinAction $w prev"
+    $ddm add com -lab "Up" -und 0 -acc u -command "_tkiWinAction $w up"
+    $ddm add com -lab "Back to Last" -und 8 -acc l -command "_tkiWinAction $w last"
+    $ddm add com -lab "Successor" -und 0 -acc \] -command "_tkiWinAction $w successor forw"
+    $ddm add com -lab "Predecessor" -und 1 -acc \[ -command "_tkiWinAction $w successor back"
+    $ddm add com -lab "Top" -und 0 -acc t -command "_tkiWinAction $w top"
+    $ddm add com -lab "Menu entry..." -und 0 -acc m -command "_tkiWinAction $w menu"
+    $ddm add com -lab "Crossreference... " -und 7 -acc f -command "_tkiWinAction $w xref"
+
+
+    set ddm $dd.search.m
+    pack [menubutton $dd.search -text "Search" -und 0 -menu $ddm] -side left
+    if {$tk_version > 4.0} {
+        if {$tk_version < 8} {
+            menu $ddm -tearoffcommand "_tkiMenuTearOff $w"
+        } else {
+            menu $ddm
+        }
+    } else {
+        menu $ddm -tearoff 0
+    }
+    $ddm add com -lab "Index lookup (substring)... " -und 0 -acc i \
+      -command "_tkiWinAction $w indexlookup"
+    $ddm add com -lab "Continue index lookup" -acc , \
+      -command "_tkiWinAction $w indexnext"
+    $ddm add com -lab "Exact forward search... " -und 0 -acc s \
+      -command "_tkiWinAction $w search forwExact"
+    $ddm add com -lab "Regexp forward search... " -und 0 -acc / \
+      -command "_tkiWinAction $w search forwRegexp"
+    $ddm add com -lab "Continue forward search" -und 0 -acc ^s \
+      -command "_tkiWinAction $w search forwIncr"
+    $ddm add com -lab "Exact backward search... " -und 6 -acc r \
+      -command "_tkiWinAction $w search backExact"
+    $ddm add com -lab "Regexp backward search... " -und 8 -acc "\\" \
+      -command "_tkiWinAction $w search backRegexp"
+    $ddm add com -lab "Continue backward search" -acc ^r \
+      -command "_tkiWinAction $w search backIncr"
+
+    set ddm $dd.history.m 
+    pack [menubutton $dd.history -text "History" -und 0 -menu $ddm] -side left
+    if {$tk_version > 4.0} {
+        if {$tk_version < 8} {
+            menu $ddm -tearoffcommand "_tkiMenuTearOff $w"
+        } else {
+            menu $ddm
+        }
+    } else {
+        menu $ddm -tearoff 0
+    }
+    set wvars(historyMenus) [list $ddm]
+    _tkiCreateHistory $w $wvars(history)
+
+    set ddm $dd.options.m
+    pack [menubutton $dd.options -text "Options" -und 0 -menu $ddm] -side left
+    menu $ddm -disabledforeground [ $dd.search.m cget -foreground ]
+    if {$tk_version > 4.0} {
+        if {$tk_version < 8} {
+            $ddm conf -tearoffcommand "_tkiMenuTearOff $w"
+        }
+    } else {
+        $ddm conf -tearoff 0
+    }
+    $ddm add check -lab "Show info headers" -und 10 -var tki(rawHeadersB)
+    $ddm add check -lab "Show buttons" -und 5 -var tki(showButtonsB)
+    $ddm add check -lab "Balloon help" -und 4 -var tki(showBalloonsB)
+    $ddm add check -lab "Scroll at bottom goes to successor" -und 4 -var tki(scrollThroughB)
+    $ddm add check -lab "Scrolling inserts page separators" -und 5 -var tki(pageSepB)
+    $ddm add check -lab "Show directory of node" -und 5 -var tki(showDirB)
+    $ddm add check -lab "Time Status" -und 0 -var tki(timestatusB)
+    $ddm add sep
+    $ddm add com -lab "Link Highlighting:" -state disabled
+    $ddm add radio -lab "Color" -und 0     -var tki(linklook) -val color
+    $ddm add radio -lab "Font" -und 0      -var tki(linklook) -val font
+    $ddm add radio -lab "Underline" -und 0 -var tki(linklook) -val underline
+
+    set ddm $dd.help.m
+    # We use -after so that the Help menu doesn't disappear when window
+    # is shrunk:
+    pack [menubutton $dd.help -text "Help" -und 3 -menu $ddm] -side right -after $dd.file
+    if {$tk_version > 4.0} {
+        if {$tk_version < 8} {
+            menu $ddm -tearoffcommand "_tkiMenuTearOff $w"
+        } else {
+            menu $ddm
+        }
+    } else {
+        menu $ddm -tearoff 0
+    }
+    $ddm add com -lab "Quick Help" -und 0 -acc ? \
+            -command [list tkiWinShow {(builtin)Quick Help} {} {Docs}]
+    $ddm add com -lab "Documentation " -und 0 -acc h \
+            -command [list tkiWinShow {(builtin)Top} {} {Docs}]
+    $ddm add sep
+    $ddm add com -lab "About tkInfo" -und 0 \
+            -command [list tkiWinShow {(builtin)About} {} {Docs}]
+
+
+    # We want to be able to access the menubar with Meta as well as with Alt:
+    bind $w <Meta-Key> [bind all <Alt-Key>]
+
+    # The transient menu that appears when Button-3 is pressed:
+    set wtm $w.transientmenu
+    menu $wtm -tearoff 0
+    # This appears to be necessary to circumvent a bug in Tk4.0.
+    # Let's hope that it doesn't break anything else... (A.B.)
+    if {$tk_version == 4.0} {
+        global tkPriv
+        set tkPriv(oldGrab) ""
+    }
+    bind $wtm <Unmap> "focus -force $w.main.text"
+    bind $wtm <Button-1> "break"
+    bind $wtm <Button-2> "break"
+    $wtm add com -lab "Logical Successor" -acc \] -command "_tkiWinAction $w successor forw"
+    # $wtm add com -lab "Logical Predecessor" -command "_tkiWinAction $w successor back"
+    $wtm add com -lab "Back to Last Node  " -acc l -command "_tkiWinAction $w last"
+    $wtm add com -lab "Next Section" -acc n -command "_tkiWinAction $w next"
+    # $wtm add com -lab "Previous Section" -acc p -command "_tkiWinAction $w prev"
+    $wtm add com -lab "Up" -acc u -command "_tkiWinAction $w up"
+    $wtm add com -lab "Index Lookup" -acc i -command "_tkiWinAction $w indexlookup"
+    $wtm add com -lab "New Window" -acc N -command "_tkiWinAction $w newwin"
+
+    set dd $w.main
+    pack [frame $dd] -expand 1 -fill both
+    pack [scrollbar $dd.vsb -orient vert -command "$dd.text yview"] \
+            -side right -fill both
+    pack [text $dd.text -state disabled -setgrid 1 -width 80 -wrap word] \
+            -side left -expand 1 -fill both
+    $dd.text conf -yscroll "$dd.vsb set"
+    bind $dd.vsb <Any-Button> "tkiStatusUpdate $w; tkiScrollUpdate $w"
+
+    # We use "-after $w.bar" here so that the status line won't disappear
+    # upon resizing of the window:
+    set dd $w.s
+    pack [frame $dd] -after $w.bar -side bottom -fill x
+    pack [label $dd.filename -text "            " -rel sunken -padx 5 -pady 3] -side left
+    pack [label $dd.status -anc w -rel sunken -padx 5 -pady 3 -width 8] \
+            -side left -fill x -expand 1
+    entry $dd.input -width 7 -rel sunken
+    checkbutton $dd.regexp -width 8 -text "Regexp" -var ${w}(searchRegexpB)
+    checkbutton $dd.case -width 8 -text "Case Sen" -var ${w}(searchCaseB)
+    checkbutton $dd.back -width 8 -text "Backward" -var ${w}(searchBackB)
+    radiobutton $dd.man -width 8 -text "Man page" -var ${w}(manB) -value 1
+    radiobutton $dd.apropos -width 8 -text "Apropos" -var ${w}(manB) -value 0
+    bind $dd.input <Return> "_tkiWinPromptOk $w"
+    bind $dd.input <Escape> "_tkiWinPromptAbort $w"
+    bind $dd.input <Any-Control-g> "_tkiWinPromptAbort $w"
+    bind $dd.input <Control-u> "$dd.input delete 0 end"
+    bind $dd.input <Key-Up> "_tkiWinPromptScroll $w up"
+    bind $dd.input <Meta-Key-p> "_tkiWinPromptScroll $w up; break"
+    bind $dd.input <Alt-Key-p> "_tkiWinPromptScroll $w up; break"
+    bind $dd.input <Control-Key-p> "_tkiWinPromptScroll $w up; break"
+    bind $dd.input <Key-Down> "_tkiWinPromptScroll $w down"
+    bind $dd.input <Control-Key-n> "_tkiWinPromptScroll $w down; break"
+    bind $dd.input <Meta-Key-n> "_tkiWinPromptScroll $w down; break"
+    bind $dd.input <Alt-Key-n> "_tkiWinPromptScroll $w down; break"
+
+    set dd $w.buts; frame $dd
+    if { $tki(showButtonsB) } { pack $dd -after $w.s -side top -fill x }
+
+    pack [button $dd.next -width 2 -text "Next"] \
+            -side left -expand 1 -fill both
+    bindtags $dd.next [list balloon $dd.next Button all]
+    _tkiBindToButton $w $dd.next next
+
+    pack [button $dd.prev -width 2 -text "Previous"] \
+            -side left -expand 1 -fill both
+    bindtags $dd.prev [list balloon $dd.prev Button all]
+    _tkiBindToButton $w $dd.prev prev
+    
+    pack [button $dd.up -width 2 -text "Up"] \
+            -side left -expand 1 -fill both
+    bindtags $dd.up [list balloon $dd.up Button all]
+    _tkiBindToButton $w $dd.up up
+
+    pack [button $dd.last -width 2 -text "Last"] \
+            -side left -expand 1 -fill both
+    bindtags $dd.last [list balloon $dd.last Button all]
+    _tkiBindToButton $w $dd.last last
+
+    pack [button $dd.top -width 2 -text "Top"] \
+            -side left -expand 1 -fill both
+    bindtags $dd.top [list balloon $dd.top Button all]
+    set balloonHelp($dd.top) "Go to this info file's
+topmost info node which
+has the table of contents."
+    _tkiBindToButton $w $dd.top top
+
+    pack [button $dd.dir  -width 2 -text "Dir"] \
+            -side left -expand 1 -fill both
+    bindtags $dd.dir [list balloon $dd.dir Button all]
+    set balloonHelp($dd.dir) "Go to directory
+node which lists
+all info files."
+    _tkiBindToButton $w $dd.dir dir otherdir "otherdir redirect"
+    
+    _tkiWinBind $w
+
+    #frame $w.main.text.sep -borderwidth 1 -relief sunken -width 150 -height 2
+
+    # Fix display styles for search matches and highlighted links.
+    set tw $w.main.text
+ 
+    case $tki(searchlook) {
+        inverse {
+          $tw tag conf searchkey -foreground [lindex [$tw conf -background] 4] \
+                  -background [lindex [$tw conf -foreground] 4]
+        }
+        color {
+          $tw tag conf searchkey -foreground $tki(searchColor)
+        }
+        font {
+          $tw tag conf searchkey -font $tki(searchFont)
+        }
+    }
+
+    case $tki(highlight) {
+        inverse {
+            if { $tki(linklook) == "color" } {
+                $tw tag conf cursor \
+                        -foreground [lindex [$tw conf -background] 4] \
+                        -background $tki(linklookColor)
+            } else {
+                $tw tag conf cursor \
+                        -foreground [lindex [$tw conf -background] 4] \
+                        -background [lindex [$tw conf -foreground] 4]
+            }
+        }
+        color {
+            $tw tag conf cursor -foreground $tki(highlightColor)
+        }
+        font {
+            $tw tag conf cursor -font $tki(highlightFont)
+        }
+    }
+
+    set tki(curWindow) $w
+    wm geometry $w $tki(geometry)
+    if { $tki(iconic) == 1 } { 
+        wm iconify $w; set tki(iconic) 0
+    }
+    return $w
+}
+
+#
+# What to do if a menu is torn off; this is not used under Tk8.0 since
+# torn-off menus under Tk8.0 are synchronized automatically.
+#
+proc _tkiMenuTearOff {w menu tornMenu} {
+   case $menu {
+       "*.history.m" {
+           upvar #0 $w wvars
+           lappend wvars(historyMenus) $tornMenu
+       }
+       default {
+           # no entry of a torn off menu should be disabled.
+           set numentries [$tornMenu index end]
+           for {set idx 0} {$idx <= $numentries} {incr idx} {
+               if {[$tornMenu type $idx] == "command"} {
+                   $tornMenu entryconf $idx -state normal
+               }
+           }
+       }
+   }
+   $tornMenu add separator
+   $tornMenu add command -label "Close Menu" -command "destroy $tornMenu"
+}
+
+##############################################################################
+#
+#		Utility functions for updating info windows
+#
+##############################################################################
+
+#
+# Removes all empty lines in window $w starting at index $idx.
+# This is more subtle than one might think.  Note that the text index
+# "+1line" wont work on the last line of text, because the newline is
+# considered part of the previous line.  Thus we use "lineend" instead.
+#
+
+proc _tkiTextTrim { w idx } {
+    while 1 {
+	set nidx [$w index "$idx lineend"]
+	if { [string trim [$w get $idx $nidx]] != "" || [$w index end] == "1.0" } break
+	$w delete $idx "$nidx +1char"
+    }
+}
+
+# Modified version of ouster's version
+proc _tkiTextInsertWithTags { w index text args } {
+    set start [$w index $index]
+    $w insert $start $text
+    foreach tag $args {
+    	$w tag add $tag $start insert
+    }
+}
+
+proc _tkiLinkLookTag { tw tag } {
+    global tki
+    case $tki(linklook) {
+      color { $tw tag conf $tag -fore $tki(linklookColor) }
+      underline { $tw tag conf $tag -underline 1 }
+      font { $tw tag conf $tag -font $tki(linklookFont) }
+    }
+    $tw tag bind $tag <Enter> [list $tw configure -cursor $tki(linkCursor)]
+    $tw tag bind $tag <Leave> "_tkiLeaveLink $tw"
+}
+
+#
+# Add info about the currently displayed node to the window's history
+# list wvars(history) and to the History menu. Return the new history
+# list, but don't change wvars(history). If noadd == 1, then don't
+# change the History menu either. Don't do anything if the currently
+# displayed node is (oldinfo,oldfileKey).
+#
+
+proc _tkiWinHistoryAdd { w oldinfo oldfileKey {noadd 0}} {
+    global tki; upvar #0 $w wvars
+    
+    set fileKey $wvars(fileKey)
+    if { $fileKey == "" } {
+        return $wvars(history)
+    }
+    
+    set nodeinfo $wvars(nodeinfo)
+    
+    if { $fileKey == $oldfileKey && $nodeinfo == $oldinfo } {
+        return $wvars(history)
+    }
+
+    set topline [$w.main.text index @0,0]
+    set cursorInfo $wvars(cursorInfo)
+    set node [lindex $nodeinfo 1]
+    
+    set result [linsert $wvars(history) 0 \
+           [list $wvars(nodeSpec) $node $fileKey $topline $cursorInfo]]
+
+    # Remove doubles:
+    for {set idx 1} {$idx < [llength $result]} {incr idx} {
+        set entry [lindex $result $idx]
+        if {[lindex $entry 1] == $node && [lindex $entry 2] == $fileKey} {
+            set result [lreplace $result $idx $idx]
+            break
+        }
+    }
+    
+    # Cut history list down to appropriate length:
+    if {[llength $result] > $tki(historyLength)} {
+        set result [lreplace $result end end]
+    }
+    
+    if { $noadd == 0 } {
+        _tkiCreateHistory $w $result
+    }
+
+    return $result
+}
+
+#
+# Make a new menu $w.history.m from $list
+#
+proc _tkiCreateHistory { w list } {
+    upvar #0 $w wvars
+    
+    foreach hm $wvars(historyMenus) {
+        if {![winfo exist $hm]} {continue}
+        set end [$hm index end]
+        # Is the menu transient or torn off?
+        if { [$hm cget -tearoff] } {
+            set startidx 1
+        } else {
+            set startidx 0
+        }
+        if { [$hm type end] == "command" && [$hm entrycget end -label] == "Close Menu"} {
+            set endidx [expr $end - 2]
+        } else {
+            set endidx $end
+        }
+        $hm del $startidx $endidx
+        set menuidx [expr $startidx - 1]
+        set idx 0
+        foreach entry $list {
+            incr idx
+            incr menuidx
+            set nodespec [lindex $entry 0]
+            set node [lindex $entry 1]
+            set fileKey [lindex $entry 2]
+            set topline [lindex $entry 3]
+            set cursorInfo [lindex $entry 4]
+            if { $idx < 36 } {
+                if { $idx < 10 } {
+                    set label $idx
+                } else {
+                    set label [format "%c" [expr $idx + 55]]
+                }
+                $hm insert $menuidx command -label "$label  $nodespec" -und 0 \
+                        -command [list _tkiJumpTo $w $node $fileKey $topline $cursorInfo]
+            } else {
+                $hm add command -label "    $nodespec" \
+                        -command [list _tkiJumpTo $w $node $fileKey $topline $cursorInfo]
+            }
+        }
+    }
+}
+
+#
+# Jump to the specified node, to the specified line, and restore the
+# specified cursorInfo
+#
+proc _tkiJumpTo { w node fileKey topline cursorInfo } {
+    tkiWinShow $node $fileKey $w
+    $w.main.text yview $topline
+    tkiHighlightCursor $w $cursorInfo
+}
+
+
+proc tkiWinDpy { w fileKey info body } {
+    global tki balloonHelp; upvar #0 $w wvars
+
+    #add info about last node to history list:
+    set wvars(history) [_tkiWinHistoryAdd $w $info $fileKey]
+
+    #add info about last node to wvars(lastNodes)
+    set wvars(lastNodes) [_tkiLastInfo $w $info $fileKey]
+    
+
+    set wvars(fileKey) $fileKey
+    set wvars(nodeinfo) $info
+    set wvars(lastDir) [file dirname [lindex $tki(fileinfo-$fileKey) 2]]
+    
+    if { $tki(showDirB) == "1" || 
+            ( [llength $tki(dirs)] > 1 && [lindex $info 2] == "dir" )} {
+        set dir $wvars(lastDir)
+        if { $dir == "." } {
+            set dir ""
+        } else {
+            set dir "${dir}/"
+        }
+    } else {
+        set dir ""
+    }
+    set filename [lindex $info 2]
+    # Now strip the suffix:
+    foreach suffix $tki(infoSuffix) {
+        if {$suffix != ""} {
+            set idx [string last $suffix $filename]
+            if { $idx != -1 } {
+                if { [string length $filename] - $idx == [string length $suffix]} {
+                    set filename [string range $filename 0 [expr $idx - 1]]
+                    break
+                }
+            }
+        }
+    }
+    set wvars(nodeSpec) "(${dir}$filename)[lindex $info 1]"
+    
+    set wvars(scrollForwardHitBottom) 0
+    set wvars(scrollBackwardHitTop) 0
+    set wvars(inSearch) 0
+    set wvars(cursorInfo) ""
+    
+    set nodeIdx [lindex $info 0]
+    set nodeName [lindex $info 1]
+    tkiStatus "Formatting $wvars(nodeSpec)..." $w 0
+    set tw $w.main.text
+#    $tw conf -cursor $tki(waitCursor)
+#    $w conf -cursor $tki(waitCursor)
+    set menuidx -1
+    set menuidx [string first "\n* Menu:" $body]
+    if { $menuidx > 0 } {
+        set menutext [string range $body [expr {$menuidx+1}] end]
+        set beforemenu [string range $body 0 $menuidx]
+    }
+
+    $tw conf -state normal
+    $tw delete 1.0 end
+    #
+    # Insert the body text and add the crossref tags
+    #
+    if { $menuidx > 0 } {
+       $tw insert end $beforemenu
+       _tkiTextInsertWithTags $tw end $menutext menu
+    } else {
+       $tw insert end $body
+    }
+    if { [info exist tki(xrefinfo-$fileKey-$nodeIdx)] } {
+	set xrefinfo $tki(xrefinfo-$fileKey-$nodeIdx)
+    } else {
+        set xrefinfo [tkiTimeStatus "Parsing $nodeIdx body" 0 \
+	  tkiNodeParseBody $nodeIdx $fileKey $body]
+    }
+    set ms "1.0"
+    $tw tag delete xrefkey
+    foreach xi $xrefinfo {
+	# xi = { xrefidx toNode startIdx endIdx label}
+	set xrefidx [lindex $xi 0]
+	set toNode [lindex $xi 1]
+        $tw tag add xrefkey "$ms+[lindex $xi 2] c" "$ms +[lindex $xi 3] c"
+        $tw tag add xref$xrefidx "$ms +[lindex $xi 2] c" "$ms +[lindex $xi 3] c"
+        # We memorize the position where a button is pressed; if it is
+        # released far away, we won't enable the associated action 
+        # (chances are, that the user wanted to select or drag)
+        $tw tag bind xref$xrefidx <Button-1> \
+             "set tki(x) %x; set tki(y) %y"
+        $tw tag bind xref$xrefidx <ButtonRelease-1> \
+             [list _tkiButtonRelease1 $w %x %y $xrefidx $toNode $fileKey xref]
+        $tw tag bind xref$xrefidx <Button-2> \
+             "set tki(y) %y"
+        # The next one is really wild... $toNode can contain backslashes and
+        # stuff. I didn't know how to do it more elegantly --A.B.
+        $tw tag bind xref$xrefidx <ButtonRelease-2> \
+             "[list _tkiButtonRelease2 $w %y $xrefidx $toNode $fileKey xref]
+              break"
+        $tw tag bind xref$xrefidx <Shift-ButtonRelease-1> \
+              "[list _tkiShiftButtonRelease1 $w $xrefidx $toNode $fileKey xref]
+               break"
+        $tw tag bind xref$xrefidx <Control-ButtonRelease-1> \
+               "[list _tkiShiftButtonRelease1 $w $xrefidx $toNode $fileKey xref]
+                break"
+        # We need to disable the transient-menu function of button-3
+        # on tags. Simply binding <Button-3> to "break" does not work:
+        # the text widget bindings would still be executed. We use a 
+        # global variable tki(breakBindings): if it is 1, the script
+        # from the text widget binding is not allowed to execute.
+        $tw tag bind xref$xrefidx <Button-3> "set tki(breakBindings) 1"
+        $tw tag bind xref$xrefidx <ButtonRelease-3> \
+                [list _tkiButtonRelease3 $w $xrefidx $toNode $fileKey xref]
+    }
+    _tkiLinkLookTag $tw xrefkey
+
+    set wvars(xrefinfo) $xrefinfo
+
+    _tkiTextTrim $tw 1.0 
+    if { ! $tki(rawHeadersB) } {
+	$tw delete 1.0 "1.0 +1line"
+        _tkiTextTrim $tw 1.0
+    }
+    
+    #
+    # Now add the menu tags
+    #
+    if { [info exist menutext] } {
+        if { [info exist tki(menuinfo-$fileKey-$nodeIdx)] } {
+	  set menuinfo $tki(menuinfo-$fileKey-$nodeIdx)
+        } else {
+          set menuinfo [tkiTimeStatus "Parsing $nodeIdx menu" 0 \
+	    tkiNodeParseMenu $nodeName $nodeIdx $fileKey $body]
+        }
+        $tw tag delete menukey
+        foreach mi $menuinfo {
+	  # mi = { lineidx menuidx toNode nBeg nEnd label }
+	  set lineidx [lindex $mi 0]
+	  set menuidx [lindex $mi 1]
+	  set toNode [lindex $mi 2]
+	  set ms "menu.first +$lineidx lines -2 lines"
+	  $tw tag add menukey "$ms +[lindex $mi 3] c" "$ms +[lindex $mi 4] c +1 c"
+          $tw tag add menu$menuidx "$ms linestart" "$ms +[lindex $mi 4] c +1 c"
+          # We memorize the position where a button is pressed; if it is
+          # released far away, we won't enable the associated action 
+          # (chances are, that the user wanted to select or drag)
+          $tw tag bind menu$menuidx <Button-1> \
+               "set tki(x) %x; set tki(y) %y"
+	  $tw tag bind menu$menuidx <ButtonRelease-1> \
+               [list _tkiButtonRelease1 $w %x %y $menuidx $toNode $fileKey menu]
+          $tw tag bind menu$menuidx <Button-2> \
+               "set tki(y) %y"
+          $tw tag bind menu$menuidx <ButtonRelease-2> \
+               "[list _tkiButtonRelease2 $w %y $menuidx $toNode $fileKey menu]
+                break"
+          $tw tag bind menu$menuidx <Shift-ButtonRelease-1> \
+               "[list _tkiShiftButtonRelease1 $w $menuidx $toNode $fileKey menu]
+                break"
+          $tw tag bind menu$menuidx <Control-ButtonRelease-1> \
+               "[list _tkiShiftButtonRelease1 $w $menuidx $toNode $fileKey menu]
+                break"
+          $tw tag bind menu$menuidx <Button-3> "set tki(breakBindings) 1"
+          $tw tag bind menu$menuidx <ButtonRelease-3> \
+               [list _tkiButtonRelease3 $w $menuidx $toNode $fileKey menu]
+        }
+        _tkiLinkLookTag $tw menukey
+
+	set wvars(menuinfo) $tki(menuinfo-$fileKey-$nodeIdx)
+    } else {
+	catch {unset wvars(menuinfo)}
+    }
+
+    #
+    # Window titles and status messages
+    #
+    $w.s.filename conf -text $wvars(nodeSpec)
+    $w conf -cursor $tki(normCursor)
+    wm title $w "$wvars(title): $wvars(nodeSpec)"
+    wm iconname $w "$wvars(title): $wvars(nodeSpec)"
+
+    #
+    # Disable buttons and menu entries if necessary
+    #
+    set toNode [lindex $info 3]
+    if {$toNode == ""} {
+        $w.buts.up conf -state disabled
+        $w.bar.node.m entryconf Up* -state disabled
+        $w.transientmenu entryconf Up* -state disabled
+    } else {
+        set balloonHelp($w.buts.up) "Go to that info node which
+contains this one as a menu entry.
+That is the node \"$toNode\"."
+        $w.buts.up conf -state normal
+        $w.bar.node.m entryconf Up* -state normal
+        $w.transientmenu entryconf Up* -state normal
+    }
+    set toNode [lindex $info 4]
+    if {$toNode == ""} {
+        $w.buts.prev conf -state disabled
+        $w.bar.node.m entryconf Prev* -state disabled
+        # $w.transientmenu entryconf Prev* -state disabled
+    } else {
+set balloonHelp($w.buts.prev) "Go to previous section on
+the current hierarchical level.
+That is the node \"$toNode\"."
+        $w.buts.prev conf -state normal
+        $w.bar.node.m entryconf Prev* -state normal
+        # $w.transientmenu entryconf Prev* -state normal
+    }
+    set toNode [lindex $info 5]
+    if {$toNode == ""} {
+        $w.buts.next conf -state disabled
+        $w.bar.node.m entryconf Next* -state disabled
+        $w.transientmenu entryconf Next* -state disabled
+    } else {
+set balloonHelp($w.buts.next) "Go to next section on the
+current level, i.e. skip all menu entries.
+That is the node \"$toNode\"."
+        $w.buts.next conf -state normal
+        $w.bar.node.m entryconf Next* -state normal
+        $w.transientmenu entryconf Next* -state normal
+    }
+    
+
+    $w.bar.search.m entryconf "Continue forward search" -state disabled
+    $w.bar.search.m entryconf "Continue backward search" -state disabled
+    $w.bar.search.m entryconf "Continue index lookup" -state disabled
+    if { [llength $wvars(history)] > 0 } {
+        $w.bar.history conf -state normal
+    } else {
+        $w.bar.history conf -state disabled
+    }
+
+    if { [llength $wvars(lastNodes)] >= 1 } {
+        $w.buts.last conf -state normal
+        $w.bar.node.m entryconf "Back*"  -state normal
+        $w.transientmenu entryconf "Back*" -state normal
+        set balloonHelp($w.buts.last) "Go back to the last node
+you visited before coming here.
+That is the node \"[lindex [lindex $wvars(lastNodes) [expr [llength $wvars(lastNodes)] - 1]] 1]\"."
+    } else {
+        $w.buts.last conf -state disabled
+        $w.bar.node.m entryconf "Back*"  -state disabled
+        $w.transientmenu entryconf "Back*" -state disabled
+    }
+    if { $menuidx > 0 } {
+        $w.bar.node.m entryconf "Menu*" -state normal
+    } else {
+        $w.bar.node.m entryconf "Menu*" -state disabled
+    }
+    if { $xrefinfo == "" } {
+        $w.bar.node.m entryconf "Cross*" -state disabled
+    } else {
+        $w.bar.node.m entryconf "Cross*" -state normal
+    }
+    if { [lindex $wvars(nodeinfo) 1] == "Top" } {
+        $w.buts.top conf -state disabled
+        $w.bar.node.m entryconf "Top" -state disabled
+    } else {
+        $w.buts.top conf -state normal
+        $w.bar.node.m entryconf "Top" -state normal
+    }
+    
+    if { [lindex $wvars(nodeinfo) 2] == "dir" } {
+        $w.buts.dir conf -state disabled
+        $w.bar.file.m entryconf "Dir*" -state disabled
+    } else {
+        $w.buts.dir conf -state normal
+        $w.bar.file.m entryconf "Dir*" -state normal
+    }
+    
+    _tkiFindIndices $fileKey [lindex $wvars(nodeinfo) 2]
+    $w.bar.search.m entryconf "Index*" -state normal
+    $w.transientmenu entryconf "Index*" -state normal
+    set infoFileKey $tki(infoFileKey-$wvars(fileKey))
+    if { $infoFileKey == $wvars(indexInfoFileKey) && $wvars(indexEntriesIndex) < [expr [llength $wvars(indexEntries)] - 1 ] } {
+        $w.bar.search.m entryconf "Continue index lookup" -state normal
+    }
+    
+    
+    if { [llength $tki(dirs)] > 1 } {
+        $w.bar.dirs.m del 1 end
+        foreach pp $tki(dirs) {
+            if { $wvars(lastDir) == $pp } {
+                set label "* $pp"
+            } else {
+                set label "   $pp"
+            }
+            $w.bar.dirs.m add com -label $label \
+                    -command [list _tkiWinAction $w dir $pp]
+        }
+    }
+    
+
+    # Clean up the window
+    $tw mark set insert 1.0
+    $tw mark set anchor insert
+    $tw tag remove sel 1.0 end
+    $tw conf -state disabled
+
+    # This is really gross
+    # focus $tw
+    # after 1 [list $tw tag remove sel 1.0 end]
+    
+    tkiStatus "" $w 1
+
+}
+
+##############################################################################
+#
+#	The public interface
+#
+##############################################################################
+
+
+#
+# The argument {w} specified an info window in one of three ways:
+#   - if empty, a new top-level window will be created and returned.
+#   - if a window (starts will a ``.''), the window must exist and must have
+#     been previously obtained using tkiWinCreate() or some variant
+#     of tkiWinShow().
+#   - otherwise it is a "window tag", which is arbitrary text that
+#     must not begin with a ``.''.  Each tag has a unique window associated
+#     with it that will be created (and re-created) upon demand.
+#     The tag will also appear in the window title&icon.
+#
+
+proc _tkiWinResolveWinName { w } {
+    global tki
+    if { ! [info exist tki] } { tkiInit }
+    if { $w == "" }			{ return [tkiWinCreate] }
+    if { [string index $w 0] == "." }	{ return $w }
+
+    # It must be a tag: retrieve (or make) the window assoicated with the tag
+    set tag $w
+    if { ![info exist tki(wintag-$tag)] } { 
+	set tki(wintag-$tag) [tkiWinCreate "" $tag]
+    }
+    set w $tki(wintag-$tag)
+
+    # Now see if it still exists: the user might have killed it.  If
+    # gone, recreate it.
+    if {![winfo exist $w]} {
+	tkiWinCreate $w $tag
+    }
+    return $w
+}
+
+# 
+# This is the primary entry point of this module.  The argument {nodeSpec}
+# give the node to show, and may contains a filespec as in (filename)nodename.
+# If no filename is contained in {nodeSpec}, it will be augmented by
+# the argument {fileSpec} (if non-empty).  The argument
+# {w} specifies which info window the node should be displayed in,
+# as described by _tkiWinResolveWinName() above.
+#
+# The return value is a list "nodeRef window" where {nodeRef} is
+# the internal "handle" to the node given by {nodeSpec} and {fileSpec},
+# and {window} is the full path of the info window.
+# If the node couldn't be loaded, the {nodeRef} will be empty.
+#
+
+proc tkiWinShow { nodeSpec {fileSpec ""} {w ""} } {
+    global tki
+    set w [_tkiWinResolveWinName $w]
+    upvar #0 $w wvars
+    set tki(curWindow) $w
+    $w.main.text conf -cursor $tki(waitCursor)
+    $w conf -cursor $tki(waitCursor)
+    _tkiWinPromptUnmap $w
+    set nodeRef [tkiGetNodeRef $nodeSpec $fileSpec "" $wvars(lastDir)]
+    if { $nodeRef == "" } {
+	set fmtSpec [tkiFmtNodeSpec $nodeSpec $fileSpec]
+        if { $nodeSpec != "" && ![string match "(*" $nodeSpec] } {
+            tkiError "Can't locate info nodes ``$fmtSpec'' and ``($nodeSpec)$tki(topLevelNode)''"
+            return [list "" $w]
+        }
+        tkiError "Can't locate the info node ``$fmtSpec''"
+        return [list "" $w]
+    }
+
+    set nodeIdx [lindex $nodeRef 0]
+    set fileKey [lindex $nodeRef 1]
+    tkiWinDpy $w $fileKey [lindex $tki(nodesinfo-$fileKey) $nodeIdx] \
+            [lindex $tki(nodesbody-$fileKey) $nodeIdx]
+    $w conf -cursor $tki(normCursor)
+    $w.main.text conf -cursor $tki(normCursor)
+    raise $w
+    return [list $nodeRef $w]
+}
+
+#
+# Get the current info node for {w}, and redisplay it in the window.
+# This is used whenever the display mode (linklook,etc) is changed.
+#
+
+proc tkiWinRefresh { w } {
+    global tki; upvar #0 $w wvars
+    if { $tki(showButtonsB) } {
+        pack $w.buts -after $w.s -fill x
+    } else {
+        pack forget $w.buts
+    }
+    if ![info exist wvars(nodeinfo)] return
+    set nodeinfo $wvars(nodeinfo)
+    return [tkiWinShow [lindex $nodeinfo 1] $wvars(fileKey) $w]
+}
+proc tkiWinRefreshAll { } {
+    global tki
+
+    foreach w $tki(windows) {
+	if { ![winfo exist $w] } continue
+	if [catch {tkiWinRefresh $w} error] {
+	    global errorInfo
+	    puts stderr "tkInfo: refresh $w: $error\n$errorInfo"
+	}
+    }
+}
+
+#
+# A helper function to provide "context" help.  The idea is that the
+# application, when it creates each window/widget, creates a global array
+# variable corresponding to each "key" window in the application.  The
+# array element "infonodename" contains the node name to display for
+# context help for that window and its children.
+#
+# Start at window {w}, and traverse up the window tree looking for a variable
+# of the form "$w(infonodename)".  If found, a window displaying that node
+# will be generated.  {fileSpec} may be used to augment the infonode,
+# and {infowin} may specific a pre-existing info window returned by
+# tkiWinShow().
+# 
+
+proc tkiWinContextHelp { w {fileSpec ""} {infowin ""} } {
+    for {} { $w != ""} {set w [winfo parent $w]} {
+	# Line below is kludgy, b/c I can't see any other way to do it.
+	if [uplevel #0 [list info exist ${w}(infonodename)]] {
+	    upvar #0 $w wvars 
+    	    return [tkiWinShow $wvars(infonodename) $fileSpec $infowin]
+	}
+    }
+    if { $fileSpec != "" } {
+    	return [tkiWinShow Top $fileSpec $infowin]
+    }
+    return [tkiWinShow "(builtin)Quick Help" "" $infowin]
+}
+
+##########################################################################
+# The following material was formerly contained in the file tkicore.tcl:
+#
+# This is the core of the tkinfo package.  It handles reading, parsing,
+# and storing info files.  Everything in here should be tcl-only, no
+# tk stuff.  Note that this can't be used independently: it requires
+# initialization and error handling stuff found in tkinfo.tcl.
+
+
+
+# Get a globally unique serial number.
+#
+
+proc tkiGetSN { } {
+    global tki
+    incr tki(sn)
+    return $tki(sn)
+}
+
+#
+# Add tcl list of paths {newPaths} to the directory search list.  The
+# list is added in order at the *head* of the list.  Duplicate paths
+# are removed, leaving the first of several identical paths in. most
+# path present. If the directory contains an info file "dir", then it
+# is added to tki(dirs) as well.
+#
+
+proc tkiAddInfoPaths { newPaths } {
+    global tki
+
+    if { ! [info exist tki(infoPath) ] } {
+	set tki(infoPath) ""
+    }
+
+    for {set idx [expr [llength $newPaths] - 1]} {$idx >= 0} {incr idx -1} {
+        set newPath [lindex $newPaths $idx]
+        if { $newPath == "" } {continue}
+        if { ![tkiFileIsAbsolute $newPath] } {
+            set newPath "./$newPath"
+        }
+        if { ![file isdir $newPath] } {continue}
+        set tki(infoPath) [linsert $tki(infoPath) 0 $newPath]
+        
+        # Kill off duplicate
+        set dup [lsearch [lrange $tki(infoPath) 1 end] $newPath]
+        if { $dup < 0 } {
+            # no duplicate. Check whether it belongs into tki(dirs):
+            if {[_tkiFileFindSuf "$newPath/dir"] != ""} {
+                set tki(dirs) [linsert $tki(dirs) 0 $newPath]
+            }
+        } else {
+	    set tki(infoPath) [lreplace $tki(infoPath) [expr {$dup+1}] [expr {$dup+1}]]
+	}
+    }
+    if { [llength $tki(dirs)] >= 1 } {
+        set tki(lastDir) [lindex $tki(dirs) 0]
+    } else {
+        set tki(lastDir)            ""
+    }
+}
+
+proc _tkiFileFindSuf { fileName } {
+    global tki
+
+    foreach suf $tki(infoSuffix) {
+	foreach extrasuf {"" .gz .Z .z .bz2} {
+	    set filePath "$fileName$suf$extrasuf"
+	    if { [file isfile $filePath] } {
+		return $filePath
+	    }
+	}
+    }
+    return ""
+}
+
+#
+# Given {fileName} (see intro section above), find the corresponding
+# filepath.  The filepath of {pntFileKey}, if specified, is
+# used as a starting point for locating {fileName}.
+# Returns the file path if found, else empty string.
+#
+proc tkiFileFind { fileName {startSearchDir ""} } {
+    global tki
+
+    if { [tkiFileIsAbsolute $fileName] } {
+	set filePath [_tkiFileFindSuf $fileName]
+	if { $filePath != "" } { return $filePath }
+	set filePath [_tkiFileFindSuf [string tolower $fileName]]
+        return $filePath
+    } else {
+	# Try all the infopaths, and all suffixs
+	foreach prepath "$startSearchDir $tki(infoPath)" {
+	    set filePath [_tkiFileFindSuf $prepath/$fileName]
+	    if { $filePath != "" } { return $filePath }
+	    set filePath [_tkiFileFindSuf $prepath/[string tolower $fileName]]
+	    if { $filePath != "" } { return $filePath }
+	}
+        return ""
+    }
+}
+
+#
+# Determines whether filename is an absolute path. Should work also
+# for names starting with Windows style drive letters.
+#
+proc tkiFileIsAbsolute { filename } {
+    return [regexp -nocase {^(/|\./|\.$|\.\./|\.\.$|~|[a-z]:)} $filename]
+}
+
+#
+# Given {fileName}, find the corresponding filepath via tkiFileFind().
+# Return a {fileKey} for the file, and make the appropriate table entries.
+# Note that {fileName} must be just that, and not a filekey.
+#
+proc tkiFileAdd { fileName {pntFileKey ""} {startSearchDir ""} } {
+    global tki
+
+    if {$pntFileKey != ""} {
+        set startSearchDir [file dirname [lindex $tki(fileinfo-$pntFileKey) 2]]
+    }
+    if { [info exist tki(fileKeys-$fileName)] } {
+        foreach key $tki(fileKeys-$fileName) {
+            if { [file dirname [lindex $tki(fileinfo-$key) 2]] == $startSearchDir } {
+                return $key
+            }
+        }
+    } else {
+        set tki(fileKeys-$fileName) ""
+    }
+    set filePath [tkiFileFind $fileName $startSearchDir]
+    if { $filePath == "" } { return "" }
+    set fileKey fk[tkiGetSN]
+    lappend tki(fileKeys-$fileName) $fileKey
+        
+    set tki(fileinfo-$fileKey)  [list $fileKey $fileName $filePath $pntFileKey]
+    set tki(incore-$fileKey) 0
+    return $fileKey
+}
+proc tkiFileGet { fileSpec {pntFileKey ""} {startSearchDir ""} } {
+    global tki
+
+    # Is fileSpec a filekey?
+    if { [info exist tki(fileinfo-$fileSpec)] } {
+	set fileKey $fileSpec
+    } else {
+        set fileKey [tkiFileAdd $fileSpec $pntFileKey $startSearchDir]
+        if { $fileKey == "" } {
+            return ""
+        }
+    }
+
+    set fileinfo $tki(fileinfo-$fileKey)
+    if { ! $tki(incore-$fileKey) } {
+        tkiFileLoad $fileKey [lindex $fileinfo 1] [lindex $fileinfo 2]
+    }
+    return $fileKey
+}
+proc _tkiFileLoadIndirectTbl { fileKey lines } {
+    global tki
+
+    set indirinfos ""
+    foreach line $lines {
+	if { $line != "" } {
+	    set pair [split $line ":"]
+	    if { [llength $pair] != 2 } {
+		tkiFileWarning $fileKey "has bad file-indirect line ``$line''"
+		continue
+	    }
+	    set indirKey [tkiFileAdd [lindex $pair 0] $fileKey]
+	    if { $indirKey == "" } {
+		tkiError "Can't locate indirect file ``[lindex $pair 0]''."
+		continue
+	    }
+	    set byteOfs [string trim [lindex $pair 1]]
+	    lappend indirinfos [list $indirKey $byteOfs]
+	}
+    }
+    set tki(indirf-$fileKey) $indirinfos
+}
+proc _tkiFileLookupIndir { indirf byte } {
+    set lastKey ""
+    foreach fi $indirf {
+	if { [lindex $fi 1] > $byte } break
+	set lastKey [lindex $fi 0]
+    }
+    return $lastKey
+}
+proc _tkiFileLoadTagTbl { fileKey lines } {
+    global tki
+
+    set subkey [lindex $lines 0]
+    if { $subkey != "(Indirect)" } return
+    set indirf $tki(indirf-$fileKey)
+    set indirinfos ""
+    foreach line [lrange $lines 1 end] {
+	if { $line =="" } continue
+	set pair [split $line $tki(nodeByteSep)]
+	if { [llength $pair] != 2 } {
+	    tkiFileWarning $fileKey "has bad tag-indirect line ``$line''"
+	    continue
+	}
+	set nodeName [string trim [string range [lindex $pair 0] 5 end]]
+	set byteOfs [string trim [lindex $pair 1]]
+	set indirFile [_tkiFileLookupIndir $indirf $byteOfs]
+	lappend indirinfos [list $nodeName $byteOfs $indirFile]
+    }
+    set tki(indirn-$fileKey) $indirinfos
+}
+proc tkiFileParseNode { fileKey node } {
+    global tki
+
+    set lines [split $node "\n"]
+    set keyline [string trim [lindex $lines 1]]
+    case $keyline {
+      { {[Ii]ndirect:} } {
+	_tkiFileLoadIndirectTbl $fileKey [lrange $lines 2 end]
+	return "IndirectTable"
+      }
+      { {[Tt]ag [Tt]able:} } {
+	_tkiFileLoadTagTbl $fileKey [lrange $lines 2 end]
+	return "TagTable"
+      }
+      { {[Ee]nd [Tt]ag [Tt]able} } {
+	return "EndTagTable"
+      }
+    }
+    # Some screwed up files omit the ``,'' for the file key.
+    regsub "(File:\[^,\]*)Node:" $keyline "\\1,Node:" keyline
+    set nodekey ""; set filekey ""
+    set nextkey ""; set prevkey ""; set upkey ""
+    foreach key [split $keyline ",\t"] {
+	set key [string trim $key]
+        # Note that the linux-doc sgml package produces "Previous:" headers 
+        # instead of "Prev:".
+	case $key {
+	  "File:*" { set filekey [string trim [string range $key 5 end]] }
+	  "Node:*" { set nodekey [string trim [string range $key 5 end]] }
+	  "Up:*"   { set upkey   [string trim [string range $key 3 end]] }
+	  "Prev:*" { set prevkey [string trim [string range $key 5 end]] }
+          "Previous:*" { set prevkey [string trim [string range $key 9 end]] }
+	  "Next:*" { set nextkey [string trim [string range $key 5 end]] }
+	}
+    }
+    if { $nodekey == "" } { return "" }
+    lappend tki(nodesinfo-$fileKey) [list [llength $tki(nodesinfo-$fileKey)] $nodekey $filekey $upkey $prevkey $nextkey]
+    # We need to get rid of all strange control characters:
+    regsub -all "\[\a\b\v\f\]" $node "" node
+    lappend tki(nodesbody-$fileKey) $node
+    return $nodekey
+}
+proc _tkiFileRead {fileName filePath} {
+    global tki
+
+    tkiStatus "Loading $fileName..." "" 0
+
+    case $filePath in {
+      *.Z	{ set fp "|$tki(compresscat-Z) $filePath" }
+      *.z	{ set fp "|$tki(compresscat-z) $filePath" }
+      *.gz	{ set fp "|$tki(compresscat-gz) $filePath" }
+      *.bz2     { set fp "|$tki(compresscat-bz2) $filePath" }
+      default	{ set fp $filePath }
+    }
+    if [catch {open $fp "r"} fid] {
+	tkiError "Can't open ``$fp''."
+	return ""
+    }
+    set text [read $fid]
+    close $fid
+    return $text
+}
+proc tkiFileLoad { fileKey fileName filePath {fileText ""}} {
+    global tki
+
+    if { $fileText == "" } {
+        set fileText [_tkiFileRead $fileName $filePath]
+    }
+    if { $fileText == "" } {
+        return ""
+    }
+    set nodelist [split $fileText $tki(nodeSep)]
+    set nodecnt 0
+    set tki(nodesinfo-$fileKey) ""
+    set tki(nodesbody-$fileKey) ""
+    foreach node $nodelist {
+        incr nodecnt
+        if { $nodecnt==1 || [string length $node] < 10 } continue
+        set nodeName [tkiFileParseNode $fileKey $node]
+        if { $nodeName == "" } {
+            puts stdout "Warning: node #$nodecnt of file $filePath is bogus"
+            continue
+        }
+    }
+    set tki(incore-$fileKey) 1
+    return $fileKey
+}
+
+#
+# Parse nodeSpec and fileSpec.  {nodeSpecVar} and {fileSpecVar} must
+# refer to variables within the caller's context.  They will be substituted
+# and replaced with canonical forms.
+#
+
+proc tkiParseNodeSpec { nodeSpecVar fileSpecVar } {
+    global tki
+    upvar $nodeSpecVar nodeSpec $fileSpecVar fileSpec
+
+    if { $fileSpec == "" } {
+	set fileSpec "dir"
+    }
+    if { [string index $nodeSpec 0] == "(" } {
+	set ridx [string first ")" $nodeSpec]
+	if { $ridx < 0 } {
+            set ridx [string length $nodeSpec]
+	}
+	set fileSpec1 [string trim [string range $nodeSpec 1 [expr $ridx-1]]]
+        if { $fileSpec1 != "" } {
+            set fileSpec $fileSpec1
+        }
+	set nodeSpec [string trim [string range $nodeSpec [expr $ridx+1] end]]
+    }
+
+    if { $nodeSpec == "" } {
+	set nodeSpec $tki(topLevelNode)
+    }
+    set nodeSpec [string trim $nodeSpec]
+    return 1
+}
+
+proc tkiFmtFileSpec { fileSpec } {
+    global tki
+    if [info exist tki(fileinfo-$fileSpec)] {
+	return [lindex $tki(fileinfo-$fileSpec) 1]
+    }
+    return $fileSpec
+}
+proc tkiFmtNodeSpec { nodeSpec {fileSpec ""} } {
+    global tki
+    if ![tkiParseNodeSpec nodeSpec fileSpec] {
+	return "Bad file/node spec ``$nodeSpec''"
+    }
+    set fileSpec [tkiFmtFileSpec $fileSpec]
+    return "($fileSpec)$nodeSpec"
+}
+
+#
+# This is the core search function.  It attempts to locate {nodeSpec}
+# where ever it is.  {fileSpec} is a default file name that is used
+# only if {nodeSpec} doesn't contain a reference.
+# Returns a list {nodeIdx fileKey}, where {nodeIdx} is the index of the
+# node within {fileKey}.
+#
+# As discussed in the intro above, at this level we cannot allow any
+# concept of "current file" or "current node": it is up to the caller
+# to maintain that information and pass up the appropriate arguments.
+#
+
+proc tkiGetNodeRef { nodeSpec {fileSpec ""} {pntFileKey ""} {startSearchDir ""}} {
+    global tki
+
+    set nodeRef [_tkiGetNodeRef $nodeSpec $fileSpec $pntFileKey $startSearchDir 0]
+    if { $nodeRef != "" } {
+        return $nodeRef
+    }
+    set nodeRef [_tkiGetNodeRef $nodeSpec $fileSpec $pntFileKey $startSearchDir 1]
+    if { $nodeRef != "" } {
+        return $nodeRef
+    }
+
+    # In case we were called with an info file name of emacs-2 for instance:
+    if { [info exists tki(nodesinfo-$fileSpec)] } {
+        set infofile [lindex [lindex $tki(nodesinfo-$fileSpec) 0] 2]
+        set nodeRef [_tkiGetNodeRef $nodeSpec $infofile $pntFileKey $startSearchDir 0]
+        if { $nodeRef != "" } {
+            return $nodeRef
+        }
+        set nodeRef [_tkiGetNodeRef $nodeSpec $fileSpec $pntFileKey $startSearchDir 1]
+        if { $nodeRef != "" } {
+            return $nodeRef
+        }
+    }
+    
+    # This is to support XEmacs-style menus which contain only
+    # the filename, but not in parentheses:
+    if { $nodeSpec != "" && ![string match "(*" $nodeSpec] } {
+        set nodeRef [_tkiGetNodeRef $tki(topLevelNode) $nodeSpec "" $startSearchDir 0]
+        if { $nodeRef != "" } {
+            return $nodeRef
+        }
+        return [_tkiGetNodeRef $tki(topLevelNode) $nodeSpec "" $startSearchDir 1]
+    }
+    return ""
+}
+proc _tkiGetNodeRef { nodeSpec fileSpec pntFileKey startSearchDir caseinsen } {
+    global tki
+    
+    if ![tkiParseNodeSpec nodeSpec fileSpec] {
+	return ""
+    }
+
+    set fileKey [tkiFileGet $fileSpec $pntFileKey $startSearchDir]
+    if { $fileKey == "" } { return "" }
+    set fileName [lindex $tki(fileinfo-$fileKey) 1]
+    set realPntKey [lindex $tki(fileinfo-$fileKey) 3]
+    if { $caseinsen } {
+        set nodeSpec [string tolower $nodeSpec]
+    }
+    tkiStatus "Searching for node ``$nodeSpec'' in $fileName..." "" 0
+
+    # Popup to our indirect-parent, if it has a tag table
+    if { $pntFileKey == "" && $realPntKey != "" && [info exist tki(indirn-$realPntKey)] } {
+        return  [_tkiGetNodeRef $nodeSpec $realPntKey "" $startSearchDir $caseinsen]
+    }
+
+    #  Use index on this file, pushdown to our children
+    if { [info exist tki(indirn-$fileKey)] } {
+	# Use node index (indirect)
+        if { $caseinsen } {
+            foreach indir $tki(indirn-$fileKey) {
+                if { $nodeSpec == [string tolower [lindex $indir 0]] } {
+                    set nodeRef [_tkiGetNodeRef $nodeSpec [lindex $indir 2] $fileKey "" 1]
+                    if { $nodeRef != "" } { return $nodeRef }
+                    tkiFileWarning $fileKey "Incorrect tag table"; break
+                }
+	    }
+	} else {
+            foreach indir $tki(indirn-$fileKey) {
+                if { $nodeSpec == [lindex $indir 0] } {
+                    set nodeRef [_tkiGetNodeRef $nodeSpec [lindex $indir 2] $fileKey "" 0]
+                    if { $nodeRef != "" } { return $nodeRef }
+                    tkiFileWarning $fileKey "Incorrect tag table"; break
+                }
+	    }
+	}
+    } else {
+        # Brute force on this file
+        if { [info exist tki(nodesinfo-$fileKey)] } {
+            if { $caseinsen } {
+                foreach nodeinfo $tki(nodesinfo-$fileKey) {
+                    if { $nodeSpec == [string tolower [lindex $nodeinfo 1]] } {
+                        return [list [lindex $nodeinfo 0] $fileKey]
+                    }
+                }
+            } else {
+                foreach nodeinfo $tki(nodesinfo-$fileKey) {
+                    if { $nodeSpec == [lindex $nodeinfo 1] } {
+                        return [list [lindex $nodeinfo 0] $fileKey]
+                    }
+                }
+            }
+        }
+        # Look for node in all indirect files (brute force)
+        if { [info exist tki(indirf-$fileKey)] } {
+            foreach indir $tki(indirf-$fileKey) {
+                set nodeRef [_tkiGetNodeRef $nodeSpec [lindex $indir 0] $fileKey "" $caseinsen]
+                if { $nodeRef != "" } { return $nodeRef }
+            }
+        }
+    }
+    # Look for node in my parent, but only if not called from my pnt
+    if { $pntFileKey == "" && $realPntKey != "" } {
+        set nodeRef [_tkiGetNodeRef $nodeSpec $realPntKey "" $startSearchDir $caseinsen]
+        if { $nodeRef != "" } { return $nodeRef }
+    }
+}
+
+#
+# Initialize the regexp strings that are used later in 
+# tkiNodeParseBody() (for xrefs) and tkiNodeParseMenu() (for menus).
+# This func is called once from tkiInit() and then destroyed.
+#
+
+proc _tkiNodeParseInit { } {
+    global tki
+
+    # For xrefs, there are two forms:
+    #	*note nodeSpec::terminator			(form 1)
+    #   *note label: nodeSpec terminator		(form 2)
+    # Terminator is ``.'' or ``,'', forms may wrap across lines.
+    set tki(re_xref1_p) "\\*(note\[ \t\n\]*)(\[^:\]+)::"
+    set tki(re_xref1_s) "x\\1\037e\\2\037fxx"
+    set tki(re_xref2_p) "\\*(note\[ \t\n\]*)(\[^:\]+)(:\[ \t\n\]*)(\\(\[^ \t\n)\]+\\))?(\[^.,\]*)\[.,\]"
+    set tki(re_xref2_s) "x\\1\037a\\2\037b\\3\037c\\4\\5\037dx"
+
+
+    # For menus, there are two forms:
+    #	* nodeSpec::	comments...			(form 1)
+    #   * label: nodeSpec[\t.,] comments...		(form 2)
+    set tki(re_menu1_p) "(\\*\[ \t\]*)(\[^:\]+)::"
+    set tki(re_menu1_s) "\\1\037A\\2\037B"
+    # rp2 = "* ws label: ws", rp2a="rp2 nodename ws", rp2b="rp2 (file)node ws"
+    set tki(re_menu2_p) "(\\*\[ \t\]*)(\[^:\]+)(:\[ \t\]*)(\\(\[^ \t)\]+\\))?(\[^\t.,\]*)"
+    set tki(re_menu2_s) "\\1\037A\\2\037B\\3\037C\\4\\5\037D"
+}
+
+#
+# Parse a nody-body and return a list of the cross references.
+# Store the information in tki(xrefinfo-$fileKey-$nodeIdx).
+#
+
+proc tkiNodeParseBody { nodeIdx fileKey bodytext } {
+    global tki
+
+    regsub -all -nocase $tki(re_xref1_p) $bodytext $tki(re_xref1_s) bodytext
+    regsub -all -nocase $tki(re_xref2_p) $bodytext $tki(re_xref2_s) bodytext
+    set xrefinfo ""
+    set curIdx 1
+    foreach seg [split $bodytext "\037"] {
+        if { [string index $seg 0] == "a" || [string index $seg 0] == "e" } {
+            regsub -all "\[ \t\n\]+" "[string range $seg 1 end]" " " label
+            set stIdx $curIdx
+        }
+	set curIdx [expr { $curIdx + [string length $seg] - 1 }]
+	if { [string index $seg 0] != "c" && [string index $seg 0] != "e" } {
+            continue
+        }
+	set toNode [string range $seg 1 end]
+	regsub -all "\[ \t\n\]+" $toNode " " toNode
+	lappend xrefinfo [list [llength $xrefinfo] $toNode $stIdx $curIdx $label]
+    }
+    set tki(xrefinfo-$fileKey-$nodeIdx) $xrefinfo
+    return $xrefinfo
+}
+
+#
+# Parse the menu and extract the keywords
+# Store the information in tki(menuinfo-$fileKey-$nodeIdx).
+#
+proc tkiNodeParseMenu { nodeName nodeIdx fileKey bodytext } {
+    global tki
+
+    # There are two forms:
+    #	* nodeSpec::	comments...			(form 1)
+    #   * label: nodeSpec[ \t.,] comments...		(form 2)
+    set rp1 $tki(re_menu1_p)
+    set sp1 $tki(re_menu1_s)
+    set rp2 $tki(re_menu2_p)
+    set sp2 $tki(re_menu2_s)
+
+    set menuidx [string first "\n* Menu:" $bodytext]
+    if { $menuidx > 0 } {
+        set menutext [string range $bodytext [expr {$menuidx+1}] end]
+    } else {
+        return ""
+    }
+    set menuinfo ""
+    set linecnt 0; set menucnt 0
+    set nl "node ``($fileKey)$nodeName''"
+    foreach line [split $menutext "\n"] {
+	incr linecnt
+	if { [string index $line 0] != "*" 
+	  || [string range $line 0 6] == "* Menu:" } continue
+	if { [regsub $rp1 $line $sp1 prsline] } {
+	    set nBeg [expr { [string first "\037A" $prsline] + 0 } ]
+	    set nEnd [expr { [string first "\037B" $prsline] - 3 } ]
+            set toNode [string range $line $nBeg $nEnd]
+            regexp "\037A(.*)\037B" $prsline dummy label
+	} else {
+	    if { [regsub $rp2 $line $sp2 prsline] } {
+	        set nBeg [expr { [string first "\037A" $prsline] - 0 } ]
+	        set nEnd [expr { [string first "\037D" $prsline] - 7 } ]
+                regexp "\037C(.*)\037D" $prsline dummy toNode
+                regexp "\037A(.*)\037B" $prsline dummy label
+	    } else {
+		tkiFileWarning $fileKey "$nl has bad menu (line $linecnt)"
+		continue
+	    }
+	}
+	lappend menuinfo [list $linecnt $menucnt $toNode $nBeg $nEnd $label]
+	incr menucnt
+    }
+    set tki(menuinfo-$fileKey-$nodeIdx) $menuinfo
+    return $menuinfo
+}
+
+#
+# This is equivalent to $w tag prevrange $tag $start $stop
+# but this command doesn't exist in tk4.0....
+# Binary search is probably overkill here.
+#
+
+proc _tkiprevrange {w tag start {stop 1.0}} {
+    set ranges [$w tag ranges $tag]
+    if { $ranges == "" } {
+        return ""
+    }
+    set beg 0; set end [expr [llength $ranges] - 2]
+    while { $end - $beg > 2 } {
+        set middle [expr int(($beg + $end) / 4) * 2 ]
+        if [$w compare [lindex $ranges $middle] < $start] {
+            set beg $middle
+        } else {
+            set end $middle
+        }
+    }
+    if { [$w compare [lindex $ranges $beg] >= $start] } {
+        return ""
+    } elseif { [$w compare [lindex $ranges $end] < $start] } {
+        set best $end
+    } else {
+        set best $beg
+    }
+    if { [$w compare [lindex $ranges $best] > $stop] } {
+        return [list [lindex $ranges $best] [lindex $ranges [expr $best + 1]]]
+    } else {
+        return ""
+    }
+}
+
+
+#
+# Search through w's current info file for pattern, starting with the
+# node following the current one. Bring up the first node containing
+# string, and call searchboxSearch on that node. At the end of the
+# infofile, wrap around to the beginning. If no node contains string,
+# return 0, else return whatever searchboxSearch returned.  It should
+# have been checked elsewhere that the regexp actually compiles
+# correctly.
+#
+
+proc _tkiSearchFileForw {w pattern regexpB casesenB incr} {
+    global tki; upvar #0 $w wvars
+
+    # _tkiLocalMatch is supposed to return 1 iff its argument matches 
+    # $pattern. I don't understand the next lines -- I've found them by 
+    # experimentation --A.B.
+    if {$regexpB} {
+        set transformedPattern [_tkiRegexpTransform $pattern]
+        if {$casesenB} {
+            proc _tkiLocalMatch {s} [list eval regexp -- [list $transformedPattern] \$s ]
+        } else {
+            proc _tkiLocalMatch {s} [list eval regexp -nocase -- [list $transformedPattern] \$s ]
+        }
+    } else {
+        if {$casesenB} {
+            proc _tkiLocalMatch {s} [list expr \[ string first [list $pattern] \$s \] != -1]
+        } else {
+            proc _tkiLocalMatch {s} [list expr \[ string first [list [string tolower $pattern]] \[ string tolower \$s \] \] != -1]
+        }
+    }
+    
+    # Are we currently inside an ongoing search?
+    if { $wvars(inSearch) && $wvars(searchOriginFileKey) != "" } {
+        set origFileKey $wvars(searchOriginFileKey)
+        set origNodeIdx $wvars(searchOriginNodeIdx)
+    } else {
+        set origFileKey $wvars(fileKey)
+        set wvars(searchOriginFileKey) $origFileKey
+        set origNodeIdx [lindex $wvars(nodeinfo) 0]
+        set wvars(searchOriginNodeIdx) $origNodeIdx
+    }
+    
+    set fileKey $wvars(fileKey)
+
+    set pntKey [lindex $tki(fileinfo-$fileKey) 3]
+    if { $pntKey != "" } {
+        set fileKeyList $tki(indirf-$pntKey)
+        set fileKeyListLength [llength $fileKeyList]
+        for {set idx 0} {$idx < $fileKeyListLength} {incr idx} {
+            if { [lindex [lindex $fileKeyList $idx] 0] == $fileKey } {
+                break
+            }
+        }
+        set fileKeyListIdx $idx
+    }
+
+    set nodeIdx [expr [lindex $wvars(nodeinfo) 0] + 1]
+    set nodeList $tki(nodesinfo-$fileKey)
+    set nodeListLength [llength $tki(nodesinfo-$fileKey)]
+
+    set tki(interrupt) 0
+
+    while { $fileKey != $origFileKey || $nodeIdx != $origNodeIdx } {
+      update
+      if {$tki(interrupt) == 1} {
+          tkiStatus "Search for \"$pattern\" interrupted." $w 0
+          return
+      }
+      if { $nodeIdx < $nodeListLength } {
+        set nodesinfo [lindex $tki(nodesinfo-$fileKey) $nodeIdx]
+        tkiStatus "Searching for \"$pattern\" in node [lindex $nodesinfo 1]..." $w 0
+        if {[_tkiLocalMatch [lindex $tki(nodesbody-$fileKey) $nodeIdx]]} {
+          tkiWinShow [lindex $nodesinfo 1] [lindex $nodesinfo 2] $w
+          return [searchboxSearch $pattern $regexpB $casesenB searchkey $w ]
+        }
+        incr nodeIdx
+      } else {
+        set nodeIdx 0
+        if { $pntKey != "" } {
+          # Now find next fileKey for current info file and load it into core.
+          incr fileKeyListIdx
+          if { $fileKeyListIdx == $fileKeyListLength } {
+              # wrap around...
+              set fileKeyListIdx 0
+          }
+          set fileKey [lindex [lindex $fileKeyList $fileKeyListIdx] 0]
+          set fileInfo $tki(fileinfo-$fileKey)
+          # Don't load if it's already in core!
+          if { $tki(incore-$fileKey) } {
+              set nodeList $tki(nodesinfo-$fileKey)
+              set nodeListLength [llength $nodeList]
+          } else {
+              set fileText [_tkiFileRead [lindex $fileInfo 1] [lindex $fileInfo 2]]
+              if [_tkiLocalMatch $fileText] {
+                  tkiFileLoad $fileKey [lindex $fileInfo 1] [lindex $fileInfo 2] $fileText
+                  set nodeList $tki(nodesinfo-$fileKey)
+                  set nodeListLength [llength $nodeList]
+              } else {
+                  set nodeListLength 0
+              }
+          }
+        }
+      }
+    }
+    
+    # Haven't found anything.
+    if $incr {
+        tkiBell
+        set wvars(searchOriginFileKey) ""
+        tkiStatus "No more matches for \"$pattern\". Back with Ctrl-r." $w 1
+    } else {
+        tkiStatus "No matches for \"$pattern\"." $w 1
+    }
+    return 0
+}
+
+
+#
+# Search backward through w's current info file for pattern, starting
+# with the node preceding the current one. Bring up the first node
+# containing string, and call searchboxSearchBackw on that node. At the
+# beginning of the infofile, wrap around to the end. If no node
+# contains string, return 0, else return whatever searchboxSearch
+# returned.  It should have been checked elsewhere that the regexp
+# actually compiles correctly.
+#
+proc _tkiSearchFileBackw {w pattern regexpB casesenB incr} {
+    global tki; upvar #0 $w wvars
+
+    # _tkiLocalMatch is supposed to return 1 iff its argument matches 
+    # $pattern. I don't understand the next lines -- I've found them by 
+    # experimentation --A.B.
+    if {$regexpB} {
+        set transformedPattern [_tkiRegexpTransform $pattern]
+        if {$casesenB} {
+            proc _tkiLocalMatch {s} [list eval regexp -- [list $transformedPattern] \$s ]
+        } else {
+            proc _tkiLocalMatch {s} [list eval regexp -nocase -- [list $transformedPattern] \$s ]
+        }
+    } else {
+        if {$casesenB} {
+            proc _tkiLocalMatch {s} [list expr \[ string first [list $pattern] \$s \] != -1]
+        } else {
+            proc _tkiLocalMatch {s} [list expr \[ string first [list [string tolower $pattern]] \[ string tolower \$s \] \] != -1]
+        }
+    }
+
+    # Are we currently inside an ongoing search?
+    if { $wvars(inSearch) && $wvars(searchOriginFileKey) != "" } {
+        set origFileKey $wvars(searchOriginFileKey)
+        set origNodeIdx $wvars(searchOriginNodeIdx)
+    } else {
+        set origFileKey $wvars(fileKey)
+        set wvars(searchOriginFileKey) $origFileKey
+        set origNodeIdx [lindex $wvars(nodeinfo) 0]
+        set wvars(searchOriginNodeIdx) $origNodeIdx
+    }
+
+    set fileKey $wvars(fileKey)
+
+    set pntKey [lindex $tki(fileinfo-$fileKey) 3]
+    if { $pntKey != "" } {
+        set fileKeyList $tki(indirf-$pntKey)
+        set fileKeyListLength [llength $fileKeyList]
+        for {set idx 0} {$idx < $fileKeyListLength} {incr idx} {
+            if { [lindex [lindex $fileKeyList $idx] 0] == $fileKey } {
+                break
+            }
+        }
+        set fileKeyListIdx $idx
+    }
+
+    set nodeIdx [expr [lindex $wvars(nodeinfo) 0] - 1]
+    set nodeList $tki(nodesinfo-$fileKey)
+    set nodeListLength [llength $tki(nodesinfo-$fileKey)]
+
+    set tki(interrupt) 0
+
+    while { $fileKey != $origFileKey || $nodeIdx != $origNodeIdx } {
+      update
+      if {$tki(interrupt) == 1} {
+          tkiStatus "Search for \"$pattern\" interrupted." $w 0
+          return
+      }
+      if { $nodeIdx >= 0 } {
+        set nodesinfo [lindex $tki(nodesinfo-$fileKey) $nodeIdx]
+        tkiStatus "Searching for \"$pattern\" in node [lindex $nodesinfo 1]..." $w 0
+        if {[_tkiLocalMatch [lindex $tki(nodesbody-$fileKey) $nodeIdx]]} {
+          tkiWinShow [lindex $nodesinfo 1] [lindex $nodesinfo 2] $w
+          return [searchboxSearchBackw $pattern $regexpB $casesenB searchkey $w]
+        }
+        incr nodeIdx -1
+      } else {
+        set nodeIdx -1
+        if { $pntKey != "" } {
+          # Now find prev fileKey for current info file and load it into core.
+          if { $fileKeyListIdx == 0 } {
+              # wrap around...
+              set fileKeyListIdx $fileKeyListLength
+          }
+          incr fileKeyListIdx -1
+          set fileKey [lindex [lindex $fileKeyList $fileKeyListIdx] 0]
+          set fileInfo $tki(fileinfo-$fileKey)
+          # Don't load if it's already in core!
+          if { $tki(incore-$fileKey) } {
+              set nodeList $tki(nodesinfo-$fileKey)
+              set nodeIdx [expr [llength $nodeList] - 1]
+          } else {
+              tkiStatus "Searching for \"$pattern\" in file [lindex $fileInfo 1]..." $w 0
+              set fileText [_tkiFileRead [lindex $fileInfo 1] [lindex $fileInfo 2]]
+              if [_tkiLocalMatch $fileText] {
+                  tkiFileLoad $fileKey [lindex $fileInfo 1] [lindex $fileInfo 2] $fileText
+                  set nodeList $tki(nodesinfo-$fileKey)
+                  set nodeIdx [expr [llength $nodeList] - 1]
+              }
+          }
+        } else {
+            set nodeIdx [expr $nodeListLength -1]
+        }
+      }
+    }
+    
+    # Haven't found anything.
+    if $incr {
+        tkiBell
+        set wvars(searchOriginFileKey) ""
+        tkiStatus "No more matches for \"$pattern\". Forward with Ctrl-s." $w 1
+    } else {
+        tkiStatus "No matches for \"$pattern\"." $w 0
+    }
+    return 0
+}
+
+
+#
+# This transforms a regexp-style regular expression so that it will
+# never match more than one line. Most people expect that if they
+# search for a regexp. Implemented as a state machine.
+#
+proc _tkiRegexpTransform {regexp} {
+    set result ""
+    set length [string length $regexp]
+    set state "normal"
+    for {set idx 0} {$idx < $length} {incr idx} {
+        set letter [string index $regexp $idx]
+        case $state {
+            normal {
+                case $letter {
+                    "\\\\\[" {
+                        set out "\["
+                        set state "bracket"
+                    }
+                    "." {
+                        set out "\[^\n\]"
+                        set state "normal"
+                    }
+                    "\\\\\\"  {
+                        set out ""
+                        set state "backslash"
+                    }
+                    "*" {
+                        set out $letter
+                        set state "normal"
+                    }
+                }
+            }
+            backslash {
+                set out "\\$letter"
+                set state normal
+            }
+            bracket {
+                case $letter {
+                    "^" {
+                        set out "^"
+                        set state "caret_in_brackets"
+                    }
+                    "*" {
+                        set out $letter
+                        set state "in_brackets"
+                    }
+                }
+            }
+            caret_in_brackets {
+                set out $letter
+                set state "in_brackets"
+            }
+            in_brackets {
+                case $letter {
+                    "\\\\\]" {
+                        set out "\]"
+                        set state "normal"
+                    }
+                    "*" {
+                        set out $letter
+                        set state "in_brackets"
+                    }
+                }
+            }
+        }
+        set result "${result}$out"
+    }            
+    if { $state == "backslash"} {
+        set result "${result}\\"
+    }
+    return $result
+}
+
+#
+# Store a list of the Index nodes in the info file containing filekey 
+# in the global tki(indices-$infoFileKey).
+# Also locate a list of nodes and store its location in 
+# tki(nodelist-$infoFileKey). 
+#
+
+proc _tkiFindIndices {fileKey infoFileName} {
+    global tki
+
+    if { ![info exists tki(infoFileKey-$fileKey)] } {
+        set infoFileKey "[file dirname [lindex $tki(fileinfo-$fileKey) 2]]/$infoFileName"
+        set tki(infoFileKey-$fileKey) $infoFileKey
+    } else {
+        set infoFileKey tki(infoFileKey-$fileKey)
+    }
+
+    
+    if { [info exists tki(indices-$infoFileKey)] } {
+        return
+    } else {
+        set topnoderef [tkiGetNodeRef $tki(topLevelNode) $fileKey]
+        if { $topnoderef == "" } {
+            tkiError "Cannot find top node of $infoFileName"
+            return 0
+        }
+        set topnodefilekey [lindex $topnoderef 1]
+        
+        # Locate list of nodes:
+        set parent [lindex $tki(fileinfo-$fileKey) 3]
+        if {$parent == ""} {
+            set tki(nodelist-$infoFileKey) [list "nodelistfk" $topnodefilekey]
+        } else {
+            set tki(nodelist-$infoFileKey) [list "indirfk" $parent]
+        }
+
+        # Now find Index entries in top node's menu:
+        set topnodeidx [lindex $topnoderef 0]
+        if [info exist tki(menuinfo-$topnodefilekey-$topnodeidx)] {
+            set topmenu $tki(menuinfo-$topnodefilekey-$topnodeidx)
+        } else {
+            set topmenu [tkiNodeParseMenu $tki(topLevelNode) $topnodeidx $topnodefilekey [lindex $tki(nodesbody-$topnodefilekey) $topnodeidx]]
+        }
+        set result ""
+        set found 0
+        foreach entry $topmenu {
+            if { [regexp -nocase -- "(^|.* )index( .*|\$)" [lindex $entry 5] ] } {
+                lappend result [list [lindex $entry 2] [lindex $entry 5]]
+                set found 1
+            } elseif { $found == 1 } {
+                break
+            }
+        }
+        set tki(indices-$infoFileKey) $result
+    }
+}
+
+#
+# Store a list of the index entries that match the search string in
+# wvars(indexEntries), update wvars(indexEntriesIndex) and
+# wvars(indexInfoFileKey).
+#
+
+proc _tkiIndexEntries { w filekey infoFileKey string } {
+    global tki; upvar #0 $w wvars
+
+    
+    set wvars(indexInfoFileKey) $infoFileKey
+    set wvars(indexString) $string
+
+    if { $string == "" } {
+        set wvars(indexEntries) $tki(indices-$infoFileKey)
+        set wvars(indexEntriesIndex) 0
+        return ""
+    }
+
+
+    set result1 ""
+    set result2 ""
+    set result3 ""
+    set searchstring [string tolower $string]
+
+    foreach indexlist $tki(indices-$infoFileKey) {
+        set index [lindex $indexlist 0]
+        set indexref [tkiGetNodeRef $index $filekey]
+        if {$indexref == ""} {
+            set wvars(indexEntries) ""
+            return
+        }
+        set indexfilekey [lindex $indexref 1]
+        set indexnodeidx [lindex $indexref 0]
+        if [info exist tki(menuinfo-$indexfilekey-$indexnodeidx)] {
+            set indexmenu $tki(menuinfo-$indexfilekey-$indexnodeidx)
+        } else {
+            set indexmenu [tkiNodeParseMenu $index $indexnodeidx $indexfilekey [lindex $tki(nodesbody-$indexfilekey) $indexnodeidx]]
+        }
+        foreach entry $indexmenu {
+            set label [lindex $entry 5]
+            set labellc [string tolower [lindex $entry 5]]
+            set node [lindex $entry 2]
+            if { $searchstring == $labellc } {
+                lappend result1 [list $node $label]
+            } else {
+                set idx [string first $searchstring $labellc]
+                if { $idx == 0 } {
+                    lappend result2 [list $node $label]
+                } elseif { $idx > 0 } {
+                    lappend result3 [list $node $label]
+                }
+            }
+        }
+    }
+    tkiStatus "Searching for relevant index entries..." $w 0
+
+    set nodesfk [lindex $tki(nodelist-$infoFileKey) 1]
+    case [lindex $tki(nodelist-$infoFileKey) 0] {
+        "indirfk" {
+            set nodelist $tki(indirn-$nodesfk)
+            set index 0
+        }
+        "nodelistfk" {
+            set nodelist $tki(nodesinfo-$nodesfk)
+            set index 1
+        }
+    }
+    foreach entry $nodelist {
+        set labellc [string tolower [lindex $entry $index]]
+        set node [lindex $entry $index]
+        if { $searchstring == $labellc } {
+            lappend result1 [list $node $node]
+        } else {
+            set idx [string first $searchstring $labellc]
+            if { $idx == 0 } {
+                lappend result2 [list $node $node]
+            } elseif { $idx > 0 } {
+                lappend result3 [list $node $node]
+            }
+        }
+    }
+    
+    set result [concat $result1 $result2 $result3]
+    # Now remove doubles:
+    set final ""
+    set length [llength $result]
+    for {set i 0} { $i < $length } {incr i} {
+        set node [lindex [lindex $result $i] 0]
+        set unique 1
+        for {set j 0} { $j < $i } {incr j} {
+            if { [lindex [lindex $result $j] 0] == $node } {
+                set unique 0; break
+            }
+        }
+        if {$unique} {lappend final [lindex $result $i]}
+    }
+    set wvars(indexEntries) $final
+    set wvars(indexEntriesIndex) 0
+    return
+}
+
+
+##########################################################################
+# The following material was formerly contained in searchbox.tcl:
+
+#
+# SearchBox mega widget
+#   incremental and regular expression searching in a text widget
+#
+#   by Tom Phelps (phelps@cs.Berkeley.EDU)
+#
+# extracted from and then used by TkMan and NBT 6-Aug-93
+#
+# 19-Aug  made more robust (Kennard White)
+# 5-Nov-97 heavily lobotomized (Axel Boldt)
+
+# requires: proc regexpTextSearch
+# name space use: prefixes searchbox, sb
+
+
+#--------------------------------------------------
+#
+# searchboxSearch -- initiate a search
+#
+# params
+#    str = string to search for
+#    regexp = boolean - regular expression search?
+#    casesen = case sensitive?
+#    tag = tag to associate with matches
+#       (do a `tag bind' in the text widget for this tag)
+#    w = text widget
+#
+# returns: number of matches found, or -1 if error occured.
+#--------------------------------------------------
+
+proc searchboxSearch {str regexp casesen tag w} {
+   upvar #0 $w wvars
+
+   set tw $w.main.text
+   if {$str==""} {
+      tkiError "Nothing to search for!"
+      return -1
+   }
+
+   if {$regexp} {set type regexp} {set type ""}
+   set cnt [${type}TextSearch $tw $str $tag $casesen]
+   if {$cnt==-1} {tkiError "Malformed regular expression."; return -1}
+   if {$cnt==0} {return [_tkiSearchFileForw $w $str $regexp $casesen 0]}
+   set txt "Hit Ctrl-s to search for next \"$str\"."
+   set wvars(inSearch) 1
+   $w.bar.search.m entryconf "Continue forward search" -state normal
+   $w.bar.search.m entryconf "Continue backward search" -state normal
+   
+   tkiStatus $txt $w 1
+
+   # show the first one
+   searchboxNext $tag $w 0.0
+   return $cnt
+}
+
+proc searchboxSearchBackw {str regexp casesen tag w} {
+   upvar #0 $w wvars
+
+   set tw $w.main.text
+   if {$str==""} {
+      tkiError "Nothing to search for!"
+      return -1
+   }
+
+   if {$regexp} {set type regexp} {set type ""}
+   set cnt [${type}TextSearch $tw $str $tag $casesen]
+   if {$cnt==-1} {tkiError "Malformed regular expression."; return -1}
+   if {$cnt==0} {return [_tkiSearchFileBackw $w $str $regexp $casesen 0]}
+   set txt "Hit Ctrl-r to search for previous \"$str\"."
+   set wvars(inSearch) 1
+   $w.bar.search.m entryconf "Continue forward search" -state normal
+   $w.bar.search.m entryconf "Continue backward search" -state normal
+   
+   tkiStatus $txt $w 1
+
+   # show the first one
+   searchboxPrev $tag $w [$tw index end]
+   return $cnt
+}
+
+#--------------------------------------------------
+#
+# searchboxNext -- show the next match
+#
+# params
+#    tag = tag to search for (see searchboxSearch)
+#    w = text widget
+#    next = index to start search; defaults to last visible line
+#
+# returns: -1 if there is no next match
+#--------------------------------------------------
+proc searchboxNext {tag w {next ""}} {
+    upvar #0 $w wvars 
+
+    set tw $w.main.text
+    if { [$tw tag ranges $tag] == ""} {return 0}
+    if { $next == ""} {
+        set next [lindex [_tkiWinVisibleInfo $tw] 1]
+    }
+    set tmp [$tw tag nextrange $tag $next]
+    if { $tmp == "" } {
+        return -1
+    } else {
+        $tw yview -pickplace [lindex $tmp 0]
+   }
+}
+
+#--------------------------------------------------
+#
+# searchboxPrev -- show the previous match
+#
+# params
+#    tag = tag to search for (see searchboxSearch)
+#    w = text widget
+#    next = index to start search; defaults to top of window
+#
+# returns: -1 if there is no next match
+#--------------------------------------------------
+proc searchboxPrev {tag w {next ""}} {
+    upvar #0 $w wvars 
+
+    set tw $w.main.text
+    if { [$tw tag ranges $tag] == ""} {return 0}
+    set top [$tw index @0,0]
+    if { $next == ""} {set next $top}
+    set tmp [_tkiprevrange $tw $tag $next]
+
+    if { $tmp == ""} {
+        return -1
+    } else {
+        $tw yview -pickplace [lindex $tmp 0]
+   }
+}
+
+
+
+# swiped from mkTextSearch w
+#
+# The utility procedure below searches for all instances of a
+# given string in a text widget and applies a given tag to each
+# instance found.
+# Arguments:
+#
+# w -		The window in which to search.  Must be a text widget.
+# string -	The string to search for.  The search is done using
+#		exact matching only;  no special characters.
+# tag -		Tag to apply to each instance of a matching string.
+# case -        (optional) case sensitive?
+proc TextSearch {w string tag {case 1}} {
+   set cnt 0
+
+    $w tag remove $tag 0.0 end
+    scan [$w index end] %d numLines
+    set l [string length $string]
+    if {!$case} {set string [string tolower $string]}
+    for {set i 1} {$i <= $numLines} {incr i} {
+	set match [$w get $i.0 $i.end]
+	if {!$case} {set match [string tolower $match]}
+	if {[string first $string $match] == -1} {
+	    continue
+	}
+	set line $match
+	set offset 0
+	while 1 {
+	    set index [string first $string $line]
+	    if {$index < 0} {
+		break
+	    }
+	    incr offset $index
+	    $w tag add $tag $i.[expr $offset] $i.[expr $offset+$l]
+            $w tag raise $tag
+            incr cnt
+	    incr offset $l
+	    # below bug fix from mkSearch.tcl
+	    set line [string range $line [expr $index+$l] end]
+	}
+    }
+   return $cnt
+}
+
+
+# modified to handle regexp's and return # of matches -TAP
+proc regexpTextSearch {w string tag {case 1}} {
+   set cnt 0
+   if {$case} {set case ""} {set case "-nocase"}
+   if {[catch {regexp -- $string bozomaniac}]} {return -1}
+
+    $w tag remove $tag 0.0 end
+    scan [$w index end] %d numLines
+
+    for {set i 1} {$i <= $numLines} {incr i} {
+      set line [$w get $i.0 $i.end]
+      set offset 0
+      while 1 {
+         if {![eval regexp $case -indices -- {$string} {$line} match]} break
+         scan $match "%d %d" index iend
+         $w tag add $tag $i.[expr $offset+$index] $i.[expr $offset+$iend+1]
+         $w tag raise $tag
+         set line [string range $line [expr $iend+1] end]
+         incr offset [expr $iend+1]
+         incr cnt
+      }
+   }
+   return $cnt
+}
+
+
+##########################################################################
+# The following material was formerly contained in topgetopt.tcl:
+
+#
+# The function has "top" prefix b/c it is conceptually part of my "top" library.
+#
+# Authors: Kennard White (kennard@ohm.eecs.berkeley.edu)
+#	   Phil Lapsley (phil@ohm.eecs.berkeley.edu)
+#
+# Based on "@(#)getopt.tcl 1.5 12/7/91" by Phil Lapsley
+#
+
+# Simple "getopt" for TCL.
+#
+# topgetopt ?-any? ?-all? opt_list arg_list
+# The proc will process the arguments in {arg_list} according to the
+# information in {opt_list}.  Processed arguments are passed back
+# to the caller by setting variables in the caller's proc-environment
+# (i.e., using upvar).
+#
+# option_list is a list of option specs.  Each spec is a 3-tuple:
+#	{ optname varname mode }
+# optname is the name of the option to be parsed (without the leading dash).
+# varname is the name of a tcl variable in the caller's environment.
+#	If ommitted, the varname defaults to the optname.
+# mode describes the type of option. If ommitted, it defaults to "single".
+#	The modes:
+# 	  single:	sets the variable to the next argument.
+# 	  append:	lappends the next argument to the variable.
+#			this allows multiple instances of the same option.
+#	  boolean:	sets the variable to 0 if the argument prefix is "+"
+#			 and to 1 of the argument prefix is "-".
+#
+# "topgetopt" sets the variables named in the option_list that were
+# specified in arg_list, and returns the remainder of arg_list after
+# the first non "-" or "+" option.  If a bad option specifier is
+# encountered, scanning stops and getopt aborts using error.
+#
+# If -all is specified, then everything in arg_list must match an
+# option in opt_list; that is, there may be no "leftover" arguments.
+#
+# If -any is specified, then processing will stop at the first
+# unmatched option.  That is, the returned list of unprocessed
+# arguments may contain unregcognized options.
+#
+# For example, the option_list:
+#
+#	{ min max { file filename } { toplevel toplevel boolean } }
+#
+# means that the option "-min value" or "-max value" should set the
+# variables "min" or "max" to the specified value, and "-file foo.txt"
+# should set the variable "filename" to foo.txt.  "toplevel"
+# sets the variable "toplevel", and is a boolean:  the option "-toplevel"
+# would set the variable "toplevel" to 1, while the option "+toplevel"
+# would set the variable "toplevel" to 0.
+#
+# In typical usage, the caller will first initialize all the option
+# variables to default values, and then call topgetopt.
+#
+
+proc topgetopt { args } {
+    set do_all 0
+    set do_any 0
+    if { [lindex $args 0] == "-all" } {
+	set do_all 1
+	set args [lreplace $args 0 0]
+    }
+    if { [lindex $args 0] == "-any" } {
+	set do_any 1
+	set args [lreplace $args 0 0]
+    }
+    if { [llength $args] != 2 } {
+	error "topgetopt: programming error: wrong number arguments\n$args"
+    }
+    set opt_list [lindex $args 0]
+    set arg_list [lindex $args 1]
+
+    set n [llength $arg_list]
+    for { set i 0 } { $i < $n } { incr i } {
+	set arg [lindex $arg_list $i]
+	set argkey [string index $arg 0]
+	if { $argkey != "-" && $argkey != "+" } {
+	    if { $do_all } {
+		error "Extra arguments after options not allowed: ``$arg''"
+	    }
+	    break
+	}
+	set argname [string range $arg 1 end]
+	set matched 0
+	foreach opt $opt_list {
+	    if { [lindex $opt 0] == $argname } {
+		set optlen [llength $opt]
+		set pntVar pntVar$i
+		upvar 1 [lindex $opt [expr { ($optlen > 1) ? 1 : 0 }]] $pntVar
+		# lindex returns empty string for out-of-range
+		case [lindex $opt 2] {
+		  b* {
+		    set $pntVar [expr { $argkey == "-" ? 1 : 0}]
+		  }
+		  a* {
+		    lappend $pntVar [lindex $arg_list [incr i 1] ]
+		  }
+	          default {
+		    set $pntVar [lindex $arg_list [incr i 1] ]
+		  }
+		}
+		set matched 1
+		break
+	    }
+	}
+	if { $matched == 0 } {
+	    if { $do_any } {
+		break
+	    } else {
+	        error "No match for argument ``$arg''"
+	    }
+	}
+    }
+    return [lrange $arg_list $i end]
+}
+
+#########################################################################
+# Balloon help, by John Haxby <jch@pwd.hp.com>, with slight changes
+# by Axel Boldt <axelbold@yahoo.com>.
+#
+
+proc tkiBalloonInit {} {
+    global tki
+
+    
+bind balloon <Enter> {
+    if { [info exists balloonHelp(%W)] && [%W cget -state] != "disabled"} {
+        set balloonHelp(%W,after) [after $tki(balloonDelay) {showBalloonHelp %W}]
+    }
+}   
+
+bind balloon <Leave> {
+    unShowBalloonHelp %W
+}
+
+bind balloon <Any-KeyPress> {
+    unShowBalloonHelp %W
+}
+
+bind balloon <Any-Button> {
+    unShowBalloonHelp %W
+}
+proc showBalloonHelp {w} {
+    global tki balloonHelp
+    if {![info exists balloonHelp($w)] || ! $tki(showBalloonsB) } {
+        return
+    }
+    update idletasks
+    set curpos [winfo pointerxy $w]
+    set curwin [eval winfo containing $curpos]
+    if { $w == $curwin } {
+        if ![winfo exists .balloon] {
+            toplevel .balloon
+            wm overrideredirect .balloon true
+            pack [label .balloon.l \
+                    -foreground black \
+                    -background $tki(balloonBackground) \
+                    -highlightthickness 1 \
+                    -highlightbackground black]
+            wm withdraw .balloon
+        }
+        .balloon.l configure -text $balloonHelp($w)
+        set x [expr [lindex $curpos 0]-14]
+        set y [expr [lindex $curpos 1]+19]
+        wm geometry .balloon +$x+$y
+        # This update is important to have the geometry command take 
+        # effect in all cases (A.B.)
+        update idletasks
+        raise .balloon
+        wm deiconify .balloon
+    }
+}
+proc unShowBalloonHelp {w} {
+    global balloonHelp
+    if [info exists balloonHelp($w,after)] {
+        after cancel $balloonHelp($w,after)
+        unset balloonHelp($w,after)
+    }
+    catch {wm withdraw .balloon}
+}
+
+# end of proc tkiBalloonInit
+} 
+
+
+##########################################################################
+##########################################################################
+# Now start the main routines:
+
+
+tkiReset
+tkiBoot
+
+
+##########################################################################
+##########################################################################
+# For emacs:
+
+# Local Variables:
+# mode: tcl
+# mode: outline-minor
+# outline-regexp: "proc \\|#!/bin/sh"
+# End:

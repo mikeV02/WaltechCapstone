@@ -1,0 +1,6 @@
+SUBSYSTEMS=="usb", ACTION=="add", ATTRS{idVendor}=="2341", ATTRS{idProduct}=="00[0-a][0-f]", MODE="666", SYMLINK+="arduino arduino_$attr{serial}", GROUP="dialout" 
+
+SUBSYSTEMS=="usb", ACTION=="add", ATTRS{idProduct}=="6001", ATTRS{idVendor}=="0403", MODE="666", SYMLINK+="arduino arduino_nano_$attr{serial}", GROUP="dialout" 
+
+SUBSYSTEMS=="usb", ACTION=="add", ATTRS{idProduct}=="7523", ATTRS{idVendor}=="1a86", MODE="666", SYMLINK+="arduino arduino_nano_$attr{serial}", GROUP="dialout" 
+

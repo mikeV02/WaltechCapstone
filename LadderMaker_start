@@ -1,0 +1,6 @@
+#!/bin/sh
+
+cd program
+xterm -e python main.py
+
+
