@@ -1,4 +1,6 @@
 import serial
+import sys
+import time
 
 ser = serial.Serial(
             port='com3',
@@ -6,7 +8,19 @@ ser = serial.Serial(
             stopbits=1,
             bytesize=serial.EIGHTBITS)
             
+time.sleep(1)   #needed in order to correctly setup
+
 while True:
-    bytesToRead = ser.inWaiting()
-    if bytesToRead > 0:
-        print ser.read(bytesToRead)
+    ser.write("ready")
+
+    bytes = ser.inWaiting();        #checks how many bytes are in input buffer
+    
+    if bytes > 40:                  #waits till there is more than 40 bytes
+    
+        ser.reset_input_buffer()    #when put together it flushes everything
+        received = ser.read(41)     #but the read size
+        
+        print received , "\n"
+
+    time.sleep(.5)                  #emulate the time I told michael 
+                                    #to wait per request 
