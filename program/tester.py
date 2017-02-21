@@ -44,18 +44,15 @@ class tester():
         print "looking for programming hardware on usb"
         dudeCommand  = None
         QApplication.processEvents()#this makes the UI update before going on.
-        if self.opSys == "NIX" and self.currentHW == "Waltech": dudeCommand = self.testWaltechNIX(displayOutputPlace)
-        if self.opSys == "WIN" and self.currentHW == "Waltech": dudeCommand = self.testWaltechWIN(displayOutputPlace)
-        if self.opSys == "MAC" and self.currentHW == "Waltech": dudeCommand = self.testWaltechMAC(displayOutputPlace)
-        if self.opSys == "NIX" and self.currentHW == "ArduinoUno": dudeCommand = self.testArduinoUnoNIX(displayOutputPlace)
-        if self.opSys == "WIN" and self.currentHW == "ArduinoUno": dudeCommand = self.testArduinoUnoWIN(displayOutputPlace)
-        if self.opSys == "MAC" and self.currentHW == "ArduinoUno": dudeCommand = self.testArduinoUnoMAC(displayOutputPlace)
-        if self.opSys == "NIX" and self.currentHW == "ArduinoMega": dudeCommand = self.testArduinoMegaNIX(displayOutputPlace)
-        if self.opSys == "WIN" and self.currentHW == "ArduinoMega": dudeCommand = self.testArduinoMegaWIN(displayOutputPlace)
-        if self.opSys == "MAC" and self.currentHW == "ArduinoMega": dudeCommand = self.testArduinoMegaMAC(displayOutputPlace)
-        if self.opSys == "NIX" and self.currentHW == "ArduinoNano": dudeCommand = self.testArduinoNanoNIX(displayOutputPlace)
-        if self.opSys == "WIN" and self.currentHW == "ArduinoNano": dudeCommand = self.testArduinoNanoWIN(displayOutputPlace)
-        if self.opSys == "MAC" and self.currentHW == "ArduinoNano": dudeCommand = self.testArduinoNanoMAC(displayOutputPlace)
+        if self.opSys == "NIX" and self.currentHW == "ArduinoUno": dudeCommand, MikePort = self.testArduinoUnoNIX(displayOutputPlace)
+        if self.opSys == "WIN" and self.currentHW == "ArduinoUno": dudeCommand, MikePort = self.testArduinoUnoWIN(displayOutputPlace)
+        if self.opSys == "MAC" and self.currentHW == "ArduinoUno": dudeCommand, MikePort = self.testArduinoUnoMAC(displayOutputPlace)
+        if self.opSys == "NIX" and self.currentHW == "ArduinoMega": dudeCommand, MikePort = self.testArduinoMegaNIX(displayOutputPlace)
+        if self.opSys == "WIN" and self.currentHW == "ArduinoMega": dudeCommand, MikePort = self.testArduinoMegaWIN(displayOutputPlace)
+        if self.opSys == "MAC" and self.currentHW == "ArduinoMega": dudeCommand, MikePort = self.testArduinoMegaMAC(displayOutputPlace)
+        if self.opSys == "NIX" and self.currentHW == "ArduinoNano": dudeCommand, MikePort = self.testArduinoNanoNIX(displayOutputPlace)
+        if self.opSys == "WIN" and self.currentHW == "ArduinoNano": dudeCommand, MikePort = self.testArduinoNanoWIN(displayOutputPlace)
+        if self.opSys == "MAC" and self.currentHW == "ArduinoNano": dudeCommand, MikePort = self.testArduinoNanoMAC(displayOutputPlace)
         os.chdir("../")
         time.sleep(1)
         QApplication.restoreOverrideCursor()
@@ -64,7 +61,7 @@ class tester():
         os.chdir("./program")
         print "current dir:", os.getcwd()
         if "program" not in os.getcwd(): print "worng place"
-        return dudeCommand 
+        return dudeCommand, MikePort
   
   
     """
@@ -86,123 +83,6 @@ class tester():
   
   
         
-###WALTECH        
-    def testWaltechWIN(self,displayOutputPlace):
-
-        #first check for libusb-win32?
-        
-        commandwfile = r"..\\WinAVR\\bin\\avrdude.exe -p m32 -P usb -c usbtiny -B5 -U lfuse:r:-:h -U hfuse:r:-:h"
-        output,error = subprocess.Popen(commandwfile,stdout = subprocess.PIPE, stderr= subprocess.PIPE,shell=True).communicate()
-        displayOutputPlace.setText ("")
-        self.boldLine(displayOutputPlace,"Output:")
-        displayOutputPlace.append (str(error))
-        if "avrdude: AVR device initialized and ready to accept instructions" in str(error) \
-            and "avrdude: Device signature = 0x1e9502" in str(error):
-            self.boldLine(displayOutputPlace,"USB Programmer Found, OK.")
-            displayOutputPlace.append("Fuses:")
-            displayOutputPlace.append(str(output))
-            if "0x1f"in str(output) and "0xc9" in str(output):
-                displayOutputPlace.append("Fuses OK.")
-
-            else:
-                commandwfile = r"..\\WinAVR\\bin\\avrdude.exe -p m32 -P usb -c usbtiny -B5 -U hfuse:w:0xC9:m -U lfuse:w:0x1F:m"
-                output,error = subprocess.Popen(commandwfile,stdout = subprocess.PIPE, stderr= subprocess.PIPE,shell=True).communicate()
-                if "avrdude: 1 bytes of lfuse verified" in str(error):
-                    displayOutputPlace.append ("Fuses Reset, OK.")
-                else:
-                    self.boldLine(displayOutputPlace,"Fuse Error")
-                    
-        if "avrdude.exe: Error: Could not find" in str(error):
-            self.boldLine(displayOutputPlace,"USB Programmer Not Found.")
-            displayOutputPlace.append("Check USB connection, and USB driver")
-            
-        if "avrdude.exe: initialization failed, rc=-1" in str(error):
-            self.boldLine(displayOutputPlace,"Hardware Not Responding.")
-            displayOutputPlace.append("USB OK, Check power to hardware.")
-            
-        if "avrdude.exe: error: usbtiny_transmit: error sending control message: Operation not permitted" \
-                in str(error) and "(expected 4, got -1)" in str(error) : 
-            self.boldLine(displayOutputPlace,"No permission to USB device")
-            displayOutputPlace.append("See Help > USB")
-
-
-    def testWaltechNIX(self,displayOutputPlace):
-        commandwfile = r"../avrdude  -C ../avrdude.conf -p m32 -P usb -c usbtiny -B5 -U lfuse:r:-:h -U hfuse:r:-:h"
-        output,error = subprocess.Popen(commandwfile,stdout = subprocess.PIPE, stderr= subprocess.PIPE,shell=True).communicate()
-        displayOutputPlace.setText ("")
-        self.boldLine(displayOutputPlace,"Output:")
-        displayOutputPlace.append (str(error))
-        
-        if "avrdude: AVR device initialized and ready to accept instructions" in str(error) \
-            and "avrdude: Device signature = 0x1e9502" in str(error):
-            self.boldLine(displayOutputPlace,"USB Programmer Found, OK.")
-            displayOutputPlace.append("Fuses:")
-            displayOutputPlace.append(str(output))
-            if "0x1f"in str(output) and "0xc9" in str(output):
-                displayOutputPlace.append("Fuses OK.") 
-            else:
-                commandwfile = r"../avrdude  -C ../avrdude.conf -p m32 -P usb -c usbtiny -B5 -U hfuse:w:0xC9:m -U lfuse:w:0x1F:m "
-                output,error = subprocess.Popen(commandwfile,stdout = subprocess.PIPE, stderr= subprocess.PIPE,shell=True).communicate()
-                if "avrdude: 1 bytes of lfuse verified" in str(error):
-                    displayOutputPlace.append ("Fuses Reset, OK.")
-                else:
-                    self.boldLine(displayOutputPlace,"Fuse Error")
-                            
-        if "avrdude: Error: Could not find USBtiny device" in str(error):
-            self.boldLine(displayOutputPlace,"USB Programmer Not Found.")
-            displayOutputPlace.append("Check USB connection, and USB driver")
-            
-        if "avrdude: initialization failed, rc=-1" in str(error):
-            self.boldLine(displayOutputPlace,"Hardware Not Responding.")
-            displayOutputPlace.append("USB OK, Check power to hardware.")
-            
-        if "avrdude: error: usbtiny_transmit: error sending control message: Operation not permitted" \
-                in str(error) and "(expected 4, got -1)" in str(error) : 
-            self.boldLine(displayOutputPlace,"No permission to USB device")
-            displayOutputPlace.append("See Help > USB")
-    
-            #SUBSYSTEM=="usb", ATTR{product}=="USBtiny", ATTR{idProduct}=="0c9f", ATTRS{idVendor}=="1781", MODE="0660", GROUP="dialout"
-            #disconnect and reconnect USB"  
-
-
-    def testWaltechMAC(self,displayOutputPlace):
-        commandwfile = r"avrdude -p m32 -P usb -c usbtiny -B5 -U lfuse:r:-:h -U hfuse:r:-:h"
-        output,error = subprocess.Popen(commandwfile,stdout = subprocess.PIPE, stderr= subprocess.PIPE,shell=True).communicate()
-        displayOutputPlace.setText ("")
-        self.boldLine(displayOutputPlace,"Output:")
-        displayOutputPlace.append (str(error))
-        
-        if "avrdude: AVR device initialized and ready to accept instructions" in str(error) \
-            and "avrdude: Device signature = 0x1e9502" in str(error):
-            self.boldLine(displayOutputPlace,"USB Programmer Found, OK.")
-            displayOutputPlace.append("Fuses:")
-            displayOutputPlace.append(str(output))
-            if "0x1f"in str(output) and "0xc9" in str(output):
-                displayOutputPlace.append("Fuses OK.") 
-            else:
-                commandwfile = r"avrdude -p m32 -P usb -c usbtiny -B5 -U hfuse:w:0xC9:m -U lfuse:w:0x1F:m "
-                output,error = subprocess.Popen(commandwfile,stdout = subprocess.PIPE, stderr= subprocess.PIPE,shell=True).communicate()
-                if "avrdude: 1 bytes of lfuse verified" in str(error):
-                    displayOutputPlace.append ("Fuses Reset, OK.")
-                else:
-                    self.boldLine(displayOutputPlace,"Fuse Error")
-                            
-        if "avrdude: Error: Could not find USBtiny device" in str(error):
-            self.boldLine(displayOutputPlace,"USB Programmer Not Found.")
-            displayOutputPlace.append("Check USB connection, and USB driver")
-            
-        if "avrdude: initialization failed, rc=-1" in str(error):
-            self.boldLine(displayOutputPlace,"Hardware Not Responding.")
-            displayOutputPlace.append("USB OK, Check power to hardware.")
-            
-        if "avrdude: error: usbtiny_transmit: error sending control message: Operation not permitted" \
-                in str(error) and "(expected 4, got -1)" in str(error) : 
-            self.boldLine(displayOutputPlace,"No permission to USB device")
-            displayOutputPlace.append("See Help > USB")
-    
-            #SUBSYSTEM=="usb", ATTR{product}=="USBtiny", ATTR{idProduct}=="0c9f", ATTRS{idVendor}=="1781", MODE="0660", GROUP="dialout"
-            #disconnect and reconnect USB"  
-     
 ####ARD MEGA
 
     def testArduinoMegaWIN(self,displayOutputPlace):
@@ -250,7 +130,7 @@ class tester():
             return None
         else: 
             commandAvrDude = r"..\\WinAVR\\bin\\avrdude.exe -p m2560 -P " + USBserialPort + " -c wiring"
-            return commandAvrDude 
+            return commandAvrDude, USBserialPort
 
     def testArduinoMegaNIX(self,displayOutputPlace): 
         USBserialPort = None
@@ -325,7 +205,7 @@ class tester():
             return None
         else:
             commandAvrDude = r"../avrdude  -C ../avrdude.conf -p m2560 -P " + USBserialPort  + " -c stk500v2 -F -D"
-            return commandAvrDude 
+            return commandAvrDude, USBserialPort
                 
     def testArduinoMegaMAC(self,displayOutputPlace):
         USBserialPort = None
@@ -378,7 +258,7 @@ class tester():
             return None
         else: 
             commandAvrDude = r"../avrdude  -C ../avrdude.conf -p m2560 -P " + USBserialPort  + " -c stk500v2 -B5 -F"
-            return commandAvrDude 
+            return commandAvrDude, USBserialPort 
         
 ###ARD UNO        
     def testArduinoUnoWIN(self,displayOutputPlace):
@@ -423,7 +303,7 @@ class tester():
             return None
         else: 
             commandAvrDude = r"..\\WinAVR\\bin\\avrdude.exe -p m328p -P " + USBserialPort + " -c arduino"
-            return commandAvrDude    
+            return commandAvrDude, USBserialPort   
             
     def testArduinoUnoNIX(self,displayOutputPlace): 
         USBserialPort = None
@@ -473,7 +353,7 @@ class tester():
             return None
         else: 
             commandAvrDude = r"../avrdude  -C ../avrdude.conf -p m328p -P " + USBserialPort + " -c stk500v1 -B5 -F"
-            return commandAvrDude
+            return commandAvrDude, USBserialPort
         
         
                 
@@ -527,7 +407,7 @@ class tester():
             return None
         else: 
             commandAvrDude = r"../avrdude  -C ../avrdude.conf -p m328p -P " + USBserialPort + " -c stk500v1 -B5 -F"
-            return commandAvrDude
+            return commandAvrDude, USBserialPort
         
 ###ARD Nano       
     def testArduinoNanoWIN(self,displayOutputPlace):
@@ -572,7 +452,7 @@ class tester():
             return None
         else: 
             commandAvrDude = r"..\\WinAVR\\bin\\avrdude.exe -p m328p -P " + USBserialPort + " -c wiring"
-            return commandAvrDude    
+            return commandAvrDude, USBserialPort 
             
     def testArduinoNanoNIX(self,displayOutputPlace): 
         USBserialPort = None
@@ -643,7 +523,7 @@ class tester():
             return None
         else: 
             commandAvrDude = r"../avrdude  -C ../avrdude.conf -p m328p -P " + USBserialPort + " -c arduino -b 57600 -F"
-            return commandAvrDude
+            return commandAvrDude, USBserialPort
         
         
                 
@@ -697,7 +577,7 @@ class tester():
             return None
         else: 
             commandAvrDude = r"../avrdude  -C ../avrdude.conf -p m328p -P " + maybePort + " -c arduino -b 57600 -F"
-            return commandAvrDude
+            return commandAvrDude, USBserialPort
 
 
     def boldLine(self, displayOutputPlace, txt):

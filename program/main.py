@@ -324,7 +324,13 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
         elif plat == 'win32': opSys = "WIN"
         elif plat == "darwin": opSys = "MAC"
         else: opSys = "WIN"
-        tester(opSys,self.currentHW).test1(self.ui.textBrowser)
+        DUDE, MIKE = tester(opSys,self.currentHW).test1(self.ui.textBrowser)
+        self.CheckPort(DUDE, MIKE)
+
+    def CheckPort(self, DUDE, MIKE):
+        print "INSIDE FUNCTION"
+        print "THIS IS DUDE COMMAND ", DUDE
+        print "THIS IS THE SERIAL PORT ", MIKE
 
 
     def printLadder(self):
