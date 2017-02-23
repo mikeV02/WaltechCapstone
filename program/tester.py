@@ -44,15 +44,15 @@ class tester():
         print "looking for programming hardware on usb"
         dudeCommand  = None
         QApplication.processEvents()#this makes the UI update before going on.
-        if self.opSys == "NIX" and self.currentHW == "ArduinoUno": dudeCommand, MikePort = self.testArduinoUnoNIX(displayOutputPlace)
-        if self.opSys == "WIN" and self.currentHW == "ArduinoUno": dudeCommand, MikePort = self.testArduinoUnoWIN(displayOutputPlace)
-        if self.opSys == "MAC" and self.currentHW == "ArduinoUno": dudeCommand, MikePort = self.testArduinoUnoMAC(displayOutputPlace)
-        if self.opSys == "NIX" and self.currentHW == "ArduinoMega": dudeCommand, MikePort = self.testArduinoMegaNIX(displayOutputPlace)
-        if self.opSys == "WIN" and self.currentHW == "ArduinoMega": dudeCommand, MikePort = self.testArduinoMegaWIN(displayOutputPlace)
-        if self.opSys == "MAC" and self.currentHW == "ArduinoMega": dudeCommand, MikePort = self.testArduinoMegaMAC(displayOutputPlace)
-        if self.opSys == "NIX" and self.currentHW == "ArduinoNano": dudeCommand, MikePort = self.testArduinoNanoNIX(displayOutputPlace)
-        if self.opSys == "WIN" and self.currentHW == "ArduinoNano": dudeCommand, MikePort = self.testArduinoNanoWIN(displayOutputPlace)
-        if self.opSys == "MAC" and self.currentHW == "ArduinoNano": dudeCommand, MikePort = self.testArduinoNanoMAC(displayOutputPlace)
+        if self.opSys == "NIX" and self.currentHW == "ArduinoUno": dudeCommand, Port = self.testArduinoUnoNIX(displayOutputPlace)
+        if self.opSys == "WIN" and self.currentHW == "ArduinoUno": dudeCommand, Port = self.testArduinoUnoWIN(displayOutputPlace)
+        if self.opSys == "MAC" and self.currentHW == "ArduinoUno": dudeCommand, Port = self.testArduinoUnoMAC(displayOutputPlace)
+        if self.opSys == "NIX" and self.currentHW == "ArduinoMega": dudeCommand, Port = self.testArduinoMegaNIX(displayOutputPlace)
+        if self.opSys == "WIN" and self.currentHW == "ArduinoMega": dudeCommand, Port = self.testArduinoMegaWIN(displayOutputPlace)
+        if self.opSys == "MAC" and self.currentHW == "ArduinoMega": dudeCommand, Port = self.testArduinoMegaMAC(displayOutputPlace)
+        if self.opSys == "NIX" and self.currentHW == "ArduinoNano": dudeCommand, Port = self.testArduinoNanoNIX(displayOutputPlace)
+        if self.opSys == "WIN" and self.currentHW == "ArduinoNano": dudeCommand, Port = self.testArduinoNanoWIN(displayOutputPlace)
+        if self.opSys == "MAC" and self.currentHW == "ArduinoNano": dudeCommand, Port = self.testArduinoNanoMAC(displayOutputPlace)
         os.chdir("../")
         time.sleep(1)
         QApplication.restoreOverrideCursor()
@@ -61,7 +61,7 @@ class tester():
         os.chdir("./program")
         print "current dir:", os.getcwd()
         if "program" not in os.getcwd(): print "worng place"
-        return dudeCommand, MikePort
+        return dudeCommand, Port
   
   
     """
@@ -127,9 +127,11 @@ class tester():
         if USBserialPort == None: 
             self.boldLine(displayOutputPlace,"Arduino not found")
             displayOutputPlace.append("or is numbered greater than COM9")
-            return None
+            #MODIFIED BY MIGUEL
+            return None, None
         else: 
             commandAvrDude = r"..\\WinAVR\\bin\\avrdude.exe -p m2560 -P " + USBserialPort + " -c wiring"
+            #MODIFIED BY MIGUEL
             return commandAvrDude, USBserialPort
 
     def testArduinoMegaNIX(self,displayOutputPlace): 
@@ -202,9 +204,11 @@ class tester():
                     break
         if portFound == False:
             self.boldLine(displayOutputPlace,"Arduino port not found in scan")
-            return None
+            #MODIFIED BY MIGUEL
+            return None, None
         else:
             commandAvrDude = r"../avrdude  -C ../avrdude.conf -p m2560 -P " + USBserialPort  + " -c stk500v2 -F -D"
+            #MODIFIED BY MIGUEL
             return commandAvrDude, USBserialPort
                 
     def testArduinoMegaMAC(self,displayOutputPlace):
@@ -255,9 +259,11 @@ class tester():
                     displayOutputPlace.append("MEGA found on " + USBserialPort )
         if portFound == False:
             self.boldLine(displayOutputPlace,"Arduino port not found in scan")
-            return None
+            #MODIFIED BY MIGUEL
+            return None, None
         else: 
             commandAvrDude = r"../avrdude  -C ../avrdude.conf -p m2560 -P " + USBserialPort  + " -c stk500v2 -B5 -F"
+            #MODIFIED BY MIGUEL
             return commandAvrDude, USBserialPort 
         
 ###ARD UNO        
@@ -300,9 +306,11 @@ class tester():
         if USBserialPort == None: 
             self.boldLine(displayOutputPlace,"Arduino not found")
             displayOutputPlace.append("or is numbered greater than COM9")
-            return None
+            #MODIFIED BY MIGUEL
+            return None, None
         else: 
             commandAvrDude = r"..\\WinAVR\\bin\\avrdude.exe -p m328p -P " + USBserialPort + " -c arduino"
+            #MODIFIED BY MIGUEL
             return commandAvrDude, USBserialPort   
             
     def testArduinoUnoNIX(self,displayOutputPlace): 
@@ -350,9 +358,11 @@ class tester():
                     portFound = True
         if portFound == False:
             self.boldLine(displayOutputPlace,"Arduino port not found in scan")
-            return None
+            #MODIFIED BY MIGUEL
+            return None, None
         else: 
             commandAvrDude = r"../avrdude  -C ../avrdude.conf -p m328p -P " + USBserialPort + " -c stk500v1 -B5 -F"
+            #MODIFIED BY MIGUEL
             return commandAvrDude, USBserialPort
         
         
@@ -404,9 +414,11 @@ class tester():
                     displayOutputPlace.append("UNO found on " + USBserialPort )
         if portFound == False:
             self.boldLine(displayOutputPlace,"Arduino port not found in scan")
-            return None
+            #MODIFIED BY MIGUEL
+            return None, None
         else: 
             commandAvrDude = r"../avrdude  -C ../avrdude.conf -p m328p -P " + USBserialPort + " -c stk500v1 -B5 -F"
+            #MODIFIED BY MIGUEL
             return commandAvrDude, USBserialPort
         
 ###ARD Nano       
@@ -449,9 +461,11 @@ class tester():
         if USBserialPort == None: 
             self.boldLine(displayOutputPlace,"Arduino not found")
             displayOutputPlace.append("or is numbered greater than COM9")
-            return None
+            #MODIFIED BY MIGUEL
+            return None, None
         else: 
             commandAvrDude = r"..\\WinAVR\\bin\\avrdude.exe -p m328p -P " + USBserialPort + " -c wiring"
+            #MODIFIED BY MIGUEL
             return commandAvrDude, USBserialPort 
             
     def testArduinoNanoNIX(self,displayOutputPlace): 
@@ -520,9 +534,11 @@ class tester():
                     portFound = True
         if portFound == False:
             self.boldLine(displayOutputPlace,"Arduino port not found in scan")
-            return None
+            #MODIFIED BY MIGUEL
+            return None, None
         else: 
             commandAvrDude = r"../avrdude  -C ../avrdude.conf -p m328p -P " + USBserialPort + " -c arduino -b 57600 -F"
+            #MODIFIED BY MIGUEL
             return commandAvrDude, USBserialPort
         
         
@@ -574,9 +590,11 @@ class tester():
                     displayOutputPlace.append("Nano found on " + USBserialPort )
         if portFound == False:
             self.boldLine(displayOutputPlace,"Arduino port not found in scan")
-            return None
+            #MODIFIED BY MIGUEL
+            return None, None
         else: 
             commandAvrDude = r"../avrdude  -C ../avrdude.conf -p m328p -P " + maybePort + " -c arduino -b 57600 -F"
+            #MODIFIED BY MIGUEL
             return commandAvrDude, USBserialPort
 
 

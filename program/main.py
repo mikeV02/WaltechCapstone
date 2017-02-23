@@ -242,6 +242,8 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
             self.ui.actionADC.setEnabled(True)
             self.ui.actionArduinoMega.setChecked(True)
         print "Hardware:", HW
+        ##ADDED BY MIGUEL
+        self.checkHW()
            
     def checkForHiIO(self,oldHW):
         #go through grid and look for I higher than 12 for Waltech, 5 for ArduinoUno , 6 for ArduinoNano 
@@ -324,13 +326,14 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
         elif plat == 'win32': opSys = "WIN"
         elif plat == "darwin": opSys = "MAC"
         else: opSys = "WIN"
-        DUDE, MIKE = tester(opSys,self.currentHW).test1(self.ui.textBrowser)
-        self.CheckPort(DUDE, MIKE)
+        #MODIFIED BY MIGUEL
+        DUDE, PORT = tester(opSys,self.currentHW).test1(self.ui.textBrowser)
+        self.CheckPort(DUDE, PORT)
 
-    def CheckPort(self, DUDE, MIKE):
+    ##ADDED BY MIGUEL
+    def CheckPort(self, DUDE, PORT):
         print "INSIDE FUNCTION"
-        print "THIS IS DUDE COMMAND ", DUDE
-        print "THIS IS THE SERIAL PORT ", MIKE
+        print "THIS IS THE SERIAL PORT ", PORT
 
 
     def printLadder(self):
