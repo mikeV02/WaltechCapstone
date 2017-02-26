@@ -174,7 +174,7 @@ class OutLineToC():
 
         C_txt = C_txt + "for (int i = 0; i<10; i++){"
         C_txt = C_txt + '    uart_puts("HelloWoooooooooooooooorld!\\n");\n\n'
-        C_txt = C_txt + '    uart_puts("De Nuevooo! ");\n}\n'
+        C_txt = C_txt + '    uart_puts("De Nuevooo!\\n");\n}\n'
         ###
 
         if self.currentHW == "ArduinoMega"or self.currentHW == "ArduinoUno" or self.currentHW == "ArduinoNano":

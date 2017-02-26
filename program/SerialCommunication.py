@@ -36,10 +36,11 @@ class SerialCommunicator():
         #    #self.ser.reset_input_buffer()    #when put together it flushes everything
         
         received += self.ser.readline()
-        self.ser.close()
+        #self.ser.close()
         return received
         
         
-se = SerialCommunicator("/dev/ttyACM0")
+se = SerialCommunicator("/dev/ttyACM1")
 
-print se.getArduinoState()
+while 1:
+    print se.getArduinoState()
