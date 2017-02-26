@@ -328,15 +328,17 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
         elif plat == "darwin": opSys = "MAC"
         else: opSys = "WIN"
         ###MODIFIED BY MIGUEL
-        DUDE, PORT = tester(opSys,self.currentHW).test1(self.ui.textBrowser)
-        self.CheckPort(DUDE, PORT)
+        DUDE, self.PORT = tester(opSys,self.currentHW).test1(self.ui.textBrowser)
+        self.CheckPort(DUDE)
         ###
 
     ###ADDED BY MIGUEL
-    def CheckPort(self, DUDE, PORT):
-        print "THIS IS THE SERIAL PORT ", PORT
+    def CheckPort(self, DUDE):
+        print "THIS IS THE SERIAL PORT ", self.PORT
 
-    SerialCommunicator(self, PORT)
+    #from SerialCommunication import SerialCommunicator
+
+    #SerialCommunicator(PORT).getArduinoState()
     ###
 
 
@@ -435,6 +437,12 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
         outLine = ladderToOutLine(self.grid).makeOutLine()
         OutLineToC(self.grid,self.currentHW).makeC(outLine,self.ui.textBrowser)
         #hexMaker(self).self.saveCfileAndCompile(C_txt,displayOutputPlace)
+
+        ###ADDED BY MIGUEL
+        #from SerialCommunication import SerialCommunicator
+        print "HOLAA ", self.PORT
+        #SerialCommunicator(self.PORT)
+        ###
 
     def showInfo(self):
         """

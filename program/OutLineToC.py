@@ -109,6 +109,11 @@ class OutLineToC():
         print "making C\n"
         
         C_txt = "#include <stdint.h>\n#include <stdlib.h>\n#include <string.h>\n#include <avr/io.h>\n#include <avr/interrupt.h>\n\n"
+
+        ###ADDED BY MIGUEL
+        C_txt = C_txt + '#include "uart.c"\n\n'
+        ###
+
         C_txt = C_txt +"volatile uint8_t timerOF=0;\n"
         if self.currentHW == "ArduinoMega"or self.currentHW == "ArduinoUno" or self.currentHW == "ArduinoNano":
             C_txt = C_txt +"#define OVERSAMPLES 10\n"
@@ -162,6 +167,16 @@ class OutLineToC():
 
         C_txt = C_txt +"int main()\n"
         C_txt = C_txt +"{\n"
+
+        ###ADDED BY MIGUEL
+        C_txt = C_txt + "    // Initialise USART\n"
+        C_txt = C_txt + "    uart_init();\n"
+
+        C_txt = C_txt + "for (int i = 0; i<10; i++){"
+        C_txt = C_txt + '    uart_puts("HelloWoooooooooooooooorld!\\n");\n\n'
+        C_txt = C_txt + '    uart_puts("De Nuevooo! ");\n}\n'
+        ###
+
         if self.currentHW == "ArduinoMega"or self.currentHW == "ArduinoUno" or self.currentHW == "ArduinoNano":
             C_txt = C_txt +"//set up ADC\n"    
             C_txt = C_txt +"    ADCSRA |= ( (1<<ADPS2)|(1<<ADPS1)|(1<<ADPS0) );//  sets adc clock prescaler to 128 //checked\n"

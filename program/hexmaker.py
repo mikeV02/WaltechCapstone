@@ -40,76 +40,60 @@ class hexMaker():
         #commands:
         #note: aavrgcc commands are here, but Arduino Avrdude commands are in tester.py
         #LINUX
-        if currentHW == "Waltech" and self.opSys == "NIX":
-            commandListo = r"../avr/bin/avr-gcc -x c -I. -g -mmcu=atmega32 -DF_CPU=4000000UL -Os -fpack-struct -fshort-enums -funsigned-bitfields -funsigned-char -Wall -std=gnu99 -Wa,-ahlms=LADDER.lst -c "
-            commandOut = r"../avr/bin/avr-gcc  -I. -T ../avr/lib/ldscripts/avr5.x -Wl,-Map,LADDER.out.map  -mmcu=atmega32 -lm -o LADDER.out " 
-            commandHex = r"../avr/bin/avr-objcopy -j .text -j .data -O ihex LADDER.out LADDER.hex"
-            commandAvrDude = r"../avrdude  -C ../avrdude.conf -p m32 -P usb -c usbtiny -B5"
-
         if currentHW == "ArduinoUno" and self.opSys == "NIX":
             commandListo = r"../avr/bin/avr-gcc -x c -I. -g -mmcu=atmega328 -DF_CPU=16000000UL -Os -fpack-struct -fshort-enums -funsigned-bitfields -funsigned-char -Wall -std=gnu99 -Wa,-ahlms=LADDER.lst -c "
             commandOut = r"../avr/bin/avr-gcc  -I. -T ../avr/lib/ldscripts/avr5.x -Wl,-Map,LADDER.out.map  -mmcu=atmega328 -lm -o LADDER.out " 
             commandHex = r"../avr/bin/avr-objcopy -j .text -j .data -O ihex LADDER.out LADDER.hex"
-            commandAvrDude =tester(self.opSys,currentHW).test1(displayOutputPlace)
+            commandAvrDude =tester(self.opSys,currentHW).test1(displayOutputPlace)[0]
             
         if currentHW == "ArduinoNano" and self.opSys == "NIX":
             commandListo = r"../avr/bin/avr-gcc -x c -I. -g -mmcu=atmega328 -DF_CPU=16000000UL -Os -fpack-struct -fshort-enums -funsigned-bitfields -funsigned-char -Wall -std=gnu99 -Wa,-ahlms=LADDER.lst -c "
             commandOut = r"../avr/bin/avr-gcc  -I. -T ../avr/lib/ldscripts/avr5.x -Wl,-Map,LADDER.out.map  -mmcu=atmega328 -lm -o LADDER.out " 
             commandHex = r"../avr/bin/avr-objcopy -j .text -j .data -O ihex LADDER.out LADDER.hex"
-            commandAvrDude =tester(self.opSys,currentHW).test1(displayOutputPlace)
+            commandAvrDude =tester(self.opSys,currentHW).test1(displayOutputPlace)[0]
      
         if currentHW == "ArduinoMega" and self.opSys == "NIX":
             commandListo = r"../avr/bin/avr-gcc -x c -I. -g -mmcu=atmega2560 -DF_CPU=16000000UL -Os -fpack-struct -fshort-enums -funsigned-bitfields -funsigned-char -Wall -std=gnu99 -Wa,-ahlms=LADDER.lst -c "
             commandOut = r"../avr/bin/avr-gcc  -I. -T ../avr/lib/ldscripts/avr6.x -Wl,-Map,LADDER.out.map  -mmcu=atmega2560 -lm -o LADDER.out " 
             commandHex = r"../avr/bin/avr-objcopy -j .text -j .data -O ihex LADDER.out LADDER.hex"
-            commandAvrDude =tester(self.opSys,currentHW).test1(displayOutputPlace)
+            commandAvrDude =tester(self.opSys,currentHW).test1(displayOutputPlace)[0]
             
         #MAC
-        if currentHW == "Waltech" and self.opSys == "MAC":
-            commandListo = r"avr-gcc -x c -I. -g -mmcu=atmega32 -DF_CPU=4000000UL -Os -fpack-struct -fshort-enums -funsigned-bitfields -funsigned-char -Wall -std=gnu99 -Wa,-ahlms=LADDER.lst -c "
-            commandOut = r"avr-gcc  -I. -Wl,-Map,LADDER.out.map  -mmcu=atmega32 -lm -o LADDER.out " 
-            commandHex = r"avr-objcopy -j .text -j .data -O ihex LADDER.out LADDER.hex"
-            commandAvrDude = r"avrdude  -C ../avrdude.conf -p m32 -P usb -c usbtiny -B5"
         if currentHW == "ArduinoUno" and self.opSys == "MAC":
             commandListo = r"avr-gcc -x c -I. -g -mmcu=atmega328 -DF_CPU=16000000UL -Os -fpack-struct -fshort-enums -funsigned-bitfields -funsigned-char -Wall -std=gnu99 -Wa,-ahlms=LADDER.lst -c "
             commandOut = r"avr-gcc  -I. -Wl,-Map,LADDER.out.map  -mmcu=atmega328 -lm -o LADDER.out " 
             commandHex = r"avr-objcopy -j .text -j .data -O ihex LADDER.out LADDER.hex"
-            commandAvrDude =tester(self.opSys,currentHW).test1(displayOutputPlace)
+            commandAvrDude =tester(self.opSys,currentHW).test1(displayOutputPlace)[0]
             
         if currentHW == "ArduinoNano" and self.opSys == "MAC":
             commandListo = r"avr-gcc -x c -I. -g -mmcu=atmega328 -DF_CPU=16000000UL -Os -fpack-struct -fshort-enums -funsigned-bitfields -funsigned-char -Wall -std=gnu99 -Wa,-ahlms=LADDER.lst -c "
             commandOut = r"avr-gcc  -I. -Wl,-Map,LADDER.out.map  -mmcu=atmega328 -lm -o LADDER.out " 
             commandHex = r"avr-objcopy -j .text -j .data -O ihex LADDER.out LADDER.hex"
-            commandAvrDude =tester(self.opSys,currentHW).test1(displayOutputPlace)
+            commandAvrDude =tester(self.opSys,currentHW).test1(displayOutputPlace)[0]
        
         if currentHW == "ArduinoMega" and self.opSys == "MAC":
             commandListo = r"avr-gcc -x c -I. -g -mmcu=atmega2560 -DF_CPU=16000000UL -Os -fpack-struct -fshort-enums -funsigned-bitfields -funsigned-char -Wall -std=gnu99 -Wa,-ahlms=LADDER.lst -c "
             commandOut = r"avr-gcc  -I. -Wl,-Map,LADDER.out.map  -mmcu=atmega2560 -lm -o LADDER.out " 
             commandHex = r"avr-objcopy -j .text -j .data -O ihex LADDER.out LADDER.hex"
-            commandAvrDude =tester(self.opSys,currentHW).test1(displayOutputPlace)
+            commandAvrDude =tester(self.opSys,currentHW).test1(displayOutputPlace)[0]
        
         #WINDOWS
-        if currentHW == "Waltech" and self.opSys == "WIN":
-            commandListo = r"..\\WinAVR\\bin\\avr-gcc.exe -x c -I. -g -mmcu=atmega32 -DF_CPU=4000000UL -Os -fpack-struct -fshort-enums -funsigned-bitfields -funsigned-char -Wall -std=gnu99 -Wa,-ahlms=LADDER.lst -c "
-            commandOut =r"..\\WinAVR\\bin\\avr-gcc.exe  -I. -Wl,-Map,LADDER.out.map  -mmcu=atmega32 -lm -o LADDER.out " 
-            commandHex = r"..\\WinAVR\\bin\\avr-objcopy.exe -j .text -j .data -O ihex LADDER.out LADDER.hex"
-            commandAvrDude = r"..\\WinAVR\\bin\\avrdude.exe -p m32 -P usb -c usbtiny -B5"
         if currentHW == "ArduinoUno" and self.opSys == "WIN":
             commandListo = r"..\\WinAVR\\bin\\avr-gcc.exe -x c -I. -g -mmcu=atmega328 -DF_CPU=16000000UL -Os -fpack-struct -fshort-enums -funsigned-bitfields -funsigned-char -Wall -std=gnu99 -Wa,-ahlms=LADDER.lst -c "
             commandOut =r"..\\WinAVR\\bin\\avr-gcc.exe  -I. -Wl,-Map,LADDER.out.map  -mmcu=atmega328 -lm -o LADDER.out " 
             commandHex = r"..\\WinAVR\\bin\\avr-objcopy.exe -j .text -j .data -O ihex LADDER.out LADDER.hex"
-            commandAvrDude =tester(self.opSys,currentHW).test1(displayOutputPlace)
+            commandAvrDude =tester(self.opSys,currentHW).test1(displayOutputPlace)[0]
         if currentHW == "ArduinoNano" and self.opSys == "WIN":
             commandListo = r"..\\WinAVR\\bin\\avr-gcc.exe -x c -I. -g -mmcu=atmega328 -DF_CPU=16000000UL -Os -fpack-struct -fshort-enums -funsigned-bitfields -funsigned-char -Wall -std=gnu99 -Wa,-ahlms=LADDER.lst -c "
             commandOut =r"..\\WinAVR\\bin\\avr-gcc.exe  -I. -Wl,-Map,LADDER.out.map  -mmcu=atmega328 -lm -o LADDER.out " 
             commandHex = r"..\\WinAVR\\bin\\avr-objcopy.exe -j .text -j .data -O ihex LADDER.out LADDER.hex"
-            commandAvrDude =tester(self.opSys,currentHW).test1(displayOutputPlace)
+            commandAvrDude =tester(self.opSys,currentHW).test1(displayOutputPlace)[0]
             
         if currentHW == "ArduinoMega" and self.opSys == "WIN":
             commandListo = r"..\\WinAVR\\bin\\avr-gcc.exe -x c -I. -g -mmcu=atmega2560 -DF_CPU=16000000UL -Os -fpack-struct -fshort-enums -funsigned-bitfields -funsigned-char -Wall -std=gnu99 -Wa,-ahlms=LADDER.lst -c "
             commandOut =r"..\\WinAVR\\bin\\avr-gcc.exe  -I. -Wl,-Map,LADDER.out.map  -mmcu=atmega2560 -lm -o LADDER.out " 
             commandHex = r"..\\WinAVR\\bin\\avr-objcopy.exe -j .text -j .data -O ihex LADDER.out LADDER.hex"
-            commandAvrDude =tester(self.opSys,currentHW).test1(displayOutputPlace)
+            commandAvrDude =tester(self.opSys,currentHW).test1(displayOutputPlace)[0]
             
 #####run commands:   
         
@@ -121,6 +105,21 @@ class hexMaker():
         f.write(C_txt)
         f.close()   # file is not immediately deleted because we used delete=False
         filename = 'LLCode'
+
+        ###ADDED BY MIGUEL
+        from shutil import copy2
+        if self.opSys == "NIX":
+            copy2("../uart.h", os.getcwd())
+            copy2("../uart.c", os.getcwd())
+
+        if self.opSys == "MAC":
+            copy2("../uart.h", os.getcwd())
+            copy2("../uart.c", os.getcwd())
+
+        if self.opSys == "WIN":
+            copy2("..\uart.h", os.getcwd())
+            copy2("..\uart.c", os.getcwd())
+        ###
       
         commandwfile = commandListo
         commandwfile = commandwfile + filename

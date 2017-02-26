@@ -17,8 +17,9 @@ class SerialCommunicator():
             port=PortNumber,
             baudrate=9600,
             stopbits=1,
-            bytesize=serial.EIGHTBITS)
-            
+            bytesize=serial.EIGHTBITS,
+            timeout=1)
+
         #needed to finish the setup
         time.sleep(1)
        
@@ -26,18 +27,19 @@ class SerialCommunicator():
     #gets the state of the arduino        
     def getArduinoState(self):
         
-        self.ser.write("ready")
+        #self.ser.write("ready")
+        received = ''
+        #bytes = self.ser.inWaiting();        #checks how many bytes are in input bufferbytes
+        #print "BYYYYTEEEESSSS   ", bytes
+        #while self.ser.inWaiting() > 0:
+        #    received += self.ser.read(1)
+        #    #self.ser.reset_input_buffer()    #when put together it flushes everything
         
-        bytes = self.ser.inWaiting();        #checks how many bytes are in input buffer
-        
-        while bytes < 13:                    #waits till there is more than 12 bytes
-            
-            self.ser.reset_input_buffer()    #when put together it flushes everything
-            received = self.ser.read(13)     #but the read size
-            
-            return received
+        received += self.ser.readline()
+        self.ser.close()
+        return received
         
         
-se = SerialCommunicator("com4")
+se = SerialCommunicator("/dev/ttyACM0")
 
 print se.getArduinoState()
