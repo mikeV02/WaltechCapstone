@@ -440,7 +440,7 @@ class tester():
         for i in range(9):
             
             maybePort = "com"+str(i)    
-            commandAvrDude = r"..\\WinAVR\\bin\\avrdude.exe -p m328p -P " + maybePort + " -c arduino"
+            commandAvrDude = r"..\\WinAVR\\bin\\avrdude.exe -p m328p -P " + maybePort + " -c arduino -b 57600"
             start = datetime.datetime.now()
             process = subprocess.Popen(commandAvrDude,stdout = subprocess.PIPE, stderr= subprocess.PIPE,shell=True)
             working = False
