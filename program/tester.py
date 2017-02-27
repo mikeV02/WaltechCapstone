@@ -236,7 +236,7 @@ class tester():
             devList = output.split()
             for i in range(len(devList)):
                 maybePort = devList[i]
-                commandAvrDude = r"avrdude -p m2560 -P " + maybePort + " -c stk500v2 -B5 -F"
+                commandAvrDude = r"avrdude -p m2560 -P " + maybePort + " -c stk500v2 -B5 -F" #BY MIGUEL
                 commandwfile = commandAvrDude
                 p = subprocess.Popen(commandwfile,stdout = subprocess.PIPE, stderr= subprocess.PIPE,shell=True).communicate()
                 output,error =p
@@ -355,7 +355,7 @@ class tester():
             displayOutputPlace.append("checking ports")
             for i in range(6):
                 maybePort = "/dev/ttyACM"+str(i)
-                commandAvrDude = r"../avrdude  -C ../avrdude.conf -p m328p -P " + maybePort + " -c stk500v1 -B5 -F"
+                commandAvrDude = r"../avrdude  -C ../avrdude.conf -p m328p -P " + maybePort + " -c arduino -B5 -F"
                 commandwfile = commandAvrDude
                 output,error = subprocess.Popen(commandwfile,stdout = subprocess.PIPE, stderr= subprocess.PIPE,shell=True).communicate()
                 print maybePort
@@ -370,7 +370,7 @@ class tester():
             return None, None
             ###
         else: 
-            commandAvrDude = r"../avrdude  -C ../avrdude.conf -p m328p -P " + USBserialPort + " -c stk500v1 -B5 -F"
+            commandAvrDude = r"../avrdude  -C ../avrdude.conf -p m328p -P " + USBserialPort + " -c arduino -B5 -F"
             ###MODIFIED BY MIGUEL
             return commandAvrDude, USBserialPort
             ###
@@ -396,7 +396,7 @@ class tester():
             devList = output.split()
             for i in range(len(devList)):
                 maybePort = devList[i]
-                commandAvrDude = r"avrdude -p m328p -P " + maybePort + " -c stk500v1 -B5 -F"
+                commandAvrDude = r"avrdude -p m328p -P " + maybePort + " -c arduino -B5 -F"
                 commandwfile = commandAvrDude
                 p = subprocess.Popen(commandwfile,stdout = subprocess.PIPE, stderr= subprocess.PIPE,shell=True).communicate()
                 output,error =p
@@ -427,7 +427,7 @@ class tester():
             return None, None
             ###
         else: 
-            commandAvrDude = r"../avrdude  -C ../avrdude.conf -p m328p -P " + USBserialPort + " -c stk500v1 -B5 -F"
+            commandAvrDude = r"../avrdude  -C ../avrdude.conf -p m328p -P " + USBserialPort + " -c arduino -B5 -F"
             ###MODIFIED BY MIGUEL
             return commandAvrDude, USBserialPort
             ###
