@@ -185,15 +185,15 @@ class hexMaker():
         import os
         import shutil
         #delete temp files:
-        if "hexes" in os.getcwd():
-
-            for root, dirs, files in os.walk("./"):
-                for f in files:
-                    os.unlink(os.path.join(root, f))
-                for d in dirs:
-                    shutil.rmtree(os.path.join(root, d))
-            time.sleep(1)
-        else: print "in wrong place, not deleting!"
+        #if "hexes" in os.getcwd():
+#
+ #           for root, dirs, files in os.walk("./"):
+  #              for f in files:
+   #                 os.unlink(os.path.join(root, f))
+    #            for d in dirs:
+     #               shutil.rmtree(os.path.join(root, d))
+      #      time.sleep(1)
+       # else: print "in wrong place, not deleting!"
         QApplication.restoreOverrideCursor()
         os.chdir("../")
         os.chdir("../")

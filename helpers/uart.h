@@ -1,11 +1,6 @@
 
-
 #ifndef UART_H
 #define UART_H
-
-#include <stdint.h>
-#include <avr/pgmspace.h>
-
 
 /* some mcus have multiple uarts */
 #ifdef UDR0
@@ -23,7 +18,7 @@
 #define RXCIE RXCIE0
 
 #define UCSRC UCSR0C
-#define URSEL
+#define URSEL 
 #define UCSZ0 UCSZ00
 #define UCSZ1 UCSZ01
 #define UCSRC_SELECT 0
@@ -49,7 +44,7 @@
 #endif
 #endif
 
-#define BAUD 9600ul
+#define BAUD 9600UL
 #define UBRRVAL ((F_CPU/(BAUD<<4))-1)
 //#define UBRRVAL 412UL
 #define USE_SLEEP 1
@@ -68,6 +63,10 @@
 #endif
 
 
+#include <stdint.h>
+#include <avr/pgmspace.h>
+
+
 void uart_init();
 
 void uart_putc(uint8_t c);
@@ -83,6 +82,7 @@ void uart_puts(const char* str);
 void uart_puts_p(PGM_P str);
 
 uint8_t uart_getc();
+void padToBuffer(char* str);
 unsigned char uart_buffer_empty(void);
 
 

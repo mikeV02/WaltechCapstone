@@ -1,6 +1,5 @@
-
-
 #include <stdio.h>
+#include <string.h>
 #include <avr/interrupt.h>
 #include <avr/io.h>
 #include <avr/pgmspace.h>
@@ -10,11 +9,11 @@
 #include "uart.h"
 
 
-
 unsigned char rx_buffer[RX_BUFFER_SIZE];
 volatile unsigned char rx_buffer_head;
 volatile unsigned char rx_buffer_tail;
 volatile char tx_complete;
+//int receivingCounter = 0;
 
 // UART recieve interrupt handler.
 //   
@@ -23,15 +22,20 @@ volatile char tx_complete;
 
 ISR(USART_RXC_vect) // before: SIGNAL(SIG_USART_RECV)
 {
-  char c = UDR;
-  rx_buffer[rx_buffer_head] = c;
-  INC_RING(rx_buffer_head, RX_BUFFER_SIZE);
-  // one might deal with head==tail here (buffer full)
+    //commented out in order to handle the receiving of data
+    //in other part of code
+    /*char c = UDR;
+    rx_buffer[rx_buffer_head] = c;
+    INC_RING(rx_buffer_head, RX_BUFFER_SIZE);*/
+    
+    // one might deal with head==tail here (buffer full)
 }
+
 
 
 void uart_init()
 {
+    
     /* set baud rate */
     UBRRH = UBRRVAL >> 8;
     UBRRL = UBRRVAL & 0xff;
@@ -150,23 +154,36 @@ void uart_puts_p(PGM_P str)
 //
 unsigned char uart_buffer_empty(void)
 {
-  return (rx_buffer_tail == rx_buffer_head);
+    return (UCSRA & (1 << RXC));
 }
 
 
 // Get char from buffer. 
 // Note that this function BLOCKS until a char is recieved. 
 //
+
 unsigned char uart_getc(void) 
 {
   unsigned char c;
   
-  while (rx_buffer_tail == rx_buffer_head);
+  loop_until_bit_is_set(UCSR0A,RXC0);
   
-  c = rx_buffer[rx_buffer_tail];
-  INC_RING(rx_buffer_tail, RX_BUFFER_SIZE);
+  c = UDR;
   
   return c;
+}
+
+void padToBuffer(char* str)
+{
+    int len = strlen(str);
+    int current = 0;
+    
+    while((len + current) < RX_BUFFER_SIZE)
+    {
+        str[(current + len)] = '0';
+        current = current + 1;
+    }
+    
 }
 
 /*

@@ -40,7 +40,7 @@ class SerialCommunicator():
         return received
         
         
-se = SerialCommunicator("/dev/ttyACM1")
+se = SerialCommunicator("/dev/ttyACM0")
 
-while 1:
+while 1:#se.ser.inWaiting() > 0:
     print se.getArduinoState()

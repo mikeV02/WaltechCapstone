@@ -2,3 +2,7 @@
 helpers/hexes/README\.md
 
 *.md
+
+*.pyc
+
+helpers/hexes/
