@@ -27,20 +27,15 @@ class SerialCommunicator():
     #gets the state of the arduino        
     def getArduinoState(self):
         
-        #self.ser.write("ready")
+        self.ser.write("ready")
         received = ''
-        #bytes = self.ser.inWaiting();        #checks how many bytes are in input bufferbytes
-        #print "BYYYYTEEEESSSS   ", bytes
-        #while self.ser.inWaiting() > 0:
-        #    received += self.ser.read(1)
-        #    #self.ser.reset_input_buffer()    #when put together it flushes everything
+        self.ser.reset_input_buffer()    #when put together it flushes everything
         
         received += self.ser.readline()
-        #self.ser.close()
         return received
         
         
-se = SerialCommunicator("/dev/ttyACM0")
+#se = SerialCommunicator("/dev/ttyACM0")
 
-while 1:#se.ser.inWaiting() > 0:
-    print se.getArduinoState()
+#while 1:#se.ser.inWaiting() > 0:
+#print se.getArduinoState()

@@ -1,0 +1,2409 @@
+GAS LISTING /tmp/cccIuWuE.s 			page 1
+
+
+   1               		.file	"UsingTimerSerial.c"
+   2               	__SP_H__ = 0x3e
+   3               	__SP_L__ = 0x3d
+   4               	__SREG__ = 0x3f
+   5               	__RAMPZ__ = 0x3b
+   6               	__tmp_reg__ = 0
+   7               	__zero_reg__ = 1
+   8               		.stabs	"/home/mike/Desktop/WaltechCapstoneGit/ChrisSerial/",100,0,2,.Ltext0
+   9               		.stabs	"UsingTimerSerial.c",100,0,2,.Ltext0
+  10               		.text
+  11               	.Ltext0:
+  12               		.stabs	"gcc2_compiled.",60,0,0,0
+  13               		.stabs	"int:t(0,1)=r(0,1);-32768;32767;",128,0,0,0
+  14               		.stabs	"char:t(0,2)=@s8;r(0,2);0;255;",128,0,0,0
+  15               		.stabs	"long int:t(0,3)=@s32;r(0,3);020000000000;017777777777;",128,0,0,0
+  16               		.stabs	"unsigned int:t(0,4)=r(0,4);0;0177777;",128,0,0,0
+  17               		.stabs	"long unsigned int:t(0,5)=@s32;r(0,5);0;037777777777;",128,0,0,0
+  18               		.stabs	"long long int:t(0,6)=@s64;r(0,6);01000000000000000000000;0777777777777777777777;",128,0,0,
+  19               		.stabs	"long long unsigned int:t(0,7)=@s64;r(0,7);0;01777777777777777777777;",128,0,0,0
+  20               		.stabs	"short int:t(0,8)=r(0,8);-32768;32767;",128,0,0,0
+  21               		.stabs	"short unsigned int:t(0,9)=r(0,9);0;0177777;",128,0,0,0
+  22               		.stabs	"signed char:t(0,10)=@s8;r(0,10);-128;127;",128,0,0,0
+  23               		.stabs	"unsigned char:t(0,11)=@s8;r(0,11);0;255;",128,0,0,0
+  24               		.stabs	"float:t(0,12)=r(0,1);4;0;",128,0,0,0
+  25               		.stabs	"double:t(0,13)=r(0,1);4;0;",128,0,0,0
+  26               		.stabs	"long double:t(0,14)=r(0,1);4;0;",128,0,0,0
+  27               		.stabs	"short _Fract:t(0,15)=r(0,1);1;0;",128,0,0,0
+  28               		.stabs	"_Fract:t(0,16)=r(0,1);2;0;",128,0,0,0
+  29               		.stabs	"long _Fract:t(0,17)=r(0,1);4;0;",128,0,0,0
+  30               		.stabs	"long long _Fract:t(0,18)=r(0,1);8;0;",128,0,0,0
+  31               		.stabs	"unsigned short _Fract:t(0,19)=r(0,1);1;0;",128,0,0,0
+  32               		.stabs	"unsigned _Fract:t(0,20)=r(0,1);2;0;",128,0,0,0
+  33               		.stabs	"unsigned long _Fract:t(0,21)=r(0,1);4;0;",128,0,0,0
+  34               		.stabs	"unsigned long long _Fract:t(0,22)=r(0,1);8;0;",128,0,0,0
+  35               		.stabs	"_Sat short _Fract:t(0,23)=r(0,1);1;0;",128,0,0,0
+  36               		.stabs	"_Sat _Fract:t(0,24)=r(0,1);2;0;",128,0,0,0
+  37               		.stabs	"_Sat long _Fract:t(0,25)=r(0,1);4;0;",128,0,0,0
+  38               		.stabs	"_Sat long long _Fract:t(0,26)=r(0,1);8;0;",128,0,0,0
+  39               		.stabs	"_Sat unsigned short _Fract:t(0,27)=r(0,1);1;0;",128,0,0,0
+  40               		.stabs	"_Sat unsigned _Fract:t(0,28)=r(0,1);2;0;",128,0,0,0
+  41               		.stabs	"_Sat unsigned long _Fract:t(0,29)=r(0,1);4;0;",128,0,0,0
+  42               		.stabs	"_Sat unsigned long long _Fract:t(0,30)=r(0,1);8;0;",128,0,0,0
+  43               		.stabs	"short _Accum:t(0,31)=r(0,1);2;0;",128,0,0,0
+  44               		.stabs	"_Accum:t(0,32)=r(0,1);4;0;",128,0,0,0
+  45               		.stabs	"long _Accum:t(0,33)=r(0,1);8;0;",128,0,0,0
+  46               		.stabs	"long long _Accum:t(0,34)=r(0,1);8;0;",128,0,0,0
+  47               		.stabs	"unsigned short _Accum:t(0,35)=r(0,1);2;0;",128,0,0,0
+  48               		.stabs	"unsigned _Accum:t(0,36)=r(0,1);4;0;",128,0,0,0
+  49               		.stabs	"unsigned long _Accum:t(0,37)=r(0,1);8;0;",128,0,0,0
+  50               		.stabs	"unsigned long long _Accum:t(0,38)=r(0,1);8;0;",128,0,0,0
+  51               		.stabs	"_Sat short _Accum:t(0,39)=r(0,1);2;0;",128,0,0,0
+  52               		.stabs	"_Sat _Accum:t(0,40)=r(0,1);4;0;",128,0,0,0
+  53               		.stabs	"_Sat long _Accum:t(0,41)=r(0,1);8;0;",128,0,0,0
+  54               		.stabs	"_Sat long long _Accum:t(0,42)=r(0,1);8;0;",128,0,0,0
+  55               		.stabs	"_Sat unsigned short _Accum:t(0,43)=r(0,1);2;0;",128,0,0,0
+  56               		.stabs	"_Sat unsigned _Accum:t(0,44)=r(0,1);4;0;",128,0,0,0
+  57               		.stabs	"_Sat unsigned long _Accum:t(0,45)=r(0,1);8;0;",128,0,0,0
+GAS LISTING /tmp/cccIuWuE.s 			page 2
+
+
+  58               		.stabs	"_Sat unsigned long long _Accum:t(0,46)=r(0,1);8;0;",128,0,0,0
+  59               		.stabs	"void:t(0,47)=(0,47)",128,0,0,0
+  60               		.stabs	"/usr/lib/gcc/avr/4.9.2/include/stdint.h",130,0,0,0
+  61               		.stabs	"/usr/lib/avr/include/stdint.h",130,0,0,0
+  62               		.stabs	"int8_t:t(2,1)=(0,10)",128,0,121,0
+  63               		.stabs	"uint8_t:t(2,2)=(0,11)",128,0,122,0
+  64               		.stabs	"int16_t:t(2,3)=(0,1)",128,0,123,0
+  65               		.stabs	"uint16_t:t(2,4)=(0,4)",128,0,124,0
+  66               		.stabs	"int32_t:t(2,5)=(0,3)",128,0,125,0
+  67               		.stabs	"uint32_t:t(2,6)=(0,5)",128,0,126,0
+  68               		.stabs	"int64_t:t(2,7)=(0,6)",128,0,128,0
+  69               		.stabs	"uint64_t:t(2,8)=(0,7)",128,0,129,0
+  70               		.stabs	"intptr_t:t(2,9)=(2,3)",128,0,142,0
+  71               		.stabs	"uintptr_t:t(2,10)=(2,4)",128,0,147,0
+  72               		.stabs	"int_least8_t:t(2,11)=(2,1)",128,0,159,0
+  73               		.stabs	"uint_least8_t:t(2,12)=(2,2)",128,0,164,0
+  74               		.stabs	"int_least16_t:t(2,13)=(2,3)",128,0,169,0
+  75               		.stabs	"uint_least16_t:t(2,14)=(2,4)",128,0,174,0
+  76               		.stabs	"int_least32_t:t(2,15)=(2,5)",128,0,179,0
+  77               		.stabs	"uint_least32_t:t(2,16)=(2,6)",128,0,184,0
+  78               		.stabs	"int_least64_t:t(2,17)=(2,7)",128,0,192,0
+  79               		.stabs	"uint_least64_t:t(2,18)=(2,8)",128,0,199,0
+  80               		.stabs	"int_fast8_t:t(2,19)=(2,1)",128,0,213,0
+  81               		.stabs	"uint_fast8_t:t(2,20)=(2,2)",128,0,218,0
+  82               		.stabs	"int_fast16_t:t(2,21)=(2,3)",128,0,223,0
+  83               		.stabs	"uint_fast16_t:t(2,22)=(2,4)",128,0,228,0
+  84               		.stabs	"int_fast32_t:t(2,23)=(2,5)",128,0,233,0
+  85               		.stabs	"uint_fast32_t:t(2,24)=(2,6)",128,0,238,0
+  86               		.stabs	"int_fast64_t:t(2,25)=(2,7)",128,0,246,0
+  87               		.stabs	"uint_fast64_t:t(2,26)=(2,8)",128,0,253,0
+  88               		.stabs	"intmax_t:t(2,27)=(2,7)",128,0,273,0
+  89               		.stabs	"uintmax_t:t(2,28)=(2,8)",128,0,278,0
+  90               		.stabn	162,0,0,0
+  91               		.stabn	162,0,0,0
+  92               		.stabs	"/usr/lib/avr/include/stdlib.h",130,0,0,0
+  93               		.stabs	"/usr/lib/gcc/avr/4.9.2/include/stddef.h",130,0,0,0
+  94               		.stabs	"size_t:t(4,1)=(0,4)",128,0,212,0
+  95               		.stabs	"wchar_t:t(4,2)=(0,1)",128,0,324,0
+  96               		.stabn	162,0,0,0
+  97               		.stabs	"div_t:t(3,1)=(3,2)=s4quot:(0,1),0,16;rem:(0,1),16,16;;",128,0,71,0
+  98               		.stabs	"ldiv_t:t(3,3)=(3,4)=s8quot:(0,3),0,32;rem:(0,3),32,32;;",128,0,77,0
+  99               		.stabs	"__compar_fn_t:t(3,5)=(3,6)=*(3,7)=f(0,1)",128,0,80,0
+ 100               		.stabn	162,0,0,0
+ 101               		.stabs	"/usr/lib/avr/include/avr/io.h",130,0,0,0
+ 102               		.stabs	"/usr/lib/avr/include/avr/sfr_defs.h",130,0,0,0
+ 103               		.stabs	"/usr/lib/avr/include/inttypes.h",130,0,0,0
+ 104               		.stabs	"int_farptr_t:t(7,1)=(2,5)",128,0,77,0
+ 105               		.stabs	"uint_farptr_t:t(7,2)=(2,6)",128,0,81,0
+ 106               		.stabn	162,0,0,0
+ 107               		.stabn	162,0,0,0
+ 108               		.stabs	"/usr/lib/avr/include/avr/fuse.h",130,0,0,0
+ 109               		.stabs	"__fuse_t:t(8,1)=(8,2)=s3low:(0,11),0,8;high:(0,11),8,8;extended:(0,11),16,8;;",128,0,244,0
+ 110               		.stabn	162,0,0,0
+ 111               		.stabn	162,0,0,0
+ 112               		.stabs	"uart.c",130,0,0,0
+ 113               		.stabs	"/usr/lib/avr/include/stdio.h",130,0,0,0
+ 114               		.stabs	"/usr/lib/gcc/avr/4.9.2/include/stdarg.h",130,0,0,0
+GAS LISTING /tmp/cccIuWuE.s 			page 3
+
+
+ 115               		.stabs	"__gnuc_va_list:t(11,1)=(11,2)=*(0,47)",128,0,40,0
+ 116               		.stabs	"va_list:t(11,3)=(11,1)",128,0,98,0
+ 117               		.stabn	162,0,0,0
+ 118               		.stabs	"__file:T(10,1)=s14buf:(10,2)=*(0,2),0,16;unget:(0,11),16,8;flags:(2,2),24,8;size:(0,1),32,
+ 119               		.stabn	162,0,0,0
+ 120               		.stabn	162,0,0,0
+ 121               		.stabs	"__vector_25:F(0,47)",36,0,23,__vector_25
+ 122               	.global	__vector_25
+ 123               		.type	__vector_25, @function
+ 124               	__vector_25:
+ 125               		.stabd	46,0,0
+ 126               		.stabs	"uart.c",132,0,0,.Ltext1
+ 127               	.Ltext1:
+   1:uart.c        **** #include <stdio.h>
+   2:uart.c        **** #include <string.h>
+   3:uart.c        **** #include <avr/interrupt.h>
+   4:uart.c        **** #include <avr/io.h>
+   5:uart.c        **** #include <avr/pgmspace.h>
+   6:uart.c        **** #include <avr/sfr_defs.h>
+   7:uart.c        **** #include <avr/sleep.h>
+   8:uart.c        **** 
+   9:uart.c        **** #include "uart.h"
+  10:uart.c        **** 
+  11:uart.c        **** 
+  12:uart.c        **** unsigned char rx_buffer[RX_BUFFER_SIZE];
+  13:uart.c        **** volatile unsigned char rx_buffer_head;
+  14:uart.c        **** volatile unsigned char rx_buffer_tail;
+  15:uart.c        **** volatile char tx_complete;
+  16:uart.c        **** //int receivingCounter = 0;
+  17:uart.c        **** 
+  18:uart.c        **** // UART recieve interrupt handler.
+  19:uart.c        **** //   
+  20:uart.c        **** // If the buffer overflows, data will be overwritten without warning
+  21:uart.c        **** //
+  22:uart.c        **** 
+  23:uart.c        **** ISR(USART_RXC_vect) // before: SIGNAL(SIG_USART_RECV)
+  24:uart.c        **** {
+ 128               		.stabn	68,0,24,.LM0-.LFBB1
+ 129               	.LM0:
+ 130               	.LFBB1:
+ 131 0000 1F92      		push r1
+ 132 0002 0F92      		push r0
+ 133 0004 0FB6      		in r0,__SREG__
+ 134 0006 0F92      		push r0
+ 135 0008 1124      		clr __zero_reg__
+ 136               	/* prologue: Signal */
+ 137               	/* frame size = 0 */
+ 138               	/* stack size = 3 */
+ 139               	.L__stack_usage = 3
+ 140               	/* epilogue start */
+  25:uart.c        ****     //commented out in order to handle the receiving of data
+  26:uart.c        ****     //in other part of code
+  27:uart.c        ****     /*char c = UDR;
+  28:uart.c        ****     rx_buffer[rx_buffer_head] = c;
+  29:uart.c        ****     INC_RING(rx_buffer_head, RX_BUFFER_SIZE);*/
+  30:uart.c        ****     
+  31:uart.c        ****     // one might deal with head==tail here (buffer full)
+GAS LISTING /tmp/cccIuWuE.s 			page 4
+
+
+  32:uart.c        **** }
+ 141               		.stabn	68,0,32,.LM1-.LFBB1
+ 142               	.LM1:
+ 143 000a 0F90      		pop r0
+ 144 000c 0FBE      		out __SREG__,r0
+ 145 000e 0F90      		pop r0
+ 146 0010 1F90      		pop r1
+ 147 0012 1895      		reti
+ 148               		.size	__vector_25, .-__vector_25
+ 149               	.Lscope1:
+ 150               		.stabs	"",36,0,0,.Lscope1-.LFBB1
+ 151               		.stabd	78,0,0
+ 152               		.stabs	"uart_init:F(0,47)",36,0,36,uart_init
+ 153               	.global	uart_init
+ 154               		.type	uart_init, @function
+ 155               	uart_init:
+ 156               		.stabd	46,0,0
+  33:uart.c        **** 
+  34:uart.c        **** 
+  35:uart.c        **** 
+  36:uart.c        **** void uart_init()
+  37:uart.c        **** {
+ 157               		.stabn	68,0,37,.LM2-.LFBB2
+ 158               	.LM2:
+ 159               	.LFBB2:
+ 160               	/* prologue: function */
+ 161               	/* frame size = 0 */
+ 162               	/* stack size = 0 */
+ 163               	.L__stack_usage = 0
+  38:uart.c        ****     
+  39:uart.c        ****     /* set baud rate */
+  40:uart.c        ****     UBRRH = UBRRVAL >> 8;
+ 164               		.stabn	68,0,40,.LM3-.LFBB2
+ 165               	.LM3:
+ 166 0014 1092 C500 		sts 197,__zero_reg__
+  41:uart.c        ****     UBRRL = UBRRVAL & 0xff;
+ 167               		.stabn	68,0,41,.LM4-.LFBB2
+ 168               	.LM4:
+ 169 0018 87E6      		ldi r24,lo8(103)
+ 170 001a 8093 C400 		sts 196,r24
+  42:uart.c        ****     /* set frame format: 8 bit, no parity, 1 bit */
+  43:uart.c        ****     UCSRC = UCSRC_SELECT | (1 << UCSZ1) | (1 << UCSZ0);
+ 171               		.stabn	68,0,43,.LM5-.LFBB2
+ 172               	.LM5:
+ 173 001e 86E0      		ldi r24,lo8(6)
+ 174 0020 8093 C200 		sts 194,r24
+  44:uart.c        ****     /* enable serial receiver and transmitter */
+  45:uart.c        **** #if !USE_SLEEP
+  46:uart.c        ****     UCSRB = (1 << RXEN) | (1 << TXEN);
+  47:uart.c        **** #else
+  48:uart.c        ****     UCSRB = (1 << RXEN) | (1 << TXEN) | (1 << RXCIE);
+ 175               		.stabn	68,0,48,.LM6-.LFBB2
+ 176               	.LM6:
+ 177 0024 88E9      		ldi r24,lo8(-104)
+ 178 0026 8093 C100 		sts 193,r24
+  49:uart.c        **** #endif
+  50:uart.c        **** /* Reset buffers */
+GAS LISTING /tmp/cccIuWuE.s 			page 5
+
+
+  51:uart.c        ****   rx_buffer_head = 0;
+ 179               		.stabn	68,0,51,.LM7-.LFBB2
+ 180               	.LM7:
+ 181 002a 1092 0000 		sts rx_buffer_head,__zero_reg__
+  52:uart.c        ****   rx_buffer_tail = 0;
+ 182               		.stabn	68,0,52,.LM8-.LFBB2
+ 183               	.LM8:
+ 184 002e 1092 0000 		sts rx_buffer_tail,__zero_reg__
+  53:uart.c        ****   tx_complete = TRUE;
+ 185               		.stabn	68,0,53,.LM9-.LFBB2
+ 186               	.LM9:
+ 187 0032 81E0      		ldi r24,lo8(1)
+ 188 0034 8093 0000 		sts tx_complete,r24
+ 189 0038 0895      		ret
+ 190               		.size	uart_init, .-uart_init
+ 191               	.Lscope2:
+ 192               		.stabs	"",36,0,0,.Lscope2-.LFBB2
+ 193               		.stabd	78,0,0
+ 194               		.stabs	"uart_putc:F(0,47)",36,0,56,uart_putc
+ 195               		.stabs	"c:P(2,2)",64,0,56,28
+ 196               	.global	uart_putc
+ 197               		.type	uart_putc, @function
+ 198               	uart_putc:
+ 199               		.stabd	46,0,0
+  54:uart.c        **** }
+  55:uart.c        **** 
+  56:uart.c        **** void uart_putc(uint8_t c)
+  57:uart.c        **** {
+ 200               		.stabn	68,0,57,.LM10-.LFBB3
+ 201               	.LM10:
+ 202               	.LFBB3:
+ 203 003a CF93      		push r28
+ 204               	/* prologue: function */
+ 205               	/* frame size = 0 */
+ 206               	/* stack size = 1 */
+ 207               	.L__stack_usage = 1
+ 208 003c C82F      		mov r28,r24
+  58:uart.c        ****     if(c == '\n')
+ 209               		.stabn	68,0,58,.LM11-.LFBB3
+ 210               	.LM11:
+ 211 003e 8A30      		cpi r24,lo8(10)
+ 212 0040 01F4      		brne .L5
+  59:uart.c        ****         uart_putc('\r');
+ 213               		.stabn	68,0,59,.LM12-.LFBB3
+ 214               	.LM12:
+ 215 0042 8DE0      		ldi r24,lo8(13)
+ 216 0044 0E94 0000 		call uart_putc
+ 217               	.L5:
+  60:uart.c        **** 
+  61:uart.c        ****     /* wait until transmit buffer is empty */
+  62:uart.c        ****     while(!(UCSRA & (1 << UDRE)));
+ 218               		.stabn	68,0,62,.LM13-.LFBB3
+ 219               	.LM13:
+ 220 0048 8091 C000 		lds r24,192
+ 221 004c 85FF      		sbrs r24,5
+ 222 004e 00C0      		rjmp .L5
+  63:uart.c        **** 
+GAS LISTING /tmp/cccIuWuE.s 			page 6
+
+
+  64:uart.c        ****     /* send next byte */
+  65:uart.c        ****     UDR = c;
+ 223               		.stabn	68,0,65,.LM14-.LFBB3
+ 224               	.LM14:
+ 225 0050 C093 C600 		sts 198,r28
+ 226               	/* epilogue start */
+  66:uart.c        **** }
+ 227               		.stabn	68,0,66,.LM15-.LFBB3
+ 228               	.LM15:
+ 229 0054 CF91      		pop r28
+ 230 0056 0895      		ret
+ 231               		.size	uart_putc, .-uart_putc
+ 232               	.Lscope3:
+ 233               		.stabs	"",36,0,0,.Lscope3-.LFBB3
+ 234               		.stabd	78,0,0
+ 235               		.stabs	"uart_putc_hex:F(0,47)",36,0,68,uart_putc_hex
+ 236               		.stabs	"b:P(2,2)",64,0,68,28
+ 237               	.global	uart_putc_hex
+ 238               		.type	uart_putc_hex, @function
+ 239               	uart_putc_hex:
+ 240               		.stabd	46,0,0
+  67:uart.c        **** 
+  68:uart.c        **** void uart_putc_hex(uint8_t b)
+  69:uart.c        **** {
+ 241               		.stabn	68,0,69,.LM16-.LFBB4
+ 242               	.LM16:
+ 243               	.LFBB4:
+ 244 0058 CF93      		push r28
+ 245               	/* prologue: function */
+ 246               	/* frame size = 0 */
+ 247               	/* stack size = 1 */
+ 248               	.L__stack_usage = 1
+ 249 005a C82F      		mov r28,r24
+  70:uart.c        ****     /* upper nibble */
+  71:uart.c        ****     if((b >> 4) < 0x0a)
+ 250               		.stabn	68,0,71,.LM17-.LFBB4
+ 251               	.LM17:
+ 252 005c 8295      		swap r24
+ 253 005e 8F70      		andi r24,lo8(15)
+ 254 0060 8A30      		cpi r24,lo8(10)
+ 255 0062 00F4      		brsh .L10
+  72:uart.c        ****         uart_putc((b >> 4) + '0');
+ 256               		.stabn	68,0,72,.LM18-.LFBB4
+ 257               	.LM18:
+ 258 0064 805D      		subi r24,lo8(-(48))
+ 259 0066 00C0      		rjmp .L13
+ 260               	.L10:
+  73:uart.c        ****     else
+  74:uart.c        ****         uart_putc((b >> 4) - 0x0a + 'a');
+ 261               		.stabn	68,0,74,.LM19-.LFBB4
+ 262               	.LM19:
+ 263 0068 895A      		subi r24,lo8(-(87))
+ 264               	.L13:
+ 265 006a 0E94 0000 		call uart_putc
+  75:uart.c        **** 
+  76:uart.c        ****     /* lower nibble */
+  77:uart.c        ****     if((b & 0x0f) < 0x0a)
+GAS LISTING /tmp/cccIuWuE.s 			page 7
+
+
+ 266               		.stabn	68,0,77,.LM20-.LFBB4
+ 267               	.LM20:
+ 268 006e 8C2F      		mov r24,r28
+ 269 0070 8F70      		andi r24,lo8(15)
+ 270 0072 8A30      		cpi r24,lo8(10)
+ 271 0074 00F4      		brsh .L12
+  78:uart.c        ****         uart_putc((b & 0x0f) + '0');
+ 272               		.stabn	68,0,78,.LM21-.LFBB4
+ 273               	.LM21:
+ 274 0076 805D      		subi r24,lo8(-(48))
+ 275 0078 00C0      		rjmp .L14
+ 276               	.L12:
+  79:uart.c        ****     else
+  80:uart.c        ****         uart_putc((b & 0x0f) - 0x0a + 'a');
+ 277               		.stabn	68,0,80,.LM22-.LFBB4
+ 278               	.LM22:
+ 279 007a 895A      		subi r24,lo8(-(87))
+ 280               	.L14:
+ 281               	/* epilogue start */
+  81:uart.c        **** }
+ 282               		.stabn	68,0,81,.LM23-.LFBB4
+ 283               	.LM23:
+ 284 007c CF91      		pop r28
+  80:uart.c        **** }
+ 285               		.stabn	68,0,80,.LM24-.LFBB4
+ 286               	.LM24:
+ 287 007e 0C94 0000 		jmp uart_putc
+ 288               		.size	uart_putc_hex, .-uart_putc_hex
+ 289               	.Lscope4:
+ 290               		.stabs	"",36,0,0,.Lscope4-.LFBB4
+ 291               		.stabd	78,0,0
+ 292               		.stabs	"uart_putw_hex:F(0,47)",36,0,83,uart_putw_hex
+ 293               	.global	uart_putw_hex
+ 294               		.type	uart_putw_hex, @function
+ 295               	uart_putw_hex:
+ 296               		.stabd	46,0,0
+  82:uart.c        **** 
+  83:uart.c        **** void uart_putw_hex(uint16_t w)
+  84:uart.c        **** {
+ 297               		.stabn	68,0,84,.LM25-.LFBB5
+ 298               	.LM25:
+ 299               	.LFBB5:
+ 300 0082 CF93      		push r28
+ 301               	/* prologue: function */
+ 302               	/* frame size = 0 */
+ 303               	/* stack size = 1 */
+ 304               	.L__stack_usage = 1
+ 305 0084 C82F      		mov r28,r24
+  85:uart.c        ****     uart_putc_hex((uint8_t) (w >> 8));
+ 306               		.stabn	68,0,85,.LM26-.LFBB5
+ 307               	.LM26:
+ 308 0086 892F      		mov r24,r25
+ 309 0088 0E94 0000 		call uart_putc_hex
+  86:uart.c        ****     uart_putc_hex((uint8_t) (w & 0xff));
+ 310               		.stabn	68,0,86,.LM27-.LFBB5
+ 311               	.LM27:
+ 312 008c 8C2F      		mov r24,r28
+GAS LISTING /tmp/cccIuWuE.s 			page 8
+
+
+ 313               	/* epilogue start */
+  87:uart.c        **** }
+ 314               		.stabn	68,0,87,.LM28-.LFBB5
+ 315               	.LM28:
+ 316 008e CF91      		pop r28
+  86:uart.c        ****     uart_putc_hex((uint8_t) (w & 0xff));
+ 317               		.stabn	68,0,86,.LM29-.LFBB5
+ 318               	.LM29:
+ 319 0090 0C94 0000 		jmp uart_putc_hex
+ 320               		.size	uart_putw_hex, .-uart_putw_hex
+ 321               	.Lscope5:
+ 322               		.stabs	"",36,0,0,.Lscope5-.LFBB5
+ 323               		.stabd	78,0,0
+ 324               		.stabs	"uart_putdw_hex:F(0,47)",36,0,89,uart_putdw_hex
+ 325               		.stabs	"dw:P(2,6)",64,0,89,12
+ 326               	.global	uart_putdw_hex
+ 327               		.type	uart_putdw_hex, @function
+ 328               	uart_putdw_hex:
+ 329               		.stabd	46,0,0
+  88:uart.c        **** 
+  89:uart.c        **** void uart_putdw_hex(uint32_t dw)
+  90:uart.c        **** {
+ 330               		.stabn	68,0,90,.LM30-.LFBB6
+ 331               	.LM30:
+ 332               	.LFBB6:
+ 333 0094 CF92      		push r12
+ 334 0096 DF92      		push r13
+ 335 0098 EF92      		push r14
+ 336 009a FF92      		push r15
+ 337               	/* prologue: function */
+ 338               	/* frame size = 0 */
+ 339               	/* stack size = 4 */
+ 340               	.L__stack_usage = 4
+ 341 009c 6B01      		movw r12,r22
+ 342 009e 7C01      		movw r14,r24
+  91:uart.c        ****     uart_putw_hex((uint16_t) (dw >> 16));
+ 343               		.stabn	68,0,91,.LM31-.LFBB6
+ 344               	.LM31:
+ 345 00a0 C701      		movw r24,r14
+ 346 00a2 0E94 0000 		call uart_putw_hex
+  92:uart.c        ****     uart_putw_hex((uint16_t) (dw & 0xffff));
+ 347               		.stabn	68,0,92,.LM32-.LFBB6
+ 348               	.LM32:
+ 349 00a6 C601      		movw r24,r12
+ 350               	/* epilogue start */
+  93:uart.c        **** }
+ 351               		.stabn	68,0,93,.LM33-.LFBB6
+ 352               	.LM33:
+ 353 00a8 FF90      		pop r15
+ 354 00aa EF90      		pop r14
+ 355 00ac DF90      		pop r13
+ 356 00ae CF90      		pop r12
+  92:uart.c        ****     uart_putw_hex((uint16_t) (dw & 0xffff));
+ 357               		.stabn	68,0,92,.LM34-.LFBB6
+ 358               	.LM34:
+ 359 00b0 0C94 0000 		jmp uart_putw_hex
+ 360               		.size	uart_putdw_hex, .-uart_putdw_hex
+GAS LISTING /tmp/cccIuWuE.s 			page 9
+
+
+ 361               	.Lscope6:
+ 362               		.stabs	"",36,0,0,.Lscope6-.LFBB6
+ 363               		.stabd	78,0,0
+ 364               		.stabs	"uart_putw_dec:F(0,47)",36,0,95,uart_putw_dec
+ 365               		.stabs	"w:P(2,4)",64,0,95,14
+ 366               	.global	uart_putw_dec
+ 367               		.type	uart_putw_dec, @function
+ 368               	uart_putw_dec:
+ 369               		.stabd	46,0,0
+  94:uart.c        **** 
+  95:uart.c        **** void uart_putw_dec(uint16_t w)
+  96:uart.c        **** {
+ 370               		.stabn	68,0,96,.LM35-.LFBB7
+ 371               	.LM35:
+ 372               	.LFBB7:
+ 373 00b4 AF92      		push r10
+ 374 00b6 BF92      		push r11
+ 375 00b8 CF92      		push r12
+ 376 00ba DF92      		push r13
+ 377 00bc EF92      		push r14
+ 378 00be FF92      		push r15
+ 379 00c0 0F93      		push r16
+ 380 00c2 1F93      		push r17
+ 381 00c4 CF93      		push r28
+ 382 00c6 DF93      		push r29
+ 383 00c8 1F92      		push __zero_reg__
+ 384 00ca CDB7      		in r28,__SP_L__
+ 385 00cc DEB7      		in r29,__SP_H__
+ 386               	/* prologue: function */
+ 387               	/* frame size = 1 */
+ 388               	/* stack size = 11 */
+ 389               	.L__stack_usage = 11
+ 390 00ce 7C01      		movw r14,r24
+ 391               		.stabn	68,0,96,.LM36-.LFBB7
+ 392               	.LM36:
+ 393 00d0 05E0      		ldi r16,lo8(5)
+ 394 00d2 10E0      		ldi r17,0
+  97:uart.c        ****     uint16_t num = 10000;
+  98:uart.c        ****     uint8_t started = 0;
+ 395               		.stabn	68,0,98,.LM37-.LFBB7
+ 396               	.LM37:
+ 397 00d4 20E0      		ldi r18,0
+  97:uart.c        ****     uint16_t num = 10000;
+ 398               		.stabn	68,0,97,.LM38-.LFBB7
+ 399               	.LM38:
+ 400 00d6 80E1      		ldi r24,lo8(16)
+ 401 00d8 A82E      		mov r10,r24
+ 402 00da 87E2      		ldi r24,lo8(39)
+ 403 00dc B82E      		mov r11,r24
+ 404               	.LBB5:
+  99:uart.c        **** 
+ 100:uart.c        ****     while(num > 0)
+ 101:uart.c        ****     {
+ 102:uart.c        ****         uint8_t b = w / num;
+ 103:uart.c        ****         if(b > 0 || started || num == 1)
+ 104:uart.c        ****         {
+ 105:uart.c        ****             uart_putc('0' + b);
+GAS LISTING /tmp/cccIuWuE.s 			page 10
+
+
+ 106:uart.c        ****             started = 1;
+ 107:uart.c        ****         }
+ 108:uart.c        ****         w -= b * num;
+ 109:uart.c        **** 
+ 110:uart.c        ****         num /= 10;
+ 405               		.stabn	68,0,110,.LM39-.LFBB7
+ 406               	.LM39:
+ 407 00de 9AE0      		ldi r25,lo8(10)
+ 408 00e0 C92E      		mov r12,r25
+ 409 00e2 D12C      		mov r13,__zero_reg__
+ 410               	.L20:
+ 102:uart.c        ****         if(b > 0 || started || num == 1)
+ 411               		.stabn	68,0,102,.LM40-.LFBB7
+ 412               	.LM40:
+ 413 00e4 C701      		movw r24,r14
+ 414 00e6 B501      		movw r22,r10
+ 415 00e8 0E94 0000 		call __udivmodhi4
+ 103:uart.c        ****         {
+ 416               		.stabn	68,0,103,.LM41-.LFBB7
+ 417               	.LM41:
+ 418 00ec 6111      		cpse r22,__zero_reg__
+ 419 00ee 00C0      		rjmp .L18
+ 103:uart.c        ****         {
+ 420               		.stabn	68,0,103,.LM42-.LFBB7
+ 421               	.LM42:
+ 422 00f0 2111      		cpse r18,__zero_reg__
+ 423 00f2 00C0      		rjmp .L18
+ 103:uart.c        ****         {
+ 424               		.stabn	68,0,103,.LM43-.LFBB7
+ 425               	.LM43:
+ 426 00f4 81E0      		ldi r24,1
+ 427 00f6 A816      		cp r10,r24
+ 428 00f8 B104      		cpc r11,__zero_reg__
+ 429 00fa 01F4      		brne .L19
+ 430               	.L18:
+ 105:uart.c        ****             started = 1;
+ 431               		.stabn	68,0,105,.LM44-.LFBB7
+ 432               	.LM44:
+ 433 00fc 80E3      		ldi r24,lo8(48)
+ 434 00fe 860F      		add r24,r22
+ 435 0100 6983      		std Y+1,r22
+ 436 0102 0E94 0000 		call uart_putc
+ 106:uart.c        ****         }
+ 437               		.stabn	68,0,106,.LM45-.LFBB7
+ 438               	.LM45:
+ 439 0106 21E0      		ldi r18,lo8(1)
+ 440 0108 6981      		ldd r22,Y+1
+ 441               	.L19:
+ 108:uart.c        **** 
+ 442               		.stabn	68,0,108,.LM46-.LFBB7
+ 443               	.LM46:
+ 444 010a 6A9D      		mul r22,r10
+ 445 010c C001      		movw r24,r0
+ 446 010e 6B9D      		mul r22,r11
+ 447 0110 900D      		add r25,r0
+ 448 0112 1124      		clr __zero_reg__
+ 449 0114 E81A      		sub r14,r24
+GAS LISTING /tmp/cccIuWuE.s 			page 11
+
+
+ 450 0116 F90A      		sbc r15,r25
+ 451               		.stabn	68,0,110,.LM47-.LFBB7
+ 452               	.LM47:
+ 453 0118 C501      		movw r24,r10
+ 454 011a B601      		movw r22,r12
+ 455 011c 0E94 0000 		call __udivmodhi4
+ 456 0120 5B01      		movw r10,r22
+ 457 0122 0150      		subi r16,1
+ 458 0124 1109      		sbc r17,__zero_reg__
+ 459               	.LBE5:
+ 100:uart.c        ****     {
+ 460               		.stabn	68,0,100,.LM48-.LFBB7
+ 461               	.LM48:
+ 462 0126 01F4      		brne .L20
+ 463               	/* epilogue start */
+ 111:uart.c        ****     }
+ 112:uart.c        **** }
+ 464               		.stabn	68,0,112,.LM49-.LFBB7
+ 465               	.LM49:
+ 466 0128 0F90      		pop __tmp_reg__
+ 467 012a DF91      		pop r29
+ 468 012c CF91      		pop r28
+ 469 012e 1F91      		pop r17
+ 470 0130 0F91      		pop r16
+ 471 0132 FF90      		pop r15
+ 472 0134 EF90      		pop r14
+ 473 0136 DF90      		pop r13
+ 474 0138 CF90      		pop r12
+ 475 013a BF90      		pop r11
+ 476 013c AF90      		pop r10
+ 477 013e 0895      		ret
+ 478               		.size	uart_putw_dec, .-uart_putw_dec
+ 479               		.stabs	"num:r(2,4)",64,0,97,10
+ 480               		.stabs	"started:r(2,2)",64,0,98,18
+ 481               		.stabn	192,0,0,.LFBB7-.LFBB7
+ 482               		.stabn	224,0,0,.Lscope7-.LFBB7
+ 483               	.Lscope7:
+ 484               		.stabs	"",36,0,0,.Lscope7-.LFBB7
+ 485               		.stabd	78,0,0
+ 486               		.stabs	"uart_putdw_dec:F(0,47)",36,0,114,uart_putdw_dec
+ 487               		.stabs	"dw:P(2,6)",64,0,114,8
+ 488               	.global	uart_putdw_dec
+ 489               		.type	uart_putdw_dec, @function
+ 490               	uart_putdw_dec:
+ 491               		.stabd	46,0,0
+ 113:uart.c        **** 
+ 114:uart.c        **** void uart_putdw_dec(uint32_t dw)
+ 115:uart.c        **** {
+ 492               		.stabn	68,0,115,.LM50-.LFBB8
+ 493               	.LM50:
+ 494               	.LFBB8:
+ 495 0140 4F92      		push r4
+ 496 0142 5F92      		push r5
+ 497 0144 6F92      		push r6
+ 498 0146 7F92      		push r7
+ 499 0148 8F92      		push r8
+ 500 014a 9F92      		push r9
+GAS LISTING /tmp/cccIuWuE.s 			page 12
+
+
+ 501 014c AF92      		push r10
+ 502 014e BF92      		push r11
+ 503 0150 CF92      		push r12
+ 504 0152 DF92      		push r13
+ 505 0154 EF92      		push r14
+ 506 0156 FF92      		push r15
+ 507 0158 0F93      		push r16
+ 508 015a 1F93      		push r17
+ 509 015c CF93      		push r28
+ 510 015e DF93      		push r29
+ 511               	/* prologue: function */
+ 512               	/* frame size = 0 */
+ 513               	/* stack size = 16 */
+ 514               	.L__stack_usage = 16
+ 515 0160 4B01      		movw r8,r22
+ 516 0162 5C01      		movw r10,r24
+ 517               		.stabn	68,0,115,.LM51-.LFBB8
+ 518               	.LM51:
+ 519 0164 CAE0      		ldi r28,lo8(10)
+ 520 0166 D0E0      		ldi r29,0
+ 116:uart.c        ****     uint32_t num = 1000000000;
+ 117:uart.c        ****     uint8_t started = 0;
+ 521               		.stabn	68,0,117,.LM52-.LFBB8
+ 522               	.LM52:
+ 523 0168 00E0      		ldi r16,0
+ 116:uart.c        ****     uint32_t num = 1000000000;
+ 524               		.stabn	68,0,116,.LM53-.LFBB8
+ 525               	.LM53:
+ 526 016a C12C      		mov r12,__zero_reg__
+ 527 016c 8AEC      		ldi r24,lo8(-54)
+ 528 016e D82E      		mov r13,r24
+ 529 0170 8AE9      		ldi r24,lo8(-102)
+ 530 0172 E82E      		mov r14,r24
+ 531 0174 8BE3      		ldi r24,lo8(59)
+ 532 0176 F82E      		mov r15,r24
+ 533               	.LBB6:
+ 118:uart.c        **** 
+ 119:uart.c        ****     while(num > 0)
+ 120:uart.c        ****     {
+ 121:uart.c        ****         uint8_t b = dw / num;
+ 122:uart.c        ****         if(b > 0 || started || num == 1)
+ 123:uart.c        ****         {
+ 124:uart.c        ****             uart_putc('0' + b);
+ 125:uart.c        ****             started = 1;
+ 126:uart.c        ****         }
+ 127:uart.c        ****         dw -= b * num;
+ 128:uart.c        **** 
+ 129:uart.c        ****         num /= 10;
+ 534               		.stabn	68,0,129,.LM54-.LFBB8
+ 535               	.LM54:
+ 536 0178 9AE0      		ldi r25,lo8(10)
+ 537 017a 492E      		mov r4,r25
+ 538 017c 512C      		mov r5,__zero_reg__
+ 539 017e 612C      		mov r6,__zero_reg__
+ 540 0180 712C      		mov r7,__zero_reg__
+ 541               	.L25:
+ 121:uart.c        ****         if(b > 0 || started || num == 1)
+GAS LISTING /tmp/cccIuWuE.s 			page 13
+
+
+ 542               		.stabn	68,0,121,.LM55-.LFBB8
+ 543               	.LM55:
+ 544 0182 C501      		movw r24,r10
+ 545 0184 B401      		movw r22,r8
+ 546 0186 A701      		movw r20,r14
+ 547 0188 9601      		movw r18,r12
+ 548 018a 0E94 0000 		call __udivmodsi4
+ 549 018e 122F      		mov r17,r18
+ 122:uart.c        ****         {
+ 550               		.stabn	68,0,122,.LM56-.LFBB8
+ 551               	.LM56:
+ 552 0190 2111      		cpse r18,__zero_reg__
+ 553 0192 00C0      		rjmp .L23
+ 122:uart.c        ****         {
+ 554               		.stabn	68,0,122,.LM57-.LFBB8
+ 555               	.LM57:
+ 556 0194 0111      		cpse r16,__zero_reg__
+ 557 0196 00C0      		rjmp .L23
+ 122:uart.c        ****         {
+ 558               		.stabn	68,0,122,.LM58-.LFBB8
+ 559               	.LM58:
+ 560 0198 81E0      		ldi r24,1
+ 561 019a C816      		cp r12,r24
+ 562 019c D104      		cpc r13,__zero_reg__
+ 563 019e E104      		cpc r14,__zero_reg__
+ 564 01a0 F104      		cpc r15,__zero_reg__
+ 565 01a2 01F4      		brne .L24
+ 566               	.L23:
+ 124:uart.c        ****             started = 1;
+ 567               		.stabn	68,0,124,.LM59-.LFBB8
+ 568               	.LM59:
+ 569 01a4 80E3      		ldi r24,lo8(48)
+ 570 01a6 810F      		add r24,r17
+ 571 01a8 0E94 0000 		call uart_putc
+ 125:uart.c        ****         }
+ 572               		.stabn	68,0,125,.LM60-.LFBB8
+ 573               	.LM60:
+ 574 01ac 01E0      		ldi r16,lo8(1)
+ 575               	.L24:
+ 127:uart.c        **** 
+ 576               		.stabn	68,0,127,.LM61-.LFBB8
+ 577               	.LM61:
+ 578 01ae A12F      		mov r26,r17
+ 579 01b0 B0E0      		ldi r27,0
+ 580 01b2 A701      		movw r20,r14
+ 581 01b4 9601      		movw r18,r12
+ 582 01b6 0E94 0000 		call __muluhisi3
+ 583 01ba 861A      		sub r8,r22
+ 584 01bc 970A      		sbc r9,r23
+ 585 01be A80A      		sbc r10,r24
+ 586 01c0 B90A      		sbc r11,r25
+ 587               		.stabn	68,0,129,.LM62-.LFBB8
+ 588               	.LM62:
+ 589 01c2 C701      		movw r24,r14
+ 590 01c4 B601      		movw r22,r12
+ 591 01c6 A301      		movw r20,r6
+ 592 01c8 9201      		movw r18,r4
+GAS LISTING /tmp/cccIuWuE.s 			page 14
+
+
+ 593 01ca 0E94 0000 		call __udivmodsi4
+ 594 01ce 6901      		movw r12,r18
+ 595 01d0 7A01      		movw r14,r20
+ 596 01d2 2197      		sbiw r28,1
+ 597               	.LBE6:
+ 119:uart.c        ****     {
+ 598               		.stabn	68,0,119,.LM63-.LFBB8
+ 599               	.LM63:
+ 600 01d4 01F4      		brne .L25
+ 601               	/* epilogue start */
+ 130:uart.c        ****     }
+ 131:uart.c        **** }
+ 602               		.stabn	68,0,131,.LM64-.LFBB8
+ 603               	.LM64:
+ 604 01d6 DF91      		pop r29
+ 605 01d8 CF91      		pop r28
+ 606 01da 1F91      		pop r17
+ 607 01dc 0F91      		pop r16
+ 608 01de FF90      		pop r15
+ 609 01e0 EF90      		pop r14
+ 610 01e2 DF90      		pop r13
+ 611 01e4 CF90      		pop r12
+ 612 01e6 BF90      		pop r11
+ 613 01e8 AF90      		pop r10
+ 614 01ea 9F90      		pop r9
+ 615 01ec 8F90      		pop r8
+ 616 01ee 7F90      		pop r7
+ 617 01f0 6F90      		pop r6
+ 618 01f2 5F90      		pop r5
+ 619 01f4 4F90      		pop r4
+ 620 01f6 0895      		ret
+ 621               		.size	uart_putdw_dec, .-uart_putdw_dec
+ 622               		.stabs	"num:r(2,6)",64,0,116,12
+ 623               		.stabs	"started:r(2,2)",64,0,117,16
+ 624               		.stabn	192,0,0,.LFBB8-.LFBB8
+ 625               		.stabn	224,0,0,.Lscope8-.LFBB8
+ 626               	.Lscope8:
+ 627               		.stabs	"",36,0,0,.Lscope8-.LFBB8
+ 628               		.stabd	78,0,0
+ 629               		.stabs	"uart_puts:F(0,47)",36,0,133,uart_puts
+ 630               		.stabs	"str:P(0,48)=*(0,49)=k(0,2)",64,0,133,24
+ 631               	.global	uart_puts
+ 632               		.type	uart_puts, @function
+ 633               	uart_puts:
+ 634               		.stabd	46,0,0
+ 132:uart.c        **** 
+ 133:uart.c        **** void uart_puts(const char* str)
+ 134:uart.c        **** {
+ 635               		.stabn	68,0,134,.LM65-.LFBB9
+ 636               	.LM65:
+ 637               	.LFBB9:
+ 638 01f8 CF93      		push r28
+ 639 01fa DF93      		push r29
+ 640               	/* prologue: function */
+ 641               	/* frame size = 0 */
+ 642               	/* stack size = 2 */
+ 643               	.L__stack_usage = 2
+GAS LISTING /tmp/cccIuWuE.s 			page 15
+
+
+ 644 01fc EC01      		movw r28,r24
+ 645               	.L28:
+ 135:uart.c        ****     while(*str)
+ 646               		.stabn	68,0,135,.LM66-.LFBB9
+ 647               	.LM66:
+ 648 01fe 8991      		ld r24,Y+
+ 649 0200 8823      		tst r24
+ 650 0202 01F0      		breq .L30
+ 136:uart.c        ****         uart_putc(*str++);
+ 651               		.stabn	68,0,136,.LM67-.LFBB9
+ 652               	.LM67:
+ 653 0204 0E94 0000 		call uart_putc
+ 654 0208 00C0      		rjmp .L28
+ 655               	.L30:
+ 656               	/* epilogue start */
+ 137:uart.c        **** }
+ 657               		.stabn	68,0,137,.LM68-.LFBB9
+ 658               	.LM68:
+ 659 020a DF91      		pop r29
+ 660 020c CF91      		pop r28
+ 661 020e 0895      		ret
+ 662               		.size	uart_puts, .-uart_puts
+ 663               	.Lscope9:
+ 664               		.stabs	"",36,0,0,.Lscope9-.LFBB9
+ 665               		.stabd	78,0,0
+ 666               		.stabs	"uart_puts_p:F(0,47)",36,0,139,uart_puts_p
+ 667               		.stabs	"str:P(0,48)",64,0,139,24
+ 668               	.global	uart_puts_p
+ 669               		.type	uart_puts_p, @function
+ 670               	uart_puts_p:
+ 671               		.stabd	46,0,0
+ 138:uart.c        **** 
+ 139:uart.c        **** void uart_puts_p(PGM_P str)
+ 140:uart.c        **** {
+ 672               		.stabn	68,0,140,.LM69-.LFBB10
+ 673               	.LM69:
+ 674               	.LFBB10:
+ 675 0210 CF93      		push r28
+ 676 0212 DF93      		push r29
+ 677               	/* prologue: function */
+ 678               	/* frame size = 0 */
+ 679               	/* stack size = 2 */
+ 680               	.L__stack_usage = 2
+ 681 0214 FC01      		movw r30,r24
+ 682               	.L33:
+ 683               	.LBB7:
+ 684               	.LBB8:
+ 141:uart.c        ****     while(1)
+ 142:uart.c        ****     {
+ 143:uart.c        ****         uint8_t b = pgm_read_byte_near(str++);
+ 685               		.stabn	68,0,143,.LM70-.LFBB10
+ 686               	.LM70:
+ 687               	/* #APP */
+ 688               	 ;  143 "uart.c" 1
+ 689 0216 8491      		lpm r24, Z
+ 690               		
+ 691               	 ;  0 "" 2
+GAS LISTING /tmp/cccIuWuE.s 			page 16
+
+
+ 692               	/* #NOAPP */
+ 693 0218 EF01      		movw r28,r30
+ 694 021a 2196      		adiw r28,1
+ 695               	.LBE8:
+ 144:uart.c        ****         if(!b)
+ 696               		.stabn	68,0,144,.LM71-.LFBB10
+ 697               	.LM71:
+ 698 021c 8823      		tst r24
+ 699 021e 01F0      		breq .L31
+ 145:uart.c        ****             break;
+ 146:uart.c        **** 
+ 147:uart.c        ****         uart_putc(b);
+ 700               		.stabn	68,0,147,.LM72-.LFBB10
+ 701               	.LM72:
+ 702 0220 0E94 0000 		call uart_putc
+ 703 0224 FE01      		movw r30,r28
+ 704               	.LBE7:
+ 148:uart.c        ****     }
+ 705               		.stabn	68,0,148,.LM73-.LFBB10
+ 706               	.LM73:
+ 707 0226 00C0      		rjmp .L33
+ 708               	.L31:
+ 709               	/* epilogue start */
+ 149:uart.c        **** }
+ 710               		.stabn	68,0,149,.LM74-.LFBB10
+ 711               	.LM74:
+ 712 0228 DF91      		pop r29
+ 713 022a CF91      		pop r28
+ 714 022c 0895      		ret
+ 715               		.size	uart_puts_p, .-uart_puts_p
+ 716               		.stabs	"__addr16:r(2,4)",64,0,143,30
+ 717               		.stabn	192,0,0,.LBB8-.LFBB10
+ 718               		.stabn	224,0,0,.LBE8-.LFBB10
+ 719               	.Lscope10:
+ 720               		.stabs	"",36,0,0,.Lscope10-.LFBB10
+ 721               		.stabd	78,0,0
+ 722               		.stabs	"uart_buffer_empty:F(0,11)",36,0,155,uart_buffer_empty
+ 723               	.global	uart_buffer_empty
+ 724               		.type	uart_buffer_empty, @function
+ 725               	uart_buffer_empty:
+ 726               		.stabd	46,0,0
+ 150:uart.c        **** 
+ 151:uart.c        **** 
+ 152:uart.c        **** 
+ 153:uart.c        **** // Returns true if recieve buffer is empty 
+ 154:uart.c        **** //
+ 155:uart.c        **** unsigned char uart_buffer_empty(void)
+ 156:uart.c        **** {
+ 727               		.stabn	68,0,156,.LM75-.LFBB11
+ 728               	.LM75:
+ 729               	.LFBB11:
+ 730               	/* prologue: function */
+ 731               	/* frame size = 0 */
+ 732               	/* stack size = 0 */
+ 733               	.L__stack_usage = 0
+ 157:uart.c        ****     return (UCSRA & (1 << RXC));
+ 734               		.stabn	68,0,157,.LM76-.LFBB11
+GAS LISTING /tmp/cccIuWuE.s 			page 17
+
+
+ 735               	.LM76:
+ 736 022e 8091 C000 		lds r24,192
+ 158:uart.c        **** }
+ 737               		.stabn	68,0,158,.LM77-.LFBB11
+ 738               	.LM77:
+ 739 0232 8078      		andi r24,lo8(-128)
+ 740 0234 0895      		ret
+ 741               		.size	uart_buffer_empty, .-uart_buffer_empty
+ 742               	.Lscope11:
+ 743               		.stabs	"",36,0,0,.Lscope11-.LFBB11
+ 744               		.stabd	78,0,0
+ 745               		.stabs	"uart_getc:F(0,11)",36,0,165,uart_getc
+ 746               	.global	uart_getc
+ 747               		.type	uart_getc, @function
+ 748               	uart_getc:
+ 749               		.stabd	46,0,0
+ 159:uart.c        **** 
+ 160:uart.c        **** 
+ 161:uart.c        **** // Get char from buffer. 
+ 162:uart.c        **** // Note that this function BLOCKS until a char is recieved. 
+ 163:uart.c        **** //
+ 164:uart.c        **** 
+ 165:uart.c        **** unsigned char uart_getc(void) 
+ 166:uart.c        **** {
+ 750               		.stabn	68,0,166,.LM78-.LFBB12
+ 751               	.LM78:
+ 752               	.LFBB12:
+ 753               	/* prologue: function */
+ 754               	/* frame size = 0 */
+ 755               	/* stack size = 0 */
+ 756               	.L__stack_usage = 0
+ 757               	.L36:
+ 167:uart.c        ****   unsigned char c;
+ 168:uart.c        ****   
+ 169:uart.c        ****   loop_until_bit_is_set(UCSR0A,RXC0);
+ 758               		.stabn	68,0,169,.LM79-.LFBB12
+ 759               	.LM79:
+ 760 0236 8091 C000 		lds r24,192
+ 761 023a 87FF      		sbrs r24,7
+ 762 023c 00C0      		rjmp .L36
+ 170:uart.c        ****   
+ 171:uart.c        ****   c = UDR;
+ 763               		.stabn	68,0,171,.LM80-.LFBB12
+ 764               	.LM80:
+ 765 023e 8091 C600 		lds r24,198
+ 172:uart.c        ****   
+ 173:uart.c        ****   return c;
+ 174:uart.c        **** }
+ 766               		.stabn	68,0,174,.LM81-.LFBB12
+ 767               	.LM81:
+ 768 0242 0895      		ret
+ 769               		.size	uart_getc, .-uart_getc
+ 770               		.stabs	"c:r(0,11)",64,0,167,24
+ 771               		.stabn	192,0,0,.LFBB12-.LFBB12
+ 772               		.stabn	224,0,0,.Lscope12-.LFBB12
+ 773               	.Lscope12:
+ 774               		.stabs	"",36,0,0,.Lscope12-.LFBB12
+GAS LISTING /tmp/cccIuWuE.s 			page 18
+
+
+ 775               		.stabd	78,0,0
+ 776               		.stabs	"padToBuffer:F(0,47)",36,0,176,padToBuffer
+ 777               		.stabs	"str:P(10,2)",64,0,176,24
+ 778               	.global	padToBuffer
+ 779               		.type	padToBuffer, @function
+ 780               	padToBuffer:
+ 781               		.stabd	46,0,0
+ 175:uart.c        **** 
+ 176:uart.c        **** void padToBuffer(char* str)
+ 177:uart.c        **** {
+ 782               		.stabn	68,0,177,.LM82-.LFBB13
+ 783               	.LM82:
+ 784               	.LFBB13:
+ 785               	/* prologue: function */
+ 786               	/* frame size = 0 */
+ 787               	/* stack size = 0 */
+ 788               	.L__stack_usage = 0
+ 178:uart.c        ****     int len = strlen(str);
+ 789               		.stabn	68,0,178,.LM83-.LFBB13
+ 790               	.LM83:
+ 791 0244 FC01      		movw r30,r24
+ 792               		0:
+ 793 0246 0190      		ld __tmp_reg__,Z+
+ 794 0248 0020      		tst __tmp_reg__
+ 795 024a 01F4      		brne 0b
+ 796 024c 3197      		sbiw r30,1
+ 179:uart.c        ****     int current = 0;
+ 180:uart.c        ****     
+ 181:uart.c        ****     while((len + current) < RX_BUFFER_SIZE)
+ 182:uart.c        ****     {
+ 183:uart.c        ****         str[(current + len)] = '0';
+ 797               		.stabn	68,0,183,.LM84-.LFBB13
+ 798               	.LM84:
+ 799 024e 40E3      		ldi r20,lo8(48)
+ 800               	.L39:
+ 801 0250 9F01      		movw r18,r30
+ 802 0252 281B      		sub r18,r24
+ 803 0254 390B      		sbc r19,r25
+ 181:uart.c        ****     {
+ 804               		.stabn	68,0,181,.LM85-.LFBB13
+ 805               	.LM85:
+ 806 0256 2C33      		cpi r18,60
+ 807 0258 3105      		cpc r19,__zero_reg__
+ 808 025a 04F4      		brge .L41
+ 809               		.stabn	68,0,183,.LM86-.LFBB13
+ 810               	.LM86:
+ 811 025c 4193      		st Z+,r20
+ 812 025e 00C0      		rjmp .L39
+ 813               	.L41:
+ 814               	/* epilogue start */
+ 184:uart.c        ****         current = current + 1;
+ 185:uart.c        ****     }
+ 186:uart.c        ****     
+ 187:uart.c        **** }
+ 815               		.stabn	68,0,187,.LM87-.LFBB13
+ 816               	.LM87:
+ 817 0260 0895      		ret
+GAS LISTING /tmp/cccIuWuE.s 			page 19
+
+
+ 818               		.size	padToBuffer, .-padToBuffer
+ 819               	.Lscope13:
+ 820               		.stabs	"",36,0,0,.Lscope13-.LFBB13
+ 821               		.stabd	78,0,0
+ 822               		.section	.rodata.str1.1,"aMS",@progbits,1
+ 823               	.LC0:
+ 824 0000 3100      		.string	"1"
+ 825               	.LC1:
+ 826 0002 3000      		.string	"0"
+ 827               		.section	.rodata
+ 828               	.LC2:
+ 829 0000 0A00      		.string	"\n"
+ 830 0002 00        		.string	""
+ 831               		.text
+ 832               		.stabs	"__vector_23:F(0,47)",36,0,18,__vector_23
+ 833               	.global	__vector_23
+ 834               		.type	__vector_23, @function
+ 835               	__vector_23:
+ 836               		.stabd	46,0,0
+ 837               		.stabs	"UsingTimerSerial.c",132,0,0,.Ltext2
+ 838               	.Ltext2:
+   1:UsingTimerSerial.c **** #include <stdint.h>
+   2:UsingTimerSerial.c **** #include <stdlib.h>
+   3:UsingTimerSerial.c **** #include <string.h>
+   4:UsingTimerSerial.c **** #include <avr/io.h>
+   5:UsingTimerSerial.c **** #include <avr/interrupt.h>
+   6:UsingTimerSerial.c **** #include "uart.c"
+   7:UsingTimerSerial.c **** #include <util/delay.h>
+   8:UsingTimerSerial.c **** 
+   9:UsingTimerSerial.c **** volatile uint8_t timerOF=0;
+  10:UsingTimerSerial.c **** #define OVERSAMPLES 10
+  11:UsingTimerSerial.c **** unsigned long int TimerSetup = 0;
+  12:UsingTimerSerial.c **** static volatile uint16_t adcData;
+  13:UsingTimerSerial.c **** static volatile uint16_t ADCtotal;
+  14:UsingTimerSerial.c **** static volatile uint8_t adcDataL;
+  15:UsingTimerSerial.c **** static volatile uint8_t adcDataH;
+  16:UsingTimerSerial.c **** static volatile uint8_t sample_count;
+  17:UsingTimerSerial.c **** 
+  18:UsingTimerSerial.c **** inline ISR(TIMER0_OVF_vect)
+  19:UsingTimerSerial.c **** {
+ 839               		.stabn	68,0,19,.LM88-.LFBB14
+ 840               	.LM88:
+ 841               	.LFBB14:
+ 842 0262 1F92      		push r1
+ 843 0264 0F92      		push r0
+ 844 0266 0FB6      		in r0,__SREG__
+ 845 0268 0F92      		push r0
+ 846 026a 1124      		clr __zero_reg__
+ 847 026c 0BB6      		in r0,__RAMPZ__
+ 848 026e 0F92      		push r0
+ 849 0270 2F93      		push r18
+ 850 0272 3F93      		push r19
+ 851 0274 4F93      		push r20
+ 852 0276 5F93      		push r21
+ 853 0278 6F93      		push r22
+ 854 027a 7F93      		push r23
+ 855 027c 8F93      		push r24
+GAS LISTING /tmp/cccIuWuE.s 			page 20
+
+
+ 856 027e 9F93      		push r25
+ 857 0280 AF93      		push r26
+ 858 0282 BF93      		push r27
+ 859 0284 EF93      		push r30
+ 860 0286 FF93      		push r31
+ 861 0288 CF93      		push r28
+ 862 028a DF93      		push r29
+ 863 028c CDB7      		in r28,__SP_L__
+ 864 028e DEB7      		in r29,__SP_H__
+ 865 0290 6497      		sbiw r28,20
+ 866 0292 DEBF      		out __SP_H__,r29
+ 867 0294 CDBF      		out __SP_L__,r28
+ 868               	/* prologue: Signal */
+ 869               	/* frame size = 20 */
+ 870               	/* stack size = 38 */
+ 871               	.L__stack_usage = 38
+  20:UsingTimerSerial.c ****     timerOF=1;
+ 872               		.stabn	68,0,20,.LM89-.LFBB14
+ 873               	.LM89:
+ 874 0296 81E0      		ldi r24,lo8(1)
+ 875 0298 8093 0000 		sts timerOF,r24
+  21:UsingTimerSerial.c ****     
+  22:UsingTimerSerial.c ****     TimerSetup = TimerSetup + 1;
+ 876               		.stabn	68,0,22,.LM90-.LFBB14
+ 877               	.LM90:
+ 878 029c 8091 0000 		lds r24,TimerSetup
+ 879 02a0 9091 0000 		lds r25,TimerSetup+1
+ 880 02a4 A091 0000 		lds r26,TimerSetup+2
+ 881 02a8 B091 0000 		lds r27,TimerSetup+3
+ 882 02ac 0196      		adiw r24,1
+ 883 02ae A11D      		adc r26,__zero_reg__
+ 884 02b0 B11D      		adc r27,__zero_reg__
+ 885 02b2 8093 0000 		sts TimerSetup,r24
+ 886 02b6 9093 0000 		sts TimerSetup+1,r25
+ 887 02ba A093 0000 		sts TimerSetup+2,r26
+ 888 02be B093 0000 		sts TimerSetup+3,r27
+  23:UsingTimerSerial.c ****     
+  24:UsingTimerSerial.c ****     if(TimerSetup > (61035/4))  //sets speed to a quarter of a second
+ 889               		.stabn	68,0,24,.LM91-.LFBB14
+ 890               	.LM91:
+ 891 02c2 8B39      		cpi r24,-101
+ 892 02c4 9B43      		sbci r25,59
+ 893 02c6 A105      		cpc r26,__zero_reg__
+ 894 02c8 B105      		cpc r27,__zero_reg__
+ 895 02ca 00F4      		brsh .+2
+ 896 02cc 00C0      		rjmp .L42
+ 897               	.LBB9:
+ 898               	.LBB10:
+ 899               		.stabs	"uart.c",132,0,0,.Ltext3
+ 900               	.Ltext3:
+ 157:uart.c        **** }
+ 901               		.stabn	68,0,157,.LM92-.LFBB14
+ 902               	.LM92:
+ 903 02ce 8091 C000 		lds r24,192
+ 904               	.LBE10:
+ 905               	.LBE9:
+ 906               		.stabs	"UsingTimerSerial.c",132,0,0,.Ltext4
+GAS LISTING /tmp/cccIuWuE.s 			page 21
+
+
+ 907               	.Ltext4:
+  25:UsingTimerSerial.c ****     {    
+  26:UsingTimerSerial.c ****         if(uart_buffer_empty())
+ 908               		.stabn	68,0,26,.LM93-.LFBB14
+ 909               	.LM93:
+ 910 02d2 87FF      		sbrs r24,7
+ 911 02d4 00C0      		rjmp .L44
+ 912               	.LBB11:
+  27:UsingTimerSerial.c ****         {   
+  28:UsingTimerSerial.c **** 			//for debugging Input pins
+  29:UsingTimerSerial.c **** 			/*char temp[60] = "PINC4:";
+  30:UsingTimerSerial.c **** 			char portc4[3];
+  31:UsingTimerSerial.c **** 			char portc5[3];
+  32:UsingTimerSerial.c **** 			char portd2[3];
+  33:UsingTimerSerial.c **** 			char portd3[3];
+  34:UsingTimerSerial.c **** 			char portd4[3];*/
+  35:UsingTimerSerial.c **** 			
+  36:UsingTimerSerial.c **** 			//uart_getc();		
+  37:UsingTimerSerial.c **** 		
+  38:UsingTimerSerial.c **** 			/*
+  39:UsingTimerSerial.c ****             itoa(PINC & (1 << PINC4),portc4,10);
+  40:UsingTimerSerial.c **** 			itoa(PINC & (1 << PINC5),portc5,10);
+  41:UsingTimerSerial.c **** 			itoa(PIND & (1 << PIND2),portd2,10);
+  42:UsingTimerSerial.c **** 			itoa(PIND & (1 << PIND3),portd3,10);
+  43:UsingTimerSerial.c **** 			itoa(PIND & (1 << PIND4),portd4,10);
+  44:UsingTimerSerial.c **** 			
+  45:UsingTimerSerial.c **** 			strcat(temp,portc4);
+  46:UsingTimerSerial.c **** 			strcat(temp,"\n");
+  47:UsingTimerSerial.c **** 			strcat(temp,"PINC5:");
+  48:UsingTimerSerial.c **** 			strcat(temp,portc5);
+  49:UsingTimerSerial.c **** 			strcat(temp,"\n");
+  50:UsingTimerSerial.c **** 			strcat(temp,"PORTD2:");
+  51:UsingTimerSerial.c **** 			strcat(temp,portd2);			
+  52:UsingTimerSerial.c **** 			strcat(temp,"\n");
+  53:UsingTimerSerial.c **** 			strcat(temp,"PORTD3:");
+  54:UsingTimerSerial.c **** 			strcat(temp,portd3);
+  55:UsingTimerSerial.c **** 			strcat(temp,"\n");
+  56:UsingTimerSerial.c **** 			strcat(temp,"PORT4:");
+  57:UsingTimerSerial.c **** 			strcat(temp,portd4);
+  58:UsingTimerSerial.c **** 			//itoa(PINC,temp,10);
+  59:UsingTimerSerial.c **** 			
+  60:UsingTimerSerial.c ****             strcat(temp,"\n\0");*/
+  61:UsingTimerSerial.c ****             
+  62:UsingTimerSerial.c ****             //for debugging Output pins
+  63:UsingTimerSerial.c ****             /*char temp[80] = "Ouput Ports:";
+  64:UsingTimerSerial.c ****             char portd5[3];
+  65:UsingTimerSerial.c ****             char portd6[3];
+  66:UsingTimerSerial.c ****             char portd7[3];
+  67:UsingTimerSerial.c ****             char portb0[3];
+  68:UsingTimerSerial.c ****             char portb3[3];
+  69:UsingTimerSerial.c ****             char portb4[3];
+  70:UsingTimerSerial.c ****             char portb5[3];
+  71:UsingTimerSerial.c ****             
+  72:UsingTimerSerial.c ****             itoa(PIND & (1 << PIND5),portd5,10);
+  73:UsingTimerSerial.c ****             itoa(PIND & (1 << PIND6),portd6,10);
+  74:UsingTimerSerial.c ****             itoa(PIND & (1 << PIND7),portd7,10);
+  75:UsingTimerSerial.c ****             itoa(PINB & (1 << PINB0),portb0,10);
+GAS LISTING /tmp/cccIuWuE.s 			page 22
+
+
+  76:UsingTimerSerial.c ****             itoa(PINB & (1 << PINB3),portb3,10);
+  77:UsingTimerSerial.c ****             itoa(PINB & (1 << PINB4),portb4,10);
+  78:UsingTimerSerial.c ****             itoa(PINB & (1 << PINB5),portb5,10);
+  79:UsingTimerSerial.c ****             
+  80:UsingTimerSerial.c ****             strcat(temp,"\n");
+  81:UsingTimerSerial.c ****             strcat(temp,portd5);
+  82:UsingTimerSerial.c **** 			strcat(temp,"\n");
+  83:UsingTimerSerial.c **** 			strcat(temp,portd6);
+  84:UsingTimerSerial.c **** 			strcat(temp,"\n");
+  85:UsingTimerSerial.c **** 			strcat(temp,portd7);			
+  86:UsingTimerSerial.c **** 			strcat(temp,"\n");
+  87:UsingTimerSerial.c **** 			strcat(temp,portb0);
+  88:UsingTimerSerial.c **** 			strcat(temp,"\n");
+  89:UsingTimerSerial.c **** 			strcat(temp,portb3);
+  90:UsingTimerSerial.c ****             strcat(temp,"\n");
+  91:UsingTimerSerial.c ****             strcat(temp,portb4);
+  92:UsingTimerSerial.c ****             strcat(temp,"\n");
+  93:UsingTimerSerial.c ****             strcat(temp,portb5);
+  94:UsingTimerSerial.c **** 
+  95:UsingTimerSerial.c ****             strcat(temp,"\n\0");*/
+  96:UsingTimerSerial.c ****             
+  97:UsingTimerSerial.c ****             char portStates[20]="";
+ 913               		.stabn	68,0,97,.LM94-.LFBB14
+ 914               	.LM94:
+ 915 02d6 1982      		std Y+1,__zero_reg__
+ 916 02d8 1A82      		std Y+2,__zero_reg__
+ 917 02da 1B82      		std Y+3,__zero_reg__
+ 918 02dc 1C82      		std Y+4,__zero_reg__
+ 919 02de FE01      		movw r30,r28
+ 920 02e0 3596      		adiw r30,5
+ 921 02e2 80E1      		ldi r24,lo8(16)
+ 922 02e4 DF01      		movw r26,r30
+ 923               		0:
+ 924 02e6 1D92      		st X+,__zero_reg__
+ 925 02e8 8A95      		dec r24
+ 926 02ea 01F4      		brne 0b
+  98:UsingTimerSerial.c ****             
+  99:UsingTimerSerial.c ****             //Inputs:
+ 100:UsingTimerSerial.c ****             if((PINC & (1 << PINC4)) > 0)
+ 927               		.stabn	68,0,100,.LM95-.LFBB14
+ 928               	.LM95:
+ 929 02ec 349B      		sbis 0x6,4
+ 930 02ee 00C0      		rjmp .L45
+ 101:UsingTimerSerial.c ****             {
+ 102:UsingTimerSerial.c ****                 strcat(portStates,"1");
+ 931               		.stabn	68,0,102,.LM96-.LFBB14
+ 932               	.LM96:
+ 933 02f0 60E0      		ldi r22,lo8(.LC0)
+ 934 02f2 70E0      		ldi r23,hi8(.LC0)
+ 935 02f4 00C0      		rjmp .L72
+ 936               	.L45:
+ 103:UsingTimerSerial.c ****             }else if((PINC & (1 << PINC4)) == 0){
+ 937               		.stabn	68,0,103,.LM97-.LFBB14
+ 938               	.LM97:
+ 939 02f6 3499      		sbic 0x6,4
+ 940 02f8 00C0      		rjmp .L46
+ 104:UsingTimerSerial.c ****                 strcat(portStates,"0");
+GAS LISTING /tmp/cccIuWuE.s 			page 23
+
+
+ 941               		.stabn	68,0,104,.LM98-.LFBB14
+ 942               	.LM98:
+ 943 02fa 60E0      		ldi r22,lo8(.LC1)
+ 944 02fc 70E0      		ldi r23,hi8(.LC1)
+ 945               	.L72:
+ 946 02fe CE01      		movw r24,r28
+ 947 0300 0196      		adiw r24,1
+ 948 0302 0E94 0000 		call strcat
+ 949               	.L46:
+ 105:UsingTimerSerial.c ****             }
+ 106:UsingTimerSerial.c ****             
+ 107:UsingTimerSerial.c **** 			if((PINC & (1 << PINC5)) > 0)
+ 950               		.stabn	68,0,107,.LM99-.LFBB14
+ 951               	.LM99:
+ 952 0306 359B      		sbis 0x6,5
+ 953 0308 00C0      		rjmp .L47
+ 108:UsingTimerSerial.c ****             {
+ 109:UsingTimerSerial.c ****                 strcat(portStates,"1");
+ 954               		.stabn	68,0,109,.LM100-.LFBB14
+ 955               	.LM100:
+ 956 030a 60E0      		ldi r22,lo8(.LC0)
+ 957 030c 70E0      		ldi r23,hi8(.LC0)
+ 958 030e 00C0      		rjmp .L73
+ 959               	.L47:
+ 110:UsingTimerSerial.c ****             }else if((PINC & (1 << PINC5)) == 0){
+ 960               		.stabn	68,0,110,.LM101-.LFBB14
+ 961               	.LM101:
+ 962 0310 3599      		sbic 0x6,5
+ 963 0312 00C0      		rjmp .L48
+ 111:UsingTimerSerial.c ****                 strcat(portStates,"0");
+ 964               		.stabn	68,0,111,.LM102-.LFBB14
+ 965               	.LM102:
+ 966 0314 60E0      		ldi r22,lo8(.LC1)
+ 967 0316 70E0      		ldi r23,hi8(.LC1)
+ 968               	.L73:
+ 969 0318 CE01      		movw r24,r28
+ 970 031a 0196      		adiw r24,1
+ 971 031c 0E94 0000 		call strcat
+ 972               	.L48:
+ 112:UsingTimerSerial.c ****             }
+ 113:UsingTimerSerial.c ****             
+ 114:UsingTimerSerial.c **** 			if((PIND & (1 << PIND2)) > 0)
+ 973               		.stabn	68,0,114,.LM103-.LFBB14
+ 974               	.LM103:
+ 975 0320 4A9B      		sbis 0x9,2
+ 976 0322 00C0      		rjmp .L49
+ 115:UsingTimerSerial.c ****             {
+ 116:UsingTimerSerial.c ****                 strcat(portStates,"1");
+ 977               		.stabn	68,0,116,.LM104-.LFBB14
+ 978               	.LM104:
+ 979 0324 60E0      		ldi r22,lo8(.LC0)
+ 980 0326 70E0      		ldi r23,hi8(.LC0)
+ 981 0328 00C0      		rjmp .L74
+ 982               	.L49:
+ 117:UsingTimerSerial.c ****             }else if((PIND & (1 << PIND2)) == 0){
+ 983               		.stabn	68,0,117,.LM105-.LFBB14
+ 984               	.LM105:
+GAS LISTING /tmp/cccIuWuE.s 			page 24
+
+
+ 985 032a 4A99      		sbic 0x9,2
+ 986 032c 00C0      		rjmp .L50
+ 118:UsingTimerSerial.c ****                 strcat(portStates,"0");
+ 987               		.stabn	68,0,118,.LM106-.LFBB14
+ 988               	.LM106:
+ 989 032e 60E0      		ldi r22,lo8(.LC1)
+ 990 0330 70E0      		ldi r23,hi8(.LC1)
+ 991               	.L74:
+ 992 0332 CE01      		movw r24,r28
+ 993 0334 0196      		adiw r24,1
+ 994 0336 0E94 0000 		call strcat
+ 995               	.L50:
+ 119:UsingTimerSerial.c ****             }
+ 120:UsingTimerSerial.c ****             
+ 121:UsingTimerSerial.c **** 			if((PIND & (1 << PIND3)) > 0)
+ 996               		.stabn	68,0,121,.LM107-.LFBB14
+ 997               	.LM107:
+ 998 033a 4B9B      		sbis 0x9,3
+ 999 033c 00C0      		rjmp .L51
+ 122:UsingTimerSerial.c ****             {
+ 123:UsingTimerSerial.c ****                 strcat(portStates,"1");
+ 1000               		.stabn	68,0,123,.LM108-.LFBB14
+ 1001               	.LM108:
+ 1002 033e 60E0      		ldi r22,lo8(.LC0)
+ 1003 0340 70E0      		ldi r23,hi8(.LC0)
+ 1004 0342 00C0      		rjmp .L75
+ 1005               	.L51:
+ 124:UsingTimerSerial.c ****             }else if((PIND & (1 << PIND3)) == 0){
+ 1006               		.stabn	68,0,124,.LM109-.LFBB14
+ 1007               	.LM109:
+ 1008 0344 4B99      		sbic 0x9,3
+ 1009 0346 00C0      		rjmp .L52
+ 125:UsingTimerSerial.c ****                 strcat(portStates,"0");
+ 1010               		.stabn	68,0,125,.LM110-.LFBB14
+ 1011               	.LM110:
+ 1012 0348 60E0      		ldi r22,lo8(.LC1)
+ 1013 034a 70E0      		ldi r23,hi8(.LC1)
+ 1014               	.L75:
+ 1015 034c CE01      		movw r24,r28
+ 1016 034e 0196      		adiw r24,1
+ 1017 0350 0E94 0000 		call strcat
+ 1018               	.L52:
+ 126:UsingTimerSerial.c ****             }
+ 127:UsingTimerSerial.c ****             
+ 128:UsingTimerSerial.c **** 			if((PIND & (1 << PIND4)) > 0)
+ 1019               		.stabn	68,0,128,.LM111-.LFBB14
+ 1020               	.LM111:
+ 1021 0354 4C9B      		sbis 0x9,4
+ 1022 0356 00C0      		rjmp .L53
+ 129:UsingTimerSerial.c ****             {
+ 130:UsingTimerSerial.c ****                 strcat(portStates,"1");
+ 1023               		.stabn	68,0,130,.LM112-.LFBB14
+ 1024               	.LM112:
+ 1025 0358 60E0      		ldi r22,lo8(.LC0)
+ 1026 035a 70E0      		ldi r23,hi8(.LC0)
+ 1027 035c 00C0      		rjmp .L76
+ 1028               	.L53:
+GAS LISTING /tmp/cccIuWuE.s 			page 25
+
+
+ 131:UsingTimerSerial.c ****             }else if((PIND & (1 << PIND4)) == 0){
+ 1029               		.stabn	68,0,131,.LM113-.LFBB14
+ 1030               	.LM113:
+ 1031 035e 4C99      		sbic 0x9,4
+ 1032 0360 00C0      		rjmp .L54
+ 132:UsingTimerSerial.c ****                 strcat(portStates,"0");
+ 1033               		.stabn	68,0,132,.LM114-.LFBB14
+ 1034               	.LM114:
+ 1035 0362 60E0      		ldi r22,lo8(.LC1)
+ 1036 0364 70E0      		ldi r23,hi8(.LC1)
+ 1037               	.L76:
+ 1038 0366 CE01      		movw r24,r28
+ 1039 0368 0196      		adiw r24,1
+ 1040 036a 0E94 0000 		call strcat
+ 1041               	.L54:
+ 133:UsingTimerSerial.c ****             }
+ 134:UsingTimerSerial.c ****                 
+ 135:UsingTimerSerial.c ****             //Outputs:
+ 136:UsingTimerSerial.c ****             if((PIND & (1 << PIND5)) > 0)
+ 1042               		.stabn	68,0,136,.LM115-.LFBB14
+ 1043               	.LM115:
+ 1044 036e 4D9B      		sbis 0x9,5
+ 1045 0370 00C0      		rjmp .L55
+ 137:UsingTimerSerial.c ****             {
+ 138:UsingTimerSerial.c ****                 strcat(portStates,"1");
+ 1046               		.stabn	68,0,138,.LM116-.LFBB14
+ 1047               	.LM116:
+ 1048 0372 60E0      		ldi r22,lo8(.LC0)
+ 1049 0374 70E0      		ldi r23,hi8(.LC0)
+ 1050 0376 00C0      		rjmp .L77
+ 1051               	.L55:
+ 139:UsingTimerSerial.c ****             }else if((PIND & (1 << PIND5)) == 0){
+ 1052               		.stabn	68,0,139,.LM117-.LFBB14
+ 1053               	.LM117:
+ 1054 0378 4D99      		sbic 0x9,5
+ 1055 037a 00C0      		rjmp .L56
+ 140:UsingTimerSerial.c ****                 strcat(portStates,"0");
+ 1056               		.stabn	68,0,140,.LM118-.LFBB14
+ 1057               	.LM118:
+ 1058 037c 60E0      		ldi r22,lo8(.LC1)
+ 1059 037e 70E0      		ldi r23,hi8(.LC1)
+ 1060               	.L77:
+ 1061 0380 CE01      		movw r24,r28
+ 1062 0382 0196      		adiw r24,1
+ 1063 0384 0E94 0000 		call strcat
+ 1064               	.L56:
+ 141:UsingTimerSerial.c ****             }
+ 142:UsingTimerSerial.c ****             
+ 143:UsingTimerSerial.c ****             if((PIND & (1 << PIND6)) > 0)
+ 1065               		.stabn	68,0,143,.LM119-.LFBB14
+ 1066               	.LM119:
+ 1067 0388 4E9B      		sbis 0x9,6
+ 1068 038a 00C0      		rjmp .L57
+ 144:UsingTimerSerial.c ****             {
+ 145:UsingTimerSerial.c ****                 strcat(portStates,"1");
+ 1069               		.stabn	68,0,145,.LM120-.LFBB14
+ 1070               	.LM120:
+GAS LISTING /tmp/cccIuWuE.s 			page 26
+
+
+ 1071 038c 60E0      		ldi r22,lo8(.LC0)
+ 1072 038e 70E0      		ldi r23,hi8(.LC0)
+ 1073 0390 00C0      		rjmp .L78
+ 1074               	.L57:
+ 146:UsingTimerSerial.c ****             }else if((PIND & (1 << PIND6)) == 0){
+ 1075               		.stabn	68,0,146,.LM121-.LFBB14
+ 1076               	.LM121:
+ 1077 0392 4E99      		sbic 0x9,6
+ 1078 0394 00C0      		rjmp .L58
+ 147:UsingTimerSerial.c ****                 strcat(portStates,"0");
+ 1079               		.stabn	68,0,147,.LM122-.LFBB14
+ 1080               	.LM122:
+ 1081 0396 60E0      		ldi r22,lo8(.LC1)
+ 1082 0398 70E0      		ldi r23,hi8(.LC1)
+ 1083               	.L78:
+ 1084 039a CE01      		movw r24,r28
+ 1085 039c 0196      		adiw r24,1
+ 1086 039e 0E94 0000 		call strcat
+ 1087               	.L58:
+ 148:UsingTimerSerial.c ****             }
+ 149:UsingTimerSerial.c ****             
+ 150:UsingTimerSerial.c ****             if((PIND & (1 << PIND7)) > 0)
+ 1088               		.stabn	68,0,150,.LM123-.LFBB14
+ 1089               	.LM123:
+ 1090 03a2 4F9B      		sbis 0x9,7
+ 1091 03a4 00C0      		rjmp .L59
+ 151:UsingTimerSerial.c ****             {
+ 152:UsingTimerSerial.c ****                 strcat(portStates,"1");
+ 1092               		.stabn	68,0,152,.LM124-.LFBB14
+ 1093               	.LM124:
+ 1094 03a6 60E0      		ldi r22,lo8(.LC0)
+ 1095 03a8 70E0      		ldi r23,hi8(.LC0)
+ 1096 03aa 00C0      		rjmp .L79
+ 1097               	.L59:
+ 153:UsingTimerSerial.c ****             }else if((PIND & (1 << PIND7)) == 0){
+ 1098               		.stabn	68,0,153,.LM125-.LFBB14
+ 1099               	.LM125:
+ 1100 03ac 4F99      		sbic 0x9,7
+ 1101 03ae 00C0      		rjmp .L60
+ 154:UsingTimerSerial.c ****                 strcat(portStates,"0");
+ 1102               		.stabn	68,0,154,.LM126-.LFBB14
+ 1103               	.LM126:
+ 1104 03b0 60E0      		ldi r22,lo8(.LC1)
+ 1105 03b2 70E0      		ldi r23,hi8(.LC1)
+ 1106               	.L79:
+ 1107 03b4 CE01      		movw r24,r28
+ 1108 03b6 0196      		adiw r24,1
+ 1109 03b8 0E94 0000 		call strcat
+ 1110               	.L60:
+ 155:UsingTimerSerial.c ****             }
+ 156:UsingTimerSerial.c ****             
+ 157:UsingTimerSerial.c ****             if((PINB & (1 << PINB0)) > 0)
+ 1111               		.stabn	68,0,157,.LM127-.LFBB14
+ 1112               	.LM127:
+ 1113 03bc 189B      		sbis 0x3,0
+ 1114 03be 00C0      		rjmp .L61
+ 158:UsingTimerSerial.c ****             {
+GAS LISTING /tmp/cccIuWuE.s 			page 27
+
+
+ 159:UsingTimerSerial.c ****                 strcat(portStates,"1");
+ 1115               		.stabn	68,0,159,.LM128-.LFBB14
+ 1116               	.LM128:
+ 1117 03c0 60E0      		ldi r22,lo8(.LC0)
+ 1118 03c2 70E0      		ldi r23,hi8(.LC0)
+ 1119 03c4 00C0      		rjmp .L80
+ 1120               	.L61:
+ 160:UsingTimerSerial.c ****             }else if((PINB & (1 << PINB0)) == 0)
+ 1121               		.stabn	68,0,160,.LM129-.LFBB14
+ 1122               	.LM129:
+ 1123 03c6 1899      		sbic 0x3,0
+ 1124 03c8 00C0      		rjmp .L62
+ 161:UsingTimerSerial.c ****             {
+ 162:UsingTimerSerial.c ****                 strcat(portStates,"0");
+ 1125               		.stabn	68,0,162,.LM130-.LFBB14
+ 1126               	.LM130:
+ 1127 03ca 60E0      		ldi r22,lo8(.LC1)
+ 1128 03cc 70E0      		ldi r23,hi8(.LC1)
+ 1129               	.L80:
+ 1130 03ce CE01      		movw r24,r28
+ 1131 03d0 0196      		adiw r24,1
+ 1132 03d2 0E94 0000 		call strcat
+ 1133               	.L62:
+ 163:UsingTimerSerial.c ****             }
+ 164:UsingTimerSerial.c ****             
+ 165:UsingTimerSerial.c ****             if((PINB & (1 << PINB3)) > 0)
+ 1134               		.stabn	68,0,165,.LM131-.LFBB14
+ 1135               	.LM131:
+ 1136 03d6 1B9B      		sbis 0x3,3
+ 1137 03d8 00C0      		rjmp .L63
+ 166:UsingTimerSerial.c ****             {
+ 167:UsingTimerSerial.c ****                 strcat(portStates,"1");
+ 1138               		.stabn	68,0,167,.LM132-.LFBB14
+ 1139               	.LM132:
+ 1140 03da 60E0      		ldi r22,lo8(.LC0)
+ 1141 03dc 70E0      		ldi r23,hi8(.LC0)
+ 1142 03de 00C0      		rjmp .L81
+ 1143               	.L63:
+ 168:UsingTimerSerial.c ****             }else if((PINB & (1 << PINB3)) == 0){
+ 1144               		.stabn	68,0,168,.LM133-.LFBB14
+ 1145               	.LM133:
+ 1146 03e0 1B99      		sbic 0x3,3
+ 1147 03e2 00C0      		rjmp .L64
+ 169:UsingTimerSerial.c ****                 strcat(portStates,"0");
+ 1148               		.stabn	68,0,169,.LM134-.LFBB14
+ 1149               	.LM134:
+ 1150 03e4 60E0      		ldi r22,lo8(.LC1)
+ 1151 03e6 70E0      		ldi r23,hi8(.LC1)
+ 1152               	.L81:
+ 1153 03e8 CE01      		movw r24,r28
+ 1154 03ea 0196      		adiw r24,1
+ 1155 03ec 0E94 0000 		call strcat
+ 1156               	.L64:
+ 170:UsingTimerSerial.c ****             }
+ 171:UsingTimerSerial.c ****             
+ 172:UsingTimerSerial.c ****             if((PINB & (1 << PINB4)) > 0)
+ 1157               		.stabn	68,0,172,.LM135-.LFBB14
+GAS LISTING /tmp/cccIuWuE.s 			page 28
+
+
+ 1158               	.LM135:
+ 1159 03f0 1C9B      		sbis 0x3,4
+ 1160 03f2 00C0      		rjmp .L65
+ 173:UsingTimerSerial.c ****             {
+ 174:UsingTimerSerial.c ****                 strcat(portStates,"1");
+ 1161               		.stabn	68,0,174,.LM136-.LFBB14
+ 1162               	.LM136:
+ 1163 03f4 60E0      		ldi r22,lo8(.LC0)
+ 1164 03f6 70E0      		ldi r23,hi8(.LC0)
+ 1165 03f8 00C0      		rjmp .L82
+ 1166               	.L65:
+ 175:UsingTimerSerial.c ****             }else if((PINB & (1 << PINB4)) == 0){
+ 1167               		.stabn	68,0,175,.LM137-.LFBB14
+ 1168               	.LM137:
+ 1169 03fa 1C99      		sbic 0x3,4
+ 1170 03fc 00C0      		rjmp .L66
+ 176:UsingTimerSerial.c ****                 strcat(portStates,"0");
+ 1171               		.stabn	68,0,176,.LM138-.LFBB14
+ 1172               	.LM138:
+ 1173 03fe 60E0      		ldi r22,lo8(.LC1)
+ 1174 0400 70E0      		ldi r23,hi8(.LC1)
+ 1175               	.L82:
+ 1176 0402 CE01      		movw r24,r28
+ 1177 0404 0196      		adiw r24,1
+ 1178 0406 0E94 0000 		call strcat
+ 1179               	.L66:
+ 177:UsingTimerSerial.c ****             }
+ 178:UsingTimerSerial.c ****             
+ 179:UsingTimerSerial.c ****             if((PINB & (1 << PINB5)) > 0)
+ 1180               		.stabn	68,0,179,.LM139-.LFBB14
+ 1181               	.LM139:
+ 1182 040a 1D9B      		sbis 0x3,5
+ 1183 040c 00C0      		rjmp .L67
+ 180:UsingTimerSerial.c ****             {
+ 181:UsingTimerSerial.c ****                 strcat(portStates,"1");
+ 1184               		.stabn	68,0,181,.LM140-.LFBB14
+ 1185               	.LM140:
+ 1186 040e 60E0      		ldi r22,lo8(.LC0)
+ 1187 0410 70E0      		ldi r23,hi8(.LC0)
+ 1188 0412 00C0      		rjmp .L83
+ 1189               	.L67:
+ 182:UsingTimerSerial.c ****             }else if((PINB & (1 << PINB5)) == 0){
+ 1190               		.stabn	68,0,182,.LM141-.LFBB14
+ 1191               	.LM141:
+ 1192 0414 1D99      		sbic 0x3,5
+ 1193 0416 00C0      		rjmp .L68
+ 183:UsingTimerSerial.c ****                 strcat(portStates,"0");
+ 1194               		.stabn	68,0,183,.LM142-.LFBB14
+ 1195               	.LM142:
+ 1196 0418 60E0      		ldi r22,lo8(.LC1)
+ 1197 041a 70E0      		ldi r23,hi8(.LC1)
+ 1198               	.L83:
+ 1199 041c CE01      		movw r24,r28
+ 1200 041e 0196      		adiw r24,1
+ 1201 0420 0E94 0000 		call strcat
+ 1202               	.L68:
+ 184:UsingTimerSerial.c ****             }
+GAS LISTING /tmp/cccIuWuE.s 			page 29
+
+
+ 185:UsingTimerSerial.c ****             
+ 186:UsingTimerSerial.c ****             strcat(portStates,"\n\0");
+ 1203               		.stabn	68,0,186,.LM143-.LFBB14
+ 1204               	.LM143:
+ 1205 0424 60E0      		ldi r22,lo8(.LC2)
+ 1206 0426 70E0      		ldi r23,hi8(.LC2)
+ 1207 0428 CE01      		movw r24,r28
+ 1208 042a 0196      		adiw r24,1
+ 1209 042c 0E94 0000 		call strcat
+ 187:UsingTimerSerial.c ****             
+ 188:UsingTimerSerial.c **** 			uart_getc();
+ 1210               		.stabn	68,0,188,.LM144-.LFBB14
+ 1211               	.LM144:
+ 1212 0430 0E94 0000 		call uart_getc
+ 189:UsingTimerSerial.c **** 			
+ 190:UsingTimerSerial.c ****             uart_puts(portStates);
+ 1213               		.stabn	68,0,190,.LM145-.LFBB14
+ 1214               	.LM145:
+ 1215 0434 CE01      		movw r24,r28
+ 1216 0436 0196      		adiw r24,1
+ 1217 0438 0E94 0000 		call uart_puts
+ 1218               	.L44:
+ 1219               	.LBE11:
+ 191:UsingTimerSerial.c ****         }
+ 192:UsingTimerSerial.c ****         TimerSetup = 0;
+ 1220               		.stabn	68,0,192,.LM146-.LFBB14
+ 1221               	.LM146:
+ 1222 043c 1092 0000 		sts TimerSetup,__zero_reg__
+ 1223 0440 1092 0000 		sts TimerSetup+1,__zero_reg__
+ 1224 0444 1092 0000 		sts TimerSetup+2,__zero_reg__
+ 1225 0448 1092 0000 		sts TimerSetup+3,__zero_reg__
+ 1226               	.L42:
+ 1227               	/* epilogue start */
+ 193:UsingTimerSerial.c ****     }
+ 194:UsingTimerSerial.c ****     
+ 195:UsingTimerSerial.c **** }
+ 1228               		.stabn	68,0,195,.LM147-.LFBB14
+ 1229               	.LM147:
+ 1230 044c 6496      		adiw r28,20
+ 1231 044e 0FB6      		in __tmp_reg__,__SREG__
+ 1232 0450 F894      		cli
+ 1233 0452 DEBF      		out __SP_H__,r29
+ 1234 0454 0FBE      		out __SREG__,__tmp_reg__
+ 1235 0456 CDBF      		out __SP_L__,r28
+ 1236 0458 DF91      		pop r29
+ 1237 045a CF91      		pop r28
+ 1238 045c FF91      		pop r31
+ 1239 045e EF91      		pop r30
+ 1240 0460 BF91      		pop r27
+ 1241 0462 AF91      		pop r26
+ 1242 0464 9F91      		pop r25
+ 1243 0466 8F91      		pop r24
+ 1244 0468 7F91      		pop r23
+ 1245 046a 6F91      		pop r22
+ 1246 046c 5F91      		pop r21
+ 1247 046e 4F91      		pop r20
+ 1248 0470 3F91      		pop r19
+GAS LISTING /tmp/cccIuWuE.s 			page 30
+
+
+ 1249 0472 2F91      		pop r18
+ 1250 0474 0F90      		pop r0
+ 1251 0476 0BBE      		out __RAMPZ__,r0
+ 1252 0478 0F90      		pop r0
+ 1253 047a 0FBE      		out __SREG__,r0
+ 1254 047c 0F90      		pop r0
+ 1255 047e 1F90      		pop r1
+ 1256 0480 1895      		reti
+ 1257               		.size	__vector_23, .-__vector_23
+ 1258               		.stabs	"portStates:(0,50)=ar(0,51)=r(0,51);0;0177777;;0;19;(0,2)",128,0,97,1
+ 1259               		.stabn	192,0,0,.LBB11-.LFBB14
+ 1260               		.stabn	224,0,0,.LBE11-.LFBB14
+ 1261               	.Lscope14:
+ 1262               		.stabs	"",36,0,0,.Lscope14-.LFBB14
+ 1263               		.stabd	78,0,0
+ 1264               		.stabs	"__vector_29:F(0,47)",36,0,197,__vector_29
+ 1265               	.global	__vector_29
+ 1266               		.type	__vector_29, @function
+ 1267               	__vector_29:
+ 1268               		.stabd	46,0,0
+ 196:UsingTimerSerial.c **** 
+ 197:UsingTimerSerial.c **** inline ISR(ADC_vect)
+ 198:UsingTimerSerial.c **** {
+ 1269               		.stabn	68,0,198,.LM148-.LFBB15
+ 1270               	.LM148:
+ 1271               	.LFBB15:
+ 1272 0482 1F92      		push r1
+ 1273 0484 0F92      		push r0
+ 1274 0486 0FB6      		in r0,__SREG__
+ 1275 0488 0F92      		push r0
+ 1276 048a 1124      		clr __zero_reg__
+ 1277 048c 2F93      		push r18
+ 1278 048e 3F93      		push r19
+ 1279 0490 8F93      		push r24
+ 1280 0492 9F93      		push r25
+ 1281               	/* prologue: Signal */
+ 1282               	/* frame size = 0 */
+ 1283               	/* stack size = 7 */
+ 1284               	.L__stack_usage = 7
+ 199:UsingTimerSerial.c ****     adcDataL = ADCL;
+ 1285               		.stabn	68,0,199,.LM149-.LFBB15
+ 1286               	.LM149:
+ 1287 0494 8091 7800 		lds r24,120
+ 1288 0498 8093 0000 		sts adcDataL,r24
+ 200:UsingTimerSerial.c ****     adcDataH = ADCH;
+ 1289               		.stabn	68,0,200,.LM150-.LFBB15
+ 1290               	.LM150:
+ 1291 049c 8091 7900 		lds r24,121
+ 1292 04a0 8093 0000 		sts adcDataH,r24
+ 201:UsingTimerSerial.c ****     adcData = 0;
+ 1293               		.stabn	68,0,201,.LM151-.LFBB15
+ 1294               	.LM151:
+ 1295 04a4 1092 0000 		sts adcData+1,__zero_reg__
+ 1296 04a8 1092 0000 		sts adcData,__zero_reg__
+ 202:UsingTimerSerial.c ****     adcData = adcData | adcDataH;
+ 1297               		.stabn	68,0,202,.LM152-.LFBB15
+ 1298               	.LM152:
+GAS LISTING /tmp/cccIuWuE.s 			page 31
+
+
+ 1299 04ac 8091 0000 		lds r24,adcData
+ 1300 04b0 9091 0000 		lds r25,adcData+1
+ 1301 04b4 2091 0000 		lds r18,adcDataH
+ 1302 04b8 822B      		or r24,r18
+ 1303 04ba 9093 0000 		sts adcData+1,r25
+ 1304 04be 8093 0000 		sts adcData,r24
+ 203:UsingTimerSerial.c ****     adcData = adcData << 8;
+ 1305               		.stabn	68,0,203,.LM153-.LFBB15
+ 1306               	.LM153:
+ 1307 04c2 8091 0000 		lds r24,adcData
+ 1308 04c6 9091 0000 		lds r25,adcData+1
+ 1309 04ca 982F      		mov r25,r24
+ 1310 04cc 8827      		clr r24
+ 1311 04ce 9093 0000 		sts adcData+1,r25
+ 1312 04d2 8093 0000 		sts adcData,r24
+ 204:UsingTimerSerial.c ****     adcData = adcData | adcDataL;
+ 1313               		.stabn	68,0,204,.LM154-.LFBB15
+ 1314               	.LM154:
+ 1315 04d6 8091 0000 		lds r24,adcData
+ 1316 04da 9091 0000 		lds r25,adcData+1
+ 1317 04de 2091 0000 		lds r18,adcDataL
+ 1318 04e2 822B      		or r24,r18
+ 1319 04e4 9093 0000 		sts adcData+1,r25
+ 1320 04e8 8093 0000 		sts adcData,r24
+ 205:UsingTimerSerial.c ****     ADCtotal = ADCtotal+adcData;
+ 1321               		.stabn	68,0,205,.LM155-.LFBB15
+ 1322               	.LM155:
+ 1323 04ec 8091 0000 		lds r24,ADCtotal
+ 1324 04f0 9091 0000 		lds r25,ADCtotal+1
+ 1325 04f4 2091 0000 		lds r18,adcData
+ 1326 04f8 3091 0000 		lds r19,adcData+1
+ 1327 04fc 820F      		add r24,r18
+ 1328 04fe 931F      		adc r25,r19
+ 1329 0500 9093 0000 		sts ADCtotal+1,r25
+ 1330 0504 8093 0000 		sts ADCtotal,r24
+ 206:UsingTimerSerial.c ****     sample_count ++;
+ 1331               		.stabn	68,0,206,.LM156-.LFBB15
+ 1332               	.LM156:
+ 1333 0508 8091 0000 		lds r24,sample_count
+ 1334 050c 8F5F      		subi r24,lo8(-(1))
+ 1335 050e 8093 0000 		sts sample_count,r24
+ 1336               	/* epilogue start */
+ 207:UsingTimerSerial.c **** }
+ 1337               		.stabn	68,0,207,.LM157-.LFBB15
+ 1338               	.LM157:
+ 1339 0512 9F91      		pop r25
+ 1340 0514 8F91      		pop r24
+ 1341 0516 3F91      		pop r19
+ 1342 0518 2F91      		pop r18
+ 1343 051a 0F90      		pop r0
+ 1344 051c 0FBE      		out __SREG__,r0
+ 1345 051e 0F90      		pop r0
+ 1346 0520 1F90      		pop r1
+ 1347 0522 1895      		reti
+ 1348               		.size	__vector_29, .-__vector_29
+ 1349               	.Lscope15:
+ 1350               		.stabs	"",36,0,0,.Lscope15-.LFBB15
+GAS LISTING /tmp/cccIuWuE.s 			page 32
+
+
+ 1351               		.stabd	78,0,0
+ 1352               		.stabs	"do_math:F(2,3)",36,0,208,do_math
+ 1353               		.stabs	"A:P(2,3)",64,0,208,18
+ 1354               		.stabs	"B:P(2,3)",64,0,208,22
+ 1355               		.stabs	"operator:P(0,2)",64,0,208,20
+ 1356               	.global	do_math
+ 1357               		.type	do_math, @function
+ 1358               	do_math:
+ 1359               		.stabd	46,0,0
+ 208:UsingTimerSerial.c **** int16_t do_math(int16_t A,int16_t B,char operator)
+ 209:UsingTimerSerial.c **** {
+ 1360               		.stabn	68,0,209,.LM158-.LFBB16
+ 1361               	.LM158:
+ 1362               	.LFBB16:
+ 1363               	/* prologue: function */
+ 1364               	/* frame size = 0 */
+ 1365               	/* stack size = 0 */
+ 1366               	.L__stack_usage = 0
+ 1367 0524 9C01      		movw r18,r24
+ 210:UsingTimerSerial.c ****     int32_t result = 0;
+ 211:UsingTimerSerial.c ****     if (operator == '+'){result = A+B;}
+ 1368               		.stabn	68,0,211,.LM159-.LFBB16
+ 1369               	.LM159:
+ 1370 0526 4B32      		cpi r20,lo8(43)
+ 1371 0528 01F4      		brne .L86
+ 1372               		.stabn	68,0,211,.LM160-.LFBB16
+ 1373               	.LM160:
+ 1374 052a 860F      		add r24,r22
+ 1375 052c 971F      		adc r25,r23
+ 1376 052e 00C0      		rjmp .L91
+ 1377               	.L86:
+ 212:UsingTimerSerial.c ****     if (operator == '-'){result = A-B;}
+ 1378               		.stabn	68,0,212,.LM161-.LFBB16
+ 1379               	.LM161:
+ 1380 0530 4D32      		cpi r20,lo8(45)
+ 1381 0532 01F4      		brne .L88
+ 1382               		.stabn	68,0,212,.LM162-.LFBB16
+ 1383               	.LM162:
+ 1384 0534 861B      		sub r24,r22
+ 1385 0536 970B      		sbc r25,r23
+ 1386 0538 00C0      		rjmp .L91
+ 1387               	.L88:
+ 213:UsingTimerSerial.c ****     if (operator == '*'){result = A*B;}
+ 1388               		.stabn	68,0,213,.LM163-.LFBB16
+ 1389               	.LM163:
+ 1390 053a 4A32      		cpi r20,lo8(42)
+ 1391 053c 01F4      		brne .L89
+ 1392               		.stabn	68,0,213,.LM164-.LFBB16
+ 1393               	.LM164:
+ 1394 053e 269F      		mul r18,r22
+ 1395 0540 C001      		movw r24,r0
+ 1396 0542 279F      		mul r18,r23
+ 1397 0544 900D      		add r25,r0
+ 1398 0546 369F      		mul r19,r22
+ 1399 0548 900D      		add r25,r0
+ 1400 054a 1124      		clr r1
+ 1401               	.L91:
+GAS LISTING /tmp/cccIuWuE.s 			page 33
+
+
+ 1402 054c 092E      		mov __tmp_reg__,r25
+ 1403 054e 000C      		lsl r0
+ 1404 0550 AA0B      		sbc r26,r26
+ 1405 0552 BB0B      		sbc r27,r27
+ 1406 0554 0895      		ret
+ 1407               	.L89:
+ 214:UsingTimerSerial.c ****     if (operator == '/'){result = A/B;}
+ 1408               		.stabn	68,0,214,.LM165-.LFBB16
+ 1409               	.LM165:
+ 1410 0556 4F32      		cpi r20,lo8(47)
+ 1411 0558 01F4      		brne .L90
+ 1412               		.stabn	68,0,214,.LM166-.LFBB16
+ 1413               	.LM166:
+ 1414 055a 0E94 0000 		call __divmodhi4
+ 1415 055e CB01      		movw r24,r22
+ 1416 0560 770F      		lsl r23
+ 1417 0562 AA0B      		sbc r26,r26
+ 1418 0564 BB0B      		sbc r27,r27
+ 1419 0566 0895      		ret
+ 1420               	.L90:
+ 210:UsingTimerSerial.c ****     if (operator == '+'){result = A+B;}
+ 1421               		.stabn	68,0,210,.LM167-.LFBB16
+ 1422               	.LM167:
+ 1423 0568 80E0      		ldi r24,0
+ 1424 056a 90E0      		ldi r25,0
+ 1425 056c DC01      		movw r26,r24
+ 215:UsingTimerSerial.c **** //    if (operator == '='){result = A = B;}
+ 216:UsingTimerSerial.c ****     int16_t i =  ((result >> 0) & 0xffff);
+ 217:UsingTimerSerial.c ****    return i;
+ 218:UsingTimerSerial.c **** }
+ 1426               		.stabn	68,0,218,.LM168-.LFBB16
+ 1427               	.LM168:
+ 1428 056e 0895      		ret
+ 1429               		.size	do_math, .-do_math
+ 1430               		.stabs	"result:r(2,5)",64,0,210,24
+ 1431               		.stabn	192,0,0,.LFBB16-.LFBB16
+ 1432               		.stabn	224,0,0,.Lscope16-.LFBB16
+ 1433               	.Lscope16:
+ 1434               		.stabs	"",36,0,0,.Lscope16-.LFBB16
+ 1435               		.stabd	78,0,0
+ 1436               		.stabs	"read_adc:F(2,4)",36,0,219,read_adc
+ 1437               		.stabs	"channel:P(2,2)",64,0,219,24
+ 1438               	.global	read_adc
+ 1439               		.type	read_adc, @function
+ 1440               	read_adc:
+ 1441               		.stabd	46,0,0
+ 219:UsingTimerSerial.c **** uint16_t read_adc(uint8_t channel)
+ 220:UsingTimerSerial.c **** {
+ 1442               		.stabn	68,0,220,.LM169-.LFBB17
+ 1443               	.LM169:
+ 1444               	.LFBB17:
+ 1445               	/* prologue: function */
+ 1446               	/* frame size = 0 */
+ 1447               	/* stack size = 0 */
+ 1448               	.L__stack_usage = 0
+ 221:UsingTimerSerial.c ****     ADMUX = channel;// set channel
+ 1449               		.stabn	68,0,221,.LM170-.LFBB17
+GAS LISTING /tmp/cccIuWuE.s 			page 34
+
+
+ 1450               	.LM170:
+ 1451 0570 8093 7C00 		sts 124,r24
+ 222:UsingTimerSerial.c ****     ADMUX |=  (1<<REFS0);// sets ref volts to Vcc
+ 1452               		.stabn	68,0,222,.LM171-.LFBB17
+ 1453               	.LM171:
+ 1454 0574 8091 7C00 		lds r24,124
+ 1455 0578 8064      		ori r24,lo8(64)
+ 1456 057a 8093 7C00 		sts 124,r24
+ 223:UsingTimerSerial.c ****     ADCSRA |= (1<<ADEN); // enable the ADC
+ 1457               		.stabn	68,0,223,.LM172-.LFBB17
+ 1458               	.LM172:
+ 1459 057e 8091 7A00 		lds r24,122
+ 1460 0582 8068      		ori r24,lo8(-128)
+ 1461 0584 8093 7A00 		sts 122,r24
+ 224:UsingTimerSerial.c ****     sample_count = 0; ADCtotal = 0;//clear sample count
+ 1462               		.stabn	68,0,224,.LM173-.LFBB17
+ 1463               	.LM173:
+ 1464 0588 1092 0000 		sts sample_count,__zero_reg__
+ 1465 058c 1092 0000 		sts ADCtotal+1,__zero_reg__
+ 1466 0590 1092 0000 		sts ADCtotal,__zero_reg__
+ 225:UsingTimerSerial.c ****     ADCSRA |= (1<<ADSC);//start conversion
+ 1467               		.stabn	68,0,225,.LM174-.LFBB17
+ 1468               	.LM174:
+ 1469 0594 8091 7A00 		lds r24,122
+ 1470 0598 8064      		ori r24,lo8(64)
+ 1471 059a 8093 7A00 		sts 122,r24
+ 1472               	.L93:
+ 226:UsingTimerSerial.c ****     //read adcData done in interrupt
+ 227:UsingTimerSerial.c ****     while (sample_count < OVERSAMPLES){asm volatile ("nop"::);}//wait for completion
+ 1473               		.stabn	68,0,227,.LM175-.LFBB17
+ 1474               	.LM175:
+ 1475 059e 8091 0000 		lds r24,sample_count
+ 1476 05a2 8A30      		cpi r24,lo8(10)
+ 1477 05a4 00F4      		brsh .L95
+ 1478               		.stabn	68,0,227,.LM176-.LFBB17
+ 1479               	.LM176:
+ 1480               	/* #APP */
+ 1481               	 ;  227 "UsingTimerSerial.c" 1
+ 1482 05a6 0000      		nop
+ 1483               	 ;  0 "" 2
+ 1484               	/* #NOAPP */
+ 1485 05a8 00C0      		rjmp .L93
+ 1486               	.L95:
+ 228:UsingTimerSerial.c ****     ADCSRA &=~ (1<<ADEN); // stop the ADC
+ 1487               		.stabn	68,0,228,.LM177-.LFBB17
+ 1488               	.LM177:
+ 1489 05aa 8091 7A00 		lds r24,122
+ 1490 05ae 8F77      		andi r24,lo8(127)
+ 1491 05b0 8093 7A00 		sts 122,r24
+ 229:UsingTimerSerial.c ****     return (ADCtotal/OVERSAMPLES); //mx osamples = 63  othewise will overflow total register with 1
+ 1492               		.stabn	68,0,229,.LM178-.LFBB17
+ 1493               	.LM178:
+ 1494 05b4 8091 0000 		lds r24,ADCtotal
+ 1495 05b8 9091 0000 		lds r25,ADCtotal+1
+ 1496 05bc 6AE0      		ldi r22,lo8(10)
+ 1497 05be 70E0      		ldi r23,0
+ 1498 05c0 0E94 0000 		call __udivmodhi4
+GAS LISTING /tmp/cccIuWuE.s 			page 35
+
+
+ 1499 05c4 CB01      		movw r24,r22
+ 230:UsingTimerSerial.c **** }
+ 1500               		.stabn	68,0,230,.LM179-.LFBB17
+ 1501               	.LM179:
+ 1502 05c6 0895      		ret
+ 1503               		.size	read_adc, .-read_adc
+ 1504               	.Lscope17:
+ 1505               		.stabs	"",36,0,0,.Lscope17-.LFBB17
+ 1506               		.stabd	78,0,0
+ 1507               		.section	.text.startup,"ax",@progbits
+ 1508               		.stabs	"main:F(0,1)",36,0,231,main
+ 1509               	.global	main
+ 1510               		.type	main, @function
+ 1511               	main:
+ 1512               		.stabd	46,0,0
+ 231:UsingTimerSerial.c **** int main()
+ 232:UsingTimerSerial.c **** {
+ 1513               		.stabn	68,0,232,.LM180-.LFBB18
+ 1514               	.LM180:
+ 1515               	.LFBB18:
+ 1516               	/* prologue: function */
+ 1517               	/* frame size = 0 */
+ 1518               	/* stack size = 0 */
+ 1519               	.L__stack_usage = 0
+ 233:UsingTimerSerial.c **** //set up ADC
+ 234:UsingTimerSerial.c ****     ADCSRA |= ( (1<<ADPS2)|(1<<ADPS1)|(1<<ADPS0) );//  sets adc clock prescaler to 128 //checked
+ 1520               		.stabn	68,0,234,.LM181-.LFBB18
+ 1521               	.LM181:
+ 1522 0000 8091 7A00 		lds r24,122
+ 1523 0004 8760      		ori r24,lo8(7)
+ 1524 0006 8093 7A00 		sts 122,r24
+ 235:UsingTimerSerial.c ****     ADCSRA |= (1<<ADIE); // enable ADC conversion complete interrupt
+ 1525               		.stabn	68,0,235,.LM182-.LFBB18
+ 1526               	.LM182:
+ 1527 000a 8091 7A00 		lds r24,122
+ 1528 000e 8860      		ori r24,lo8(8)
+ 1529 0010 8093 7A00 		sts 122,r24
+ 236:UsingTimerSerial.c ****     ADCSRA |= (1<<ADATE);// set to auto trigger (free running by default)
+ 1530               		.stabn	68,0,236,.LM183-.LFBB18
+ 1531               	.LM183:
+ 1532 0014 8091 7A00 		lds r24,122
+ 1533 0018 8062      		ori r24,lo8(32)
+ 1534 001a 8093 7A00 		sts 122,r24
+ 237:UsingTimerSerial.c ****    DDRD |= (1<<5);
+ 1535               		.stabn	68,0,237,.LM184-.LFBB18
+ 1536               	.LM184:
+ 1537 001e 559A      		sbi 0xa,5
+ 238:UsingTimerSerial.c ****    DDRD |= (1<<6);
+ 1538               		.stabn	68,0,238,.LM185-.LFBB18
+ 1539               	.LM185:
+ 1540 0020 569A      		sbi 0xa,6
+ 239:UsingTimerSerial.c ****    DDRD |= (1<<7);
+ 1541               		.stabn	68,0,239,.LM186-.LFBB18
+ 1542               	.LM186:
+ 1543 0022 579A      		sbi 0xa,7
+ 240:UsingTimerSerial.c ****    DDRB |= (1<<0);
+ 1544               		.stabn	68,0,240,.LM187-.LFBB18
+GAS LISTING /tmp/cccIuWuE.s 			page 36
+
+
+ 1545               	.LM187:
+ 1546 0024 209A      		sbi 0x4,0
+ 241:UsingTimerSerial.c ****    DDRB |= (1<<3);
+ 1547               		.stabn	68,0,241,.LM188-.LFBB18
+ 1548               	.LM188:
+ 1549 0026 239A      		sbi 0x4,3
+ 242:UsingTimerSerial.c ****    DDRB |= (1<<4);
+ 1550               		.stabn	68,0,242,.LM189-.LFBB18
+ 1551               	.LM189:
+ 1552 0028 249A      		sbi 0x4,4
+ 243:UsingTimerSerial.c ****    DDRB |= (1<<5);
+ 1553               		.stabn	68,0,243,.LM190-.LFBB18
+ 1554               	.LM190:
+ 1555 002a 259A      		sbi 0x4,5
+ 244:UsingTimerSerial.c **** 
+ 245:UsingTimerSerial.c ****    //DDRC &= 0b0000000;
+ 246:UsingTimerSerial.c ****    PORTC |= (1<<4);
+ 1556               		.stabn	68,0,246,.LM191-.LFBB18
+ 1557               	.LM191:
+ 1558 002c 449A      		sbi 0x8,4
+ 247:UsingTimerSerial.c ****    PORTC |= (1<<5);
+ 1559               		.stabn	68,0,247,.LM192-.LFBB18
+ 1560               	.LM192:
+ 1561 002e 459A      		sbi 0x8,5
+ 248:UsingTimerSerial.c ****    PORTD |= (1<<2);
+ 1562               		.stabn	68,0,248,.LM193-.LFBB18
+ 1563               	.LM193:
+ 1564 0030 5A9A      		sbi 0xb,2
+ 249:UsingTimerSerial.c ****    PORTD |= (1<<3);
+ 1565               		.stabn	68,0,249,.LM194-.LFBB18
+ 1566               	.LM194:
+ 1567 0032 5B9A      		sbi 0xb,3
+ 250:UsingTimerSerial.c ****    PORTD |= (1<<4);
+ 1568               		.stabn	68,0,250,.LM195-.LFBB18
+ 1569               	.LM195:
+ 1570 0034 5C9A      		sbi 0xb,4
+ 251:UsingTimerSerial.c **** 
+ 252:UsingTimerSerial.c ****    //PCICR &= 0b000;
+ 253:UsingTimerSerial.c ****    //PCICR |= 0b010;
+ 254:UsingTimerSerial.c ****    //
+ 255:UsingTimerSerial.c ****    //PCMSK1 &= 0b00000000; 
+ 256:UsingTimerSerial.c ****    //PCMSK1 |= 0b00111111; 
+ 257:UsingTimerSerial.c ****    
+ 258:UsingTimerSerial.c ****     //set up loop timer:
+ 259:UsingTimerSerial.c ****     /*TIMSK0 |= (1<<TOIE0);// overflow capture enable
+ 260:UsingTimerSerial.c ****     TCNT0 = 101;// start at this
+ 261:UsingTimerSerial.c ****     TCCR0B &= ((1<<CS10)|(1<<CS12));// timer started with /1024 prescaler
+ 262:UsingTimerSerial.c ****     sei();*/
+ 263:UsingTimerSerial.c ****     
+ 264:UsingTimerSerial.c ****     //OCR0A = 0xAF;
+ 265:UsingTimerSerial.c ****     //TIMSK0 |= _BV(OCIE0A);
+ 266:UsingTimerSerial.c ****     
+ 267:UsingTimerSerial.c ****     //set up loop timer:
+ 268:UsingTimerSerial.c **** 
+ 269:UsingTimerSerial.c ****     TIMSK0 |= (1<<TOIE0);// overflow capture enable*/
+ 1571               		.stabn	68,0,269,.LM196-.LFBB18
+ 1572               	.LM196:
+GAS LISTING /tmp/cccIuWuE.s 			page 37
+
+
+ 1573 0036 8091 6E00 		lds r24,110
+ 1574 003a 8160      		ori r24,lo8(1)
+ 1575 003c 8093 6E00 		sts 110,r24
+ 270:UsingTimerSerial.c ****     TCNT0 = 101;// start at this
+ 1576               		.stabn	68,0,270,.LM197-.LFBB18
+ 1577               	.LM197:
+ 1578 0040 85E6      		ldi r24,lo8(101)
+ 1579 0042 86BD      		out 0x26,r24
+ 271:UsingTimerSerial.c ****     TCCR0B |= (1<<CS10);//((1<<CS10)|(1<<CS12));// timer started with /1024 prescaler
+ 1580               		.stabn	68,0,271,.LM198-.LFBB18
+ 1581               	.LM198:
+ 1582 0044 85B5      		in r24,0x25
+ 1583 0046 8160      		ori r24,lo8(1)
+ 1584 0048 85BD      		out 0x25,r24
+ 272:UsingTimerSerial.c ****     sei();
+ 1585               		.stabn	68,0,272,.LM199-.LFBB18
+ 1586               	.LM199:
+ 1587               	/* #APP */
+ 1588               	 ;  272 "UsingTimerSerial.c" 1
+ 1589 004a 7894      		sei
+ 1590               	 ;  0 "" 2
+ 273:UsingTimerSerial.c ****     //uint8_t cont_Name_2_NO = 0;
+ 274:UsingTimerSerial.c **** 
+ 275:UsingTimerSerial.c ****     //uint8_t output_Name_1 = 0;
+ 276:UsingTimerSerial.c **** 
+ 277:UsingTimerSerial.c **** 
+ 278:UsingTimerSerial.c **** 
+ 279:UsingTimerSerial.c **** 
+ 280:UsingTimerSerial.c **** 
+ 281:UsingTimerSerial.c ****     //uint8_t W = 1;
+ 282:UsingTimerSerial.c **** 	uart_init();
+ 1591               		.stabn	68,0,282,.LM200-.LFBB18
+ 1592               	.LM200:
+ 1593               	/* #NOAPP */
+ 1594 004c 0E94 0000 		call uart_init
+ 283:UsingTimerSerial.c **** 
+ 284:UsingTimerSerial.c ****     uint8_t cont_Name_5_NC = 1;
+ 285:UsingTimerSerial.c ****     uint8_t output_Name_2 = 0;
+ 286:UsingTimerSerial.c ****     uint8_t cont_Name_6_NC = 1;
+ 287:UsingTimerSerial.c ****     uint8_t output_Name_4 = 0;
+ 288:UsingTimerSerial.c ****     
+ 289:UsingTimerSerial.c ****     uint8_t W = 1;
+ 290:UsingTimerSerial.c **** 
+ 291:UsingTimerSerial.c ****     while (1)
+ 292:UsingTimerSerial.c ****     {
+ 293:UsingTimerSerial.c **** 
+ 294:UsingTimerSerial.c ****         if (timerOF == 1)
+ 295:UsingTimerSerial.c ****         {
+ 296:UsingTimerSerial.c ****            timerOF=0;//reset timer flag
+ 297:UsingTimerSerial.c ****            TCNT0 = 101;// start at this
+ 1595               		.stabn	68,0,297,.LM201-.LFBB18
+ 1596               	.LM201:
+ 1597 0050 25E6      		ldi r18,lo8(101)
+ 1598               	.L98:
+ 294:UsingTimerSerial.c ****         {
+ 1599               		.stabn	68,0,294,.LM202-.LFBB18
+ 1600               	.LM202:
+GAS LISTING /tmp/cccIuWuE.s 			page 38
+
+
+ 1601 0052 8091 0000 		lds r24,timerOF
+ 1602 0056 8130      		cpi r24,lo8(1)
+ 1603 0058 01F4      		brne .L98
+ 296:UsingTimerSerial.c ****            TCNT0 = 101;// start at this
+ 1604               		.stabn	68,0,296,.LM203-.LFBB18
+ 1605               	.LM203:
+ 1606 005a 1092 0000 		sts timerOF,__zero_reg__
+ 1607               		.stabn	68,0,297,.LM204-.LFBB18
+ 1608               	.LM204:
+ 1609 005e 26BD      		out 0x26,r18
+ 298:UsingTimerSerial.c ****            //inputs:
+ 299:UsingTimerSerial.c ****            cont_Name_5_NC = PINC &(1<<4);
+ 1610               		.stabn	68,0,299,.LM205-.LFBB18
+ 1611               	.LM205:
+ 1612 0060 86B1      		in r24,0x6
+ 300:UsingTimerSerial.c ****            cont_Name_6_NC = PINC &(1<<5);
+ 1613               		.stabn	68,0,300,.LM206-.LFBB18
+ 1614               	.LM206:
+ 1615 0062 96B1      		in r25,0x6
+ 1616 0064 9072      		andi r25,lo8(32)
+ 301:UsingTimerSerial.c **** 
+ 302:UsingTimerSerial.c ****             //Start of Ladder:
+ 303:UsingTimerSerial.c ****             //rung at 0
+ 304:UsingTimerSerial.c ****              W = 1;
+ 305:UsingTimerSerial.c ****              if(cont_Name_5_NC == 0){W = 0;}
+ 1617               		.stabn	68,0,305,.LM207-.LFBB18
+ 1618               	.LM207:
+ 1619 0066 84FD      		sbrc r24,4
+ 1620 0068 00C0      		rjmp .L108
+ 306:UsingTimerSerial.c ****               output_Name_2 = W;
+ 307:UsingTimerSerial.c ****             //end rung
+ 308:UsingTimerSerial.c **** 
+ 309:UsingTimerSerial.c ****             //rung at 1
+ 310:UsingTimerSerial.c ****              W = 1;
+ 311:UsingTimerSerial.c ****              if(cont_Name_6_NC == 0){W = 0;}
+ 1621               		.stabn	68,0,311,.LM208-.LFBB18
+ 1622               	.LM208:
+ 1623 006a 81E0      		ldi r24,lo8(1)
+ 1624 006c 9111      		cpse r25,__zero_reg__
+ 1625 006e 00C0      		rjmp .L103
+ 1626 0070 80E0      		ldi r24,0
+ 1627               	.L103:
+ 312:UsingTimerSerial.c ****               output_Name_4 = W;
+ 313:UsingTimerSerial.c ****             //end rung
+ 314:UsingTimerSerial.c **** 
+ 315:UsingTimerSerial.c ****            //outputs:
+ 316:UsingTimerSerial.c ****          if(output_Name_2 == 0){PORTD &=~ (1<<5);}
+ 1628               		.stabn	68,0,316,.LM209-.LFBB18
+ 1629               	.LM209:
+ 1630 0072 5D98      		cbi 0xb,5
+ 1631               	.L104:
+ 317:UsingTimerSerial.c ****          else {PORTD |= (1<<5);}
+ 318:UsingTimerSerial.c ****          if(output_Name_4 == 0){PORTD &=~ (1<<6);}
+ 1632               		.stabn	68,0,318,.LM210-.LFBB18
+ 1633               	.LM210:
+ 1634 0074 8111      		cpse r24,__zero_reg__
+ 1635 0076 00C0      		rjmp .L101
+GAS LISTING /tmp/cccIuWuE.s 			page 39
+
+
+ 1636               		.stabn	68,0,318,.LM211-.LFBB18
+ 1637               	.LM211:
+ 1638 0078 5E98      		cbi 0xb,6
+ 1639 007a 00C0      		rjmp .L98
+ 1640               	.L101:
+ 319:UsingTimerSerial.c ****          else {PORTD |= (1<<6);}
+ 1641               		.stabn	68,0,319,.LM212-.LFBB18
+ 1642               	.LM212:
+ 1643 007c 5E9A      		sbi 0xb,6
+ 1644 007e 00C0      		rjmp .L98
+ 1645               	.L108:
+ 311:UsingTimerSerial.c ****               output_Name_4 = W;
+ 1646               		.stabn	68,0,311,.LM213-.LFBB18
+ 1647               	.LM213:
+ 1648 0080 81E0      		ldi r24,lo8(1)
+ 1649 0082 9111      		cpse r25,__zero_reg__
+ 1650 0084 00C0      		rjmp .L105
+ 1651 0086 80E0      		ldi r24,0
+ 1652               	.L105:
+ 317:UsingTimerSerial.c ****          else {PORTD |= (1<<5);}
+ 1653               		.stabn	68,0,317,.LM214-.LFBB18
+ 1654               	.LM214:
+ 1655 0088 5D9A      		sbi 0xb,5
+ 1656 008a 00C0      		rjmp .L104
+ 1657               		.size	main, .-main
+ 1658               		.stabs	"cont_Name_6_NC:r(2,2)",64,0,286,25
+ 1659               		.stabs	"output_Name_4:r(2,2)",64,0,287,24
+ 1660               		.stabn	192,0,0,.LFBB18-.LFBB18
+ 1661               		.stabn	224,0,0,.Lscope18-.LFBB18
+ 1662               	.Lscope18:
+ 1663               		.stabs	"",36,0,0,.Lscope18-.LFBB18
+ 1664               		.stabd	78,0,0
+ 1665               		.local	sample_count
+ 1666               		.comm	sample_count,1,1
+ 1667               		.local	adcDataH
+ 1668               		.comm	adcDataH,1,1
+ 1669               		.local	adcDataL
+ 1670               		.comm	adcDataL,1,1
+ 1671               		.local	ADCtotal
+ 1672               		.comm	ADCtotal,2,1
+ 1673               		.local	adcData
+ 1674               		.comm	adcData,2,1
+ 1675               	.global	TimerSetup
+ 1676               		.section .bss
+ 1677               		.type	TimerSetup, @object
+ 1678               		.size	TimerSetup, 4
+ 1679               	TimerSetup:
+ 1680 0000 0000 0000 		.zero	4
+ 1681               	.global	timerOF
+ 1682               		.type	timerOF, @object
+ 1683               		.size	timerOF, 1
+ 1684               	timerOF:
+ 1685 0004 00        		.zero	1
+ 1686               		.comm	tx_complete,1,1
+ 1687               		.comm	rx_buffer_tail,1,1
+ 1688               		.comm	rx_buffer_head,1,1
+ 1689               		.comm	rx_buffer,60,1
+GAS LISTING /tmp/cccIuWuE.s 			page 40
+
+
+ 1690               		.stabs	"adcData:S(0,52)=B(2,4)",40,0,12,adcData
+ 1691               		.stabs	"ADCtotal:S(0,52)",40,0,13,ADCtotal
+ 1692               		.stabs	"adcDataL:S(0,53)=B(2,2)",40,0,14,adcDataL
+ 1693               		.stabs	"adcDataH:S(0,53)",40,0,15,adcDataH
+ 1694               		.stabs	"sample_count:S(0,53)",40,0,16,sample_count
+ 1695               		.stabs	"rx_buffer:G(0,54)=ar(0,51);0;59;(0,11)",32,0,12,0
+ 1696               		.stabs	"rx_buffer_head:G(0,55)=B(0,11)",32,0,13,0
+ 1697               		.stabs	"rx_buffer_tail:G(0,55)",32,0,14,0
+ 1698               		.stabs	"tx_complete:G(0,56)=B(0,2)",32,0,15,0
+ 1699               		.stabs	"timerOF:G(0,53)",32,0,9,0
+ 1700               		.stabs	"TimerSetup:G(0,5)",32,0,11,0
+ 1701               		.text
+ 1702               		.stabs	"",100,0,0,.Letext0
+ 1703               	.Letext0:
+ 1704               		.ident	"GCC: (GNU) 4.9.2"
+ 1705               	.global __do_copy_data
+ 1706               	.global __do_clear_bss
+GAS LISTING /tmp/cccIuWuE.s 			page 41
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 UsingTimerSerial.c
+     /tmp/cccIuWuE.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/cccIuWuE.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/cccIuWuE.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/cccIuWuE.s:5      *ABS*:000000000000003b __RAMPZ__
+     /tmp/cccIuWuE.s:6      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/cccIuWuE.s:7      *ABS*:0000000000000001 __zero_reg__
+     /tmp/cccIuWuE.s:124    .text:0000000000000000 __vector_25
+     /tmp/cccIuWuE.s:155    .text:0000000000000014 uart_init
+                            *COM*:0000000000000001 rx_buffer_head
+                            *COM*:0000000000000001 rx_buffer_tail
+                            *COM*:0000000000000001 tx_complete
+     /tmp/cccIuWuE.s:198    .text:000000000000003a uart_putc
+     /tmp/cccIuWuE.s:239    .text:0000000000000058 uart_putc_hex
+     /tmp/cccIuWuE.s:295    .text:0000000000000082 uart_putw_hex
+     /tmp/cccIuWuE.s:328    .text:0000000000000094 uart_putdw_hex
+     /tmp/cccIuWuE.s:368    .text:00000000000000b4 uart_putw_dec
+     /tmp/cccIuWuE.s:490    .text:0000000000000140 uart_putdw_dec
+     /tmp/cccIuWuE.s:633    .text:00000000000001f8 uart_puts
+     /tmp/cccIuWuE.s:670    .text:0000000000000210 uart_puts_p
+     /tmp/cccIuWuE.s:725    .text:000000000000022e uart_buffer_empty
+     /tmp/cccIuWuE.s:748    .text:0000000000000236 uart_getc
+     /tmp/cccIuWuE.s:780    .text:0000000000000244 padToBuffer
+     /tmp/cccIuWuE.s:835    .text:0000000000000262 __vector_23
+     /tmp/cccIuWuE.s:1684   .bss:0000000000000004 timerOF
+     /tmp/cccIuWuE.s:1679   .bss:0000000000000000 TimerSetup
+     /tmp/cccIuWuE.s:1267   .text:0000000000000482 __vector_29
+     /tmp/cccIuWuE.s:1668   .bss:0000000000000007 adcDataL
+     /tmp/cccIuWuE.s:1666   .bss:0000000000000006 adcDataH
+     /tmp/cccIuWuE.s:1672   .bss:000000000000000a adcData
+     /tmp/cccIuWuE.s:1670   .bss:0000000000000008 ADCtotal
+                             .bss:0000000000000005 sample_count
+     /tmp/cccIuWuE.s:1358   .text:0000000000000524 do_math
+     /tmp/cccIuWuE.s:1440   .text:0000000000000570 read_adc
+     /tmp/cccIuWuE.s:1511   .text.startup:0000000000000000 main
+                            *COM*:000000000000003c rx_buffer
+
+UNDEFINED SYMBOLS
+__udivmodhi4
+__udivmodsi4
+__muluhisi3
+strcat
+__divmodhi4
+__do_copy_data
+__do_clear_bss
