@@ -25,76 +25,7 @@ inline ISR(TIMER0_OVF_vect)
     {    
         if(uart_buffer_empty())
         {   
-			//for debugging Input pins
-			/*char temp[60] = "PINC4:";
-			char portc4[3];
-			char portc5[3];
-			char portd2[3];
-			char portd3[3];
-			char portd4[3];*/
-			
-			//uart_getc();		
-		
-			/*
-            itoa(PINC & (1 << PINC4),portc4,10);
-			itoa(PINC & (1 << PINC5),portc5,10);
-			itoa(PIND & (1 << PIND2),portd2,10);
-			itoa(PIND & (1 << PIND3),portd3,10);
-			itoa(PIND & (1 << PIND4),portd4,10);
-			
-			strcat(temp,portc4);
-			strcat(temp,"\n");
-			strcat(temp,"PINC5:");
-			strcat(temp,portc5);
-			strcat(temp,"\n");
-			strcat(temp,"PORTD2:");
-			strcat(temp,portd2);			
-			strcat(temp,"\n");
-			strcat(temp,"PORTD3:");
-			strcat(temp,portd3);
-			strcat(temp,"\n");
-			strcat(temp,"PORT4:");
-			strcat(temp,portd4);
-			//itoa(PINC,temp,10);
-			
-            strcat(temp,"\n\0");*/
-            
-            //for debugging Output pins
-            /*char temp[80] = "Ouput Ports:";
-            char portd5[3];
-            char portd6[3];
-            char portd7[3];
-            char portb0[3];
-            char portb3[3];
-            char portb4[3];
-            char portb5[3];
-            
-            itoa(PIND & (1 << PIND5),portd5,10);
-            itoa(PIND & (1 << PIND6),portd6,10);
-            itoa(PIND & (1 << PIND7),portd7,10);
-            itoa(PINB & (1 << PINB0),portb0,10);
-            itoa(PINB & (1 << PINB3),portb3,10);
-            itoa(PINB & (1 << PINB4),portb4,10);
-            itoa(PINB & (1 << PINB5),portb5,10);
-            
-            strcat(temp,"\n");
-            strcat(temp,portd5);
-			strcat(temp,"\n");
-			strcat(temp,portd6);
-			strcat(temp,"\n");
-			strcat(temp,portd7);			
-			strcat(temp,"\n");
-			strcat(temp,portb0);
-			strcat(temp,"\n");
-			strcat(temp,portb3);
-            strcat(temp,"\n");
-            strcat(temp,portb4);
-            strcat(temp,"\n");
-            strcat(temp,portb5);
-
-            strcat(temp,"\n\0");*/
-            
-            char portStates[20]="";
+			char portStates[20]="";
             
             //Inputs:
             if((PINC & (1 << PINC4)) > 0)
