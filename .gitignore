@@ -4,5 +4,8 @@ helpers/hexes/README\.md
 *.md
 
 *.pyc
+<<<<<<< Updated upstream
 
 helpers/hexes/
+=======
+>>>>>>> Stashed changes

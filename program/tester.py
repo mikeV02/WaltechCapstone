@@ -476,7 +476,7 @@ class tester():
             return None, None
             ###
         else: 
-            commandAvrDude = r"..\\WinAVR\\bin\\avrdude.exe -p m328p -P " + USBserialPort + " -c wiring"
+            commandAvrDude = r"..\\WinAVR\\bin\\avrdude.exe -p m328p -b 57600 -P " + USBserialPort + " -c arduino"
             ###MODIFIED BY MIGUEL
             return commandAvrDude, USBserialPort 
             ###
