@@ -124,8 +124,6 @@ class OutLineToC():
             C_txt = C_txt +"static volatile uint8_t adcDataH;\n"
             C_txt = C_txt +"static volatile uint8_t sample_count;\n"
         
-        if self.currentHW == "Waltech":
-            C_txt = C_txt +"inline ISR(TIMER0_OVF_vect){timerOF=1;}\n"
         if self.currentHW == "ArduinoMega"or self.currentHW == "ArduinoUno" or self.currentHW == "ArduinoNano":
             C_txt = C_txt +"inline ISR(TIMER0_OVF_vect){timerOF=1;}\n"
         
@@ -164,6 +162,9 @@ class OutLineToC():
             C_txt = C_txt +"    while (sample_count < OVERSAMPLES){asm volatile (\"nop\"::);}//wait for completion\n"
             C_txt = C_txt +"    ADCSRA &=~ (1<<ADEN); // stop the ADC\n"
             C_txt = C_txt +"    return (ADCtotal/OVERSAMPLES); //mx osamples = 63  othewise will overflow total register with 10 bit adc results\n}\n"
+
+
+
 
         C_txt = C_txt +"int main()\n"
         C_txt = C_txt +"{\n"
