@@ -11,14 +11,14 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 """
 
 
-
+import sys
 from PyQt4 import QtCore, QtGui
 ##010##
 class cellStruct():
     def __init__(self, midPointX, midPointY, MTorElement, rungOrOR,\
                 variableName, ioAssign, comment, setPoint,\
                  branch, node, brchST, brchE, nodeST, nodeE,\
-                 source_A, source_B, const_A, const_B, functType):
+                 source_A, source_B, const_A, const_B, functType, switch):
         self. midPointX = midPointX
         self. midPointY = midPointY
         self. MTorElement = MTorElement 
@@ -38,7 +38,11 @@ class cellStruct():
         self. const_A = const_A
         self. const_B = const_B
         self. functType = functType
-        
+        self. switch = switch
+	
+    def toggleBit(self):
+		if self.switch == False: self.switch = True
+		else: self.switch = False
         
         
 class ManageGrid():
@@ -147,6 +151,51 @@ class ManageGrid():
                     #put in name and comment
                     self.placeText(cellNum)
     
+    
+    def updateIOelements(self, inputs, outputs):
+        offbrush = QtGui.QBrush()
+        offbrush.setColor(QtCore.Qt.white)
+        offbrush.setStyle(QtCore.Qt.SolidPattern)
+        
+        onbrush = QtGui.QBrush()
+        onbrush.setColor(QtCore.Qt.red)
+        onbrush.setStyle(QtCore.Qt.SolidPattern)
+    
+        for i in range(len(inputs)):
+            if inputs[i] != None:
+                # numTools = len(self.Tools.toolList)
+                # toolToPlace = 0#index of tool
+                # for k in range(numTools):
+                    # if self.Tools.toolList[k].toolName == self.grid[inputs[i][0]][inputs[i][1]].MTorElement:
+                        # toolToPlace = k
+                # self.placeIcon(inputs[i], toolToPlace)
+                # #put in name and comment
+                # self.placeText(inputs[i])
+                if self.grid[inputs[i][0]][inputs[i][1]].switch == False:
+                    self.scene.addRect(self.grid[inputs[i][0]][inputs[i][1]].midPointX+4, self.grid[inputs[i][0]][inputs[i][1]].midPointY-64, 12, 8, QtGui.QPen(), offbrush)
+                    self.scene.addRect(self.grid[inputs[i][0]][inputs[i][1]].midPointX+38, self.grid[inputs[i][0]][inputs[i][1]].midPointY-64, 12, 8, QtGui.QPen(), offbrush)
+                    
+                if self.grid[inputs[i][0]][inputs[i][1]].switch == True:
+                    self.scene.addRect(self.grid[inputs[i][0]][inputs[i][1]].midPointX+4, self.grid[inputs[i][0]][inputs[i][1]].midPointY-64, 12, 8, QtGui.QPen(), onbrush)
+                    self.scene.addRect(self.grid[inputs[i][0]][inputs[i][1]].midPointX+38, self.grid[inputs[i][0]][inputs[i][1]].midPointY-64, 12, 8, QtGui.QPen(), onbrush)
+                
+        for i in range(len(outputs)):
+            if outputs[i] != None:
+                # numTools = len(self.Tools.toolList)
+                # toolToPlace = 0#index of tool
+                # for k in range(numTools):
+                    # if self.Tools.toolList[k].toolName == self.grid[outputs[i][0]][outputs[i][1]].MTorElement:
+                        # toolToPlace = k
+                # self.placeIcon(outputs[i], toolToPlace)
+                # #put in name and comment
+                # self.placeText(outputs[i])
+                if self.grid[outputs[i][0]][outputs[i][1]].switch == False:
+                    self.scene.addRect(self.grid[outputs[i][0]][outputs[i][1]].midPointX+4, self.grid[outputs[i][0]][outputs[i][1]].midPointY-64, 12, 8, QtGui.QPen(), offbrush)
+                    self.scene.addRect(self.grid[outputs[i][0]][outputs[i][1]].midPointX+38, self.grid[outputs[i][0]][outputs[i][1]].midPointY-64, 12, 8, QtGui.QPen(), offbrush)
+                    
+                if self.grid[outputs[i][0]][outputs[i][1]].switch == True:
+                    self.scene.addRect(self.grid[outputs[i][0]][outputs[i][1]].midPointX+4, self.grid[outputs[i][0]][outputs[i][1]].midPointY-64, 12, 8, QtGui.QPen(), onbrush)
+                    self.scene.addRect(self.grid[outputs[i][0]][outputs[i][1]].midPointX+38, self.grid[outputs[i][0]][outputs[i][1]].midPointY-64, 12, 8, QtGui.QPen(), onbrush)
 
      
     def Delete (self,cellNum):
@@ -185,7 +234,7 @@ class ManageGrid():
         Y=row*60#get Y of rung to be displaced
         self.grid.insert(row,[])#insert a rung
         for i in range(width):#fill with mt cells : for in range 0 to width
-            self.grid[row].append(cellStruct(i*60, Y, "MT","Rung", None, None, None, None, False, False, False, False, False, False,None,None,None,None,None))
+            self.grid[row].append(cellStruct(i*60, Y, "MT","Rung", None, None, None, None, False, False, False, False, False, False,None,None,None,None,None, False))
         #shift Y values down on grid below
         height = len(self.grid)
         for i in range(row,height):
@@ -623,11 +672,17 @@ class ManageGrid():
         #else:
         #    self.grid[cellNum[0]][cellNum[1]].setPoint = tempCellData.setPoint
         
+        
     def placeIcon(self, cellNum, toolNum):
         pixmap = self.Tools.toolList[toolNum].pixmap
         item = QtGui.QGraphicsPixmapItem(pixmap)
         item.setPos(self.grid[cellNum[0]][cellNum[1]].midPointX+9,self.grid[cellNum[0]][cellNum[1]].midPointY-73)
         self.scene.addItem(item)
+		
+        #Michael Sharp added this code, distinguishes between on and off elements
+        if self.grid[cellNum[0]][cellNum[1]].switch == True:
+			self.scene.addRect(self.grid[cellNum[0]][cellNum[1]].midPointX+4, self.grid[cellNum[0]][cellNum[1]].midPointY-64, 12, 8)
+			self.scene.addRect(self.grid[cellNum[0]][cellNum[1]].midPointX+38, self.grid[cellNum[0]][cellNum[1]].midPointY-64, 12, 8)
         
     def placeText(self, cellNum):#put in name and comment, and setpoint and IO
         i = cellNum[0]
