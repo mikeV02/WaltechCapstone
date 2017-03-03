@@ -442,7 +442,7 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
             
             
             ###ADDED BY MICHAEL, MODIFIED BY MIGUEL (IF STATEMENT)
-            if currentHW == "ArduinoNano" || currentHW == "ArduinoUno"
+            if self.currentHW == "ArduinoNano" || currentHW == "ArduinoUno"
                 for i in range(5):
                     if self.inputs[i+1] != None:
                         self.grid[self.inputs[i+1][0]][self.inputs[i+1][1]].switch = int(feedback[i])
@@ -450,13 +450,13 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
                     if self.outputs[i+1] != None:
                         self.grid[self.outputs[i+1][0]][self.outputs[i+1][1]].switch = int(feedback[i+5])
 
-            if currentHW == "ArduinoMega"
+            if self.currentHW == "ArduinoMega"
                 for i in range(22):
                     if self.inputs[i+1] != None:
                         self.grid[self.inputs[i+1][0]][self.inputs[i+1][1]].switch = int(feedback[i])
                 for i in range(22):
                     if self.outputs[i+1] != None:
-                        self.grid[self.outputs[i+1][0]][self.outputs[i+1][1]].switch = int(feedback[i+5])
+                        self.grid[self.outputs[i+1][0]][self.outputs[i+1][1]].switch = int(feedback[i+22])
             ###
             
             x += 1
