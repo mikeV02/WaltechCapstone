@@ -321,10 +321,6 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
     ###ADDED BY MIGUEL
     def CheckPort(self, DUDE):
         print "THIS IS THE SERIAL PORT ", self.PORT
-
-    #from SerialCommunication import SerialCommunicator
-
-    #SerialCommunicator(PORT).getArduinoState()
     ###
 
 
@@ -423,12 +419,6 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
         outLine = ladderToOutLine(self.grid).makeOutLine()
         OutLineToC(self.grid,self.currentHW).makeC(outLine,self.ui.textBrowser)
         #hexMaker(self).self.saveCfileAndCompile(C_txt,displayOutputPlace)
-        
-        ###ADDED BY MIGUEL
-        #from SerialCommunication import SerialCommunicator
-        print "HOLAA ", self.PORT
-        #SerialCommunicator(self.PORT)
-        ###
 		
     def startFeedback(self):
         self.live = True
@@ -450,12 +440,24 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
             
             feedback = SerialCommunicator(self.PORT).getArduinoState()
             
-            for i in range(5):
-                if self.inputs[i+1] != None:
-                    self.grid[self.inputs[i+1][0]][self.inputs[i+1][1]].switch = int(feedback[i])
-            for i in range(7):
-                if self.outputs[i+1] != None:
-                    self.grid[self.outputs[i+1][0]][self.outputs[i+1][1]].switch = int(feedback[i+5])
+            
+            ###ADDED BY MICHAEL, MODIFIED BY MIGUEL (IF STATEMENT)
+            if currentHW == "ArduinoNano" || currentHW == "ArduinoUno"
+                for i in range(5):
+                    if self.inputs[i+1] != None:
+                        self.grid[self.inputs[i+1][0]][self.inputs[i+1][1]].switch = int(feedback[i])
+                for i in range(7):
+                    if self.outputs[i+1] != None:
+                        self.grid[self.outputs[i+1][0]][self.outputs[i+1][1]].switch = int(feedback[i+5])
+
+            if currentHW == "ArduinoMega"
+                for i in range(22):
+                    if self.inputs[i+1] != None:
+                        self.grid[self.inputs[i+1][0]][self.inputs[i+1][1]].switch = int(feedback[i])
+                for i in range(22):
+                    if self.outputs[i+1] != None:
+                        self.grid[self.outputs[i+1][0]][self.outputs[i+1][1]].switch = int(feedback[i+5])
+            ###
             
             x += 1
         
