@@ -442,7 +442,7 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
             
             
             ###ADDED BY MICHAEL, MODIFIED BY MIGUEL (IF STATEMENT)
-            if self.currentHW == "ArduinoNano" || currentHW == "ArduinoUno"
+            if self.currentHW == "ArduinoNano" or currentHW == "ArduinoUno"
                 for i in range(5):
                     if self.inputs[i+1] != None:
                         self.grid[self.inputs[i+1][0]][self.inputs[i+1][1]].switch = int(feedback[i])
