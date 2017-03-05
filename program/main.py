@@ -425,9 +425,11 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
         self.ui.liveButton.clicked.disconnect()
         self.ui.liveButton.clicked.connect(self.stopFeedback)
         
-        x = 0
+        #x = 0
         feedback = []
 
+        se = SerialCommunicator(self.PORT)
+        
         while self.live:
             # if(self.currentHW == "ArduinoNano"):
                 # print "Hardware is Nano"
@@ -438,11 +440,11 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
             # else:
                 # print "No hardware selected"
             
-            feedback = SerialCommunicator(self.PORT).getArduinoState()
+            feedback = se.getArduinoState()
             
             
             ###ADDED BY MICHAEL, MODIFIED BY MIGUEL (IF STATEMENT)
-            if self.currentHW == "ArduinoNano" or currentHW == "ArduinoUno":
+            if self.currentHW == "ArduinoNano" or self.currentHW == "ArduinoUno":
                 for i in range(5):
                     if self.inputs[i+1] != None:
                         self.grid[self.inputs[i+1][0]][self.inputs[i+1][1]].switch = int(feedback[i])
@@ -450,20 +452,22 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
                     if self.outputs[i+1] != None:
                         self.grid[self.outputs[i+1][0]][self.outputs[i+1][1]].switch = int(feedback[i+5])
 
+            print feedback,"\n"
             if self.currentHW == "ArduinoMega":
                 for i in range(22):
                     if self.inputs[i+1] != None:
+                        
                         self.grid[self.inputs[i+1][0]][self.inputs[i+1][1]].switch = int(feedback[i])
                 for i in range(22):
                     if self.outputs[i+1] != None:
                         self.grid[self.outputs[i+1][0]][self.outputs[i+1][1]].switch = int(feedback[i+22])
             ###
             
-            x += 1
+            #x += 1
         
             ManageGrid(self.grid, self.scene,self.Tools,self.items).updateIOelements(self.inputs, self.outputs)
         
-            #time.sleep(.1)
+            time.sleep(.1)
             
             QApplication.processEvents()
             
