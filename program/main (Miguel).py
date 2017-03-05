@@ -3,15 +3,20 @@
 
 """
 Waltech Ladder Maker is distributed under the MIT License. 
+
 Copyright (c) 2014 Karl Walter.  karl (at) waltech.com
+
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
 
 
 
 """
+
 to add element tool:
     need big icon and small icon. 36x27 and 58x60
     Add a button 
@@ -22,20 +27,26 @@ to add element tool:
         to mainwindowUI
     Add self.connect(self.ui.actionContNO, QtCore.SIGNAL("triggered()"),lambda who=1: self.anyButton(who))
         to signalConnections
+
     THEN:    
     give it a function in manageGrid (managegrid.py) if it is an edit tool.
     give it an elif in showMarker (if edit tool)
     call that function apropriatly in leftClick function
     popup
     popup as edit
+
+
 todos for ver:
 (anything with ###)
+
+
  
 """
 """
 useful links:
 SEGFAULT and text on qgraphicsitem:
 http://www.riverbankcomputing.com/pipermail/pyqt/2013-January/032258.html
+
 https://wiki.python.org/moin/HowTo/Sorting/
 http://stackoverflow.com/questions/11945183/what-are-good-practices-for-avoiding-crashes-hangs-in-pyqt
 http://www.diveintopython.net/object_oriented_framework/defining_classes.html
@@ -48,9 +59,6 @@ from LadderToOutLine import ladderToOutLine
 from OutLineToC import OutLineToC
 from tester import tester
 
-#import SerialCommunication				#importing Chris's function\
-import threading
-import time
 import popupDialogs
 import copy
 import sys
@@ -66,7 +74,6 @@ from PyQt4.QtCore import Qt
 from PyQt4.Qt import QFont
 from PyQt4.Qt import QString
 from PyQt4.Qt import QStringList
-from SerialCommunication import SerialCommunicator
 
 from mainwindow_ui import Ui_MainWindow
 
@@ -93,19 +100,15 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
         self.items=[QtGui.QGraphicsTextItem(),QtGui.QGraphicsRectItem()]#for squares and indexes that follow mouse
         self.ui.graphicsView.viewport().installEventFilter(self)#for mouse functions
         #Setup IO table on right
-        self.ui.tableWidget.setColumnWidth(0, 140)
-        self.ui.tableWidget.setColumnWidth(1, 140)
-        self.ui.tableWidget.setColumnWidth(2, 140)
-        self.ui.tableWidget.setColumnWidth(3, 140)
-		
-		#Setup Data table on right:
-        self.ui.tableDataFiles.setColumnWidth(0, 75)
+        self.ui.tableWidget.resizeColumnToContents(0)
+        self.ui.tableWidget.resizeColumnToContents(1)
+        self.ui.tableWidget.setColumnWidth(2,  50)
+        self.ui.tableWidget.setColumnWidth(3,  40)
 
         #setup datagrid and elements:
         self.Tools = elementList(elementStruct)
         self.setupDataGrid()#set up rung variables:
         self.signalConnections()
-        self.setupIOarrays()
 
         #default:
         self.currentHW = "Waltech"
@@ -113,11 +116,7 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
         self.ui.actionADC.setEnabled(False)
         self.projectName = None
         self.currentFileDir = None
-        
-    def setupIOarrays(self):
-        self.live = False
-        self.inputs = [None] * 23
-        self.outputs = [None] * 23
+
 
     def signalConnections(self):
         #connect signals:
@@ -136,7 +135,6 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
         self.ui.actionAbout.triggered.connect(self.AboutHelp)
 
         self.ui.infoButton.clicked.connect(self.parseGrid)
-        self.ui.liveButton.clicked.connect(self.startFeedback)
         #FOR DEBUG BUTTON
         #self.ui.pushButton.clicked.connect(self.showInfo)
         #self.ui.pushButton_3.clicked.connect(self.printLadder)
@@ -206,7 +204,8 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
         self.connect(self.ui.actionWaltech, QtCore.SIGNAL("triggered()"),lambda HW="Waltech": self.chooseHW(HW))
         self.connect(self.ui.actionArduinoUno, QtCore.SIGNAL("triggered()"),lambda HW="ArduinoUno": self.chooseHW(HW))
         self.connect(self.ui.actionArduinoNano, QtCore.SIGNAL("triggered()"),lambda HW="ArduinoNano": self.chooseHW(HW))
-        self.connect(self.ui.actionArduinoMega, QtCore.SIGNAL("triggered()"),lambda HW="ArduinoMega": self.chooseHW(HW))
+        self.connect(self.ui.actionArduinoMega, QtCore.SIGNAL("triggered()"),lambda HW="ArduinoMega": self.chooseHW(HW)
+        )
         hwActionGroup = QActionGroup(self.ui.menuDiagnostics)
         hwActionGroup.addAction(self.ui.actionWaltech)
         hwActionGroup.addAction(self.ui.actionArduinoUno)
@@ -279,12 +278,28 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
         return PWMADC
 
     def checkInputNums(self):
-        for i in range(22, 0, -1):
-            if self.inputs[i] != None: return i
+        height = len(self.grid)
+        width = len(self.grid[0])
+        MaxIONum = 0
+        for i in range(height):
+            for j in range(width):
+                if self.grid[i][j].ioAssign != None and self.grid[i][j].ioAssign[:3] == 'in_':
+                    #print "input:  ", self.grid[i][j].ioAssign[3:]
+                    if int(self.grid[i][j].ioAssign[3:]) > MaxIONum: MaxIONum = int(self.grid[i][j].ioAssign[3:])
+        return MaxIONum
 
     def checkOutputNums(self):
-        for i in range(22, 0, -1):
-            if self.outputs[i] != None: return i
+        height = len(self.grid)
+        width = len(self.grid[0])
+        MaxIONum = 0
+        for i in range(height):
+            for j in range(width):
+                if self.grid[i][j].ioAssign != None and self.grid[i][j].ioAssign[:4] == 'out_':
+                    #print "input:  ", self.grid[i][j].ioAssign[3:]
+                    if int(self.grid[i][j].ioAssign[4:]) > MaxIONum: MaxIONum = int(self.grid[i][j].ioAssign[4:])
+        return MaxIONum
+    ##########hardware choosing^^^^^   
+               
 
     def USBHelp(self):
        self.dialog = popupDialogs.USBHelpDialog()
@@ -312,15 +327,18 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
         elif plat == 'win32': opSys = "WIN"
         elif plat == "darwin": opSys = "MAC"
         else: opSys = "WIN"
-        
         ###MODIFIED BY MIGUEL
         DUDE, self.PORT = tester(opSys,self.currentHW).test1(self.ui.textBrowser)
-        self.CheckPort(self.PORT)
+        self.CheckPort(DUDE)
         ###
-    
+
     ###ADDED BY MIGUEL
     def CheckPort(self, DUDE):
         print "THIS IS THE SERIAL PORT ", self.PORT
+
+    #from SerialCommunication import SerialCommunicator
+
+    #SerialCommunicator(PORT).getArduinoState()
     ###
 
 
@@ -367,7 +385,7 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
         self.currentTool = 0 #to track the tool being used
         width=10
         for i in range(width):#fill the first row
-            self.grid[0].append(cellStruct(i*60, 60, "MT","Rung", None, None, None, None, False, False, False, False, False, False,None,None,None,None,None, False))
+            self.grid[0].append(cellStruct(i*60, 60, "MT","Rung", None, None, None, None, False, False, False, False, False, False,None,None,None,None,None))
         for i in range(1,6):# add 5 more rungs to start
             ManageGrid(self.grid, self.scene,self.Tools,self.items).insertRung(i)        
   
@@ -419,59 +437,12 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
         outLine = ladderToOutLine(self.grid).makeOutLine()
         OutLineToC(self.grid,self.currentHW).makeC(outLine,self.ui.textBrowser)
         #hexMaker(self).self.saveCfileAndCompile(C_txt,displayOutputPlace)
-		
-    def startFeedback(self):
-        self.live = True
-        self.ui.liveButton.clicked.disconnect()
-        self.ui.liveButton.clicked.connect(self.stopFeedback)
-        
-        x = 0
-        feedback = []
 
-        while self.live:
-            # if(self.currentHW == "ArduinoNano"):
-                # print "Hardware is Nano"
-            # elif(self.currentHW == "ArduinoUno"):
-                # print "Hardware is Uno"
-            # elif(self.currentHW == "ArduinoMega"):
-                # print "Hardware is Mega"
-            # else:
-                # print "No hardware selected"
-            
-            feedback = SerialCommunicator(self.PORT).getArduinoState()
-            
-            
-            ###ADDED BY MICHAEL, MODIFIED BY MIGUEL (IF STATEMENT)
-            if self.currentHW == "ArduinoNano" or currentHW == "ArduinoUno":
-                for i in range(5):
-                    if self.inputs[i+1] != None:
-                        self.grid[self.inputs[i+1][0]][self.inputs[i+1][1]].switch = int(feedback[i])
-                for i in range(7):
-                    if self.outputs[i+1] != None:
-                        self.grid[self.outputs[i+1][0]][self.outputs[i+1][1]].switch = int(feedback[i+5])
-
-            if self.currentHW == "ArduinoMega":
-                for i in range(22):
-                    if self.inputs[i+1] != None:
-                        self.grid[self.inputs[i+1][0]][self.inputs[i+1][1]].switch = int(feedback[i])
-                for i in range(22):
-                    if self.outputs[i+1] != None:
-                        self.grid[self.outputs[i+1][0]][self.outputs[i+1][1]].switch = int(feedback[i+22])
-            ###
-            
-            x += 1
-        
-            ManageGrid(self.grid, self.scene,self.Tools,self.items).updateIOelements(self.inputs, self.outputs)
-        
-            #time.sleep(.1)
-            
-            QApplication.processEvents()
-            
-    def stopFeedback(self):
-        self.live = False
-        self.ui.liveButton.clicked.disconnect()
-        self.ui.liveButton.clicked.connect(self.startFeedback)
-        
+        ###ADDED BY MIGUEL
+        #from SerialCommunication import SerialCommunicator
+        print "HOLAA ", self.PORT
+        #SerialCommunicator(self.PORT)
+        ###
 
     def showInfo(self):
         """
@@ -584,7 +555,7 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
             cellNum = self.findCell(event)
             if cellNum != [None,None,None,None]:
                 if event.button() == QtCore.Qt.LeftButton:
-                    print "left"
+                    print "left"    
                     self.leftClick(cellNum)
                 elif event.button() == QtCore.Qt.RightButton:
                     print "right"
@@ -746,13 +717,6 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
                         self.grid[cellNum[0]][cellNum[1]].variableName = tempCellData.variableName
                         print "varname:", tempCellData.variableName
                     """    
-                    
-                    if self.grid[cellNum[0]][cellNum[1]].ioAssign != None and self.grid[cellNum[0]][cellNum[1]].ioAssign != "Internal":
-                        if self.grid[cellNum[0]][cellNum[1]].ioAssign[:3] == "in_":
-                            self.inputs[int(self.grid[cellNum[0]][cellNum[1]].ioAssign[3:])] = None
-                        if self.grid[cellNum[0]][cellNum[1]].ioAssign[:4] == "out_":
-                            self.outputs[int(self.grid[cellNum[0]][cellNum[1]].ioAssign[4:])] = None
-                    
                     self.grid[cellNum[0]][cellNum[1]].variableName = tempCellData.variableName
                     print "varname:", tempCellData.variableName    
                     self.grid[cellNum[0]][cellNum[1]].comment = tempCellData.comment
@@ -771,18 +735,6 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
                     print "const_B:", tempCellData.const_B
                     self.grid[cellNum[0]][cellNum[1]].functType = tempCellData.functType #not used
                     print "functType:", tempCellData.functType #not used
-                    
-                    if self.grid[cellNum[0]][cellNum[1]].ioAssign != None and self.grid[cellNum[0]][cellNum[1]].ioAssign != "Internal":
-                        if self.grid[cellNum[0]][cellNum[1]].ioAssign[:3] == 'in_':
-                            self.inputs[int(self.grid[cellNum[0]][cellNum[1]].ioAssign[3:])] = cellNum
-                        if self.grid[cellNum[0]][cellNum[1]].ioAssign[:4] == 'out_':
-                            self.outputs[int(self.grid[cellNum[0]][cellNum[1]].ioAssign[4:])] = cellNum
-                    
-                    for i in range(22):
-                        print "input #", i, " is ", self.inputs[i]
-                    for i in range(22):
-                        print "output #", i, " is ", self.outputs[i]
-                    
 
                     clickSuccssful = True
 
@@ -911,38 +863,15 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
                     if self.grid[cellNum[0]][cellNum[1]].rungOrOR == "OR"\
                             and self.grid[cellNum[0]][cellNum[1]].MTorElement != "MT"\
                             and self.grid[cellNum[0]][cellNum[1]].MTorElement != "blankOR":
-                        
-                        #Update input and output arrays if deleted element is assigned to one
-                        if self.grid[cellNum[0]][cellNum[1]].ioAssign != None and self.grid[cellNum[0]][cellNum[1]].ioAssign != "Internal":
-                            if self.grid[cellNum[0]][cellNum[1]].ioAssign[:3] == "in_":
-                                self.inputs[int(self.grid[cellNum[0]][cellNum[1]].ioAssign[3:])] = None
-                            if self.grid[cellNum[0]][cellNum[1]].ioAssign[:4] == "out_":
-                                self.outputs[int(self.grid[cellNum[0]][cellNum[1]].ioAssign[4:])] = None
-                                
                         ManageGrid(self.grid, self.scene, self.Tools,self.items).Delete(cellNum)
                     #delete of element on Rung or delete the rung:
                     elif self.grid[cellNum[0]][cellNum[1]].rungOrOR == "Rung":
-                        
-                        #Update input and output arrays if deleted element is assigned to one
-                        if self.grid[cellNum[0]][cellNum[1]].ioAssign != None and self.grid[cellNum[0]][cellNum[1]].ioAssign != "Internal":
-                            if self.grid[cellNum[0]][cellNum[1]].ioAssign[:3] == "in_":
-                                self.inputs[int(self.grid[cellNum[0]][cellNum[1]].ioAssign[3:])] = None
-                            if self.grid[cellNum[0]][cellNum[1]].ioAssign[:4] == "out_":
-                                self.outputs[int(self.grid[cellNum[0]][cellNum[1]].ioAssign[4:])] = None
-                        
-                        ManageGrid(self.grid, self.scene, self.Tools,self.items).Delete(cellNum)                        
+                        ManageGrid(self.grid, self.scene, self.Tools,self.items).Delete(cellNum)        
                     clickSuccssful = True    
             #>>>>>Shrink
             elif self.Tools.toolList[toolToPlace[1]].toolName == "Narrow":
                 #self.ui.graphicsView.prepareGeometryChange()
                 ManageGrid(self.grid, self.scene, self.Tools,self.items).Shrink(cellNum)#then do function to narrow if can
-		    
-		    #>>>>>toggle an element
-            if self.grid[cellNum[0]][cellNum[1]].MTorElement != "MT" and self.grid[cellNum[0]][cellNum[1]].MTorElement != "blankOR":
-				self.grid[cellNum[0]][cellNum[1]].toggleBit()
-				clickSuccssful = True;
-				print "Bit currently set to: ", self.grid[cellNum[0]][cellNum[1]].switch
-			#>>>>>end of toggle code
 
             #>>>>>cleanup and redraw:
             if clickSuccssful == False:
@@ -952,28 +881,13 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
             self.showInfo()
             self.reFillList(self.ui.tableWidget)
 
-            if self.grid[cellNum[0]][cellNum[1]].ioAssign != None and self.grid[cellNum[0]][cellNum[1]].ioAssign != "Internal":
-                if self.grid[cellNum[0]][cellNum[1]].ioAssign[:3] == 'in_':
-                    self.inputs[int(self.grid[cellNum[0]][cellNum[1]].ioAssign[3:])] = cellNum
-                if self.grid[cellNum[0]][cellNum[1]].ioAssign[:4] == 'out_':
-                    self.outputs[int(self.grid[cellNum[0]][cellNum[1]].ioAssign[4:])] = cellNum
-                
-            for i in range(22):
-                if self.inputs[i] != None:
-                    print "input #", i, " is ", self.inputs[i]
-            for i in range(22):
-                if self.outputs[i] != None:
-                    print "output #", i, " is ", self.outputs[i]
-			
-            print "mtorelement = ", self.grid[cellNum[0]][cellNum[1]].MTorElement
-
 
     #will run popup and return tempCellData with all info from popup 
     #send tool being used, cellNum 
     #doesn't do anything with the grid.          
     def runPopup(self, tool, cellNum):
         popUpOKed = False #becomes true if dialog is OK'ed
-        tempCellInfo = cellStruct(None,None,None,None,None,None,None,None, False, False, False, False, False, False,None,None,None,None,None, False) 
+        tempCellInfo = cellStruct(None,None,None,None,None,None,None,None, False, False, False, False, False, False,None,None,None,None,None) 
         ##004##
         if tool == "Coil" or tool =="CoilNot":#do dialog for this tool:
             self.dialog = popupDialogs.CoilDialog(self.grid, cellNum,self.currentHW)
@@ -1101,3 +1015,7 @@ if __name__=='__main__':
     window = mainWindowUI()
     window.show()
     sys.exit(app.exec_())
+
+
+
+
