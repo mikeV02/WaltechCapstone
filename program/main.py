@@ -446,8 +446,8 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
             ###
             
             
-            ######################3##ADDED/MODIFIED BY MIGUEL OPTIONAL THREADING
-            from threading import Thread
+            #########################ADDED/MODIFIED BY MIGUEL OPTIONAL THREADING
+            import threading
             
             def INS():
                 if self.currentHW == "ArduinoNano" or self.currentHW == "ArduinoUno":
@@ -472,14 +472,17 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
                         if self.outputs[i+1] != None:
                             self.grid[self.outputs[i+1][0]][self.outputs[i+1][1]].switch = int(feedback[i+22])
                             
-            thdIN = Thread(target = INS)
-            thdOUT = Thread(target = OUTS)
+            thdIN = threading.Thread(target = INS)
+            thdOUT = threading.Thread(target = OUTS)
             
             thdIN.setDaemon(True)
             thdOUT.setDaemon(True)
             
             thdIN.start()
             thdOUT.start()
+            
+            thdIN.join()
+            thdOUT.join()
             ####################################################################
             
             ####ADDED BY MICHAEL, MODIFIED BY MIGUEL (IF STATEMENT)
