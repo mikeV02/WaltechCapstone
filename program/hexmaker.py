@@ -119,6 +119,12 @@ class hexMaker():
         if self.opSys == "WIN":
             copy2("..\uart.h", os.getcwd())
             copy2("..\uart.c", os.getcwd())
+            
+        if self.opSys == "NIX":
+            print "Setting Envirenment Path for library in Linux"
+            Lib = "../avr/lib"
+            os.environ['LD_LIBRARY_PATH'] = Lib
+        
         ###
       
         commandwfile = commandListo
