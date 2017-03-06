@@ -446,23 +446,59 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
             ###
             
             
-            ###ADDED BY MICHAEL, MODIFIED BY MIGUEL (IF STATEMENT)
-            if self.currentHW == "ArduinoNano" or self.currentHW == "ArduinoUno":
-                for i in range(5):
-                    if self.inputs[i+1] != None:
-                        self.grid[self.inputs[i+1][0]][self.inputs[i+1][1]].switch = int(feedback[i])
-                for i in range(7):
-                    if self.outputs[i+1] != None:
-                        self.grid[self.outputs[i+1][0]][self.outputs[i+1][1]].switch = int(feedback[i+5])
-
-            if self.currentHW == "ArduinoMega":
-                for i in range(22):
-                    if self.inputs[i+1] != None:
-                        self.grid[self.inputs[i+1][0]][self.inputs[i+1][1]].switch = int(feedback[i])
-                for i in range(22):
-                    if self.outputs[i+1] != None:
-                        self.grid[self.outputs[i+1][0]][self.outputs[i+1][1]].switch = int(feedback[i+22])
-            ###
+            ######################3##ADDED/MODIFIED BY MIGUEL OPTIONAL THREADING
+            from threading import Thread
+            
+            def INS():
+                if self.currentHW == "ArduinoNano" or self.currentHW == "ArduinoUno":
+                    for i in range(5):
+                        if self.inputs[i+1] != None:
+                            self.grid[self.inputs[i+1][0]][self.inputs[i+1][1]].switch = int(feedback[i])
+                            
+                if self.currentHW == "ArduinoMega":
+                    for i in range(22):
+                        if self.inputs[i+1] != None:
+                            self.grid[self.inputs[i+1][0]][self.inputs[i+1][1]].switch = int(feedback[i])
+                        
+                        
+            def OUTS():
+                if self.currentHW == "ArduinoNano" or self.currentHW == "ArduinoUno":
+                    for i in range(7):
+                        if self.outputs[i+1] != None:
+                            self.grid[self.outputs[i+1][0]][self.outputs[i+1][1]].switch = int(feedback[i+5])
+                            
+                if self.currentHW == "ArduinoMega":
+                    for i in range(22):
+                        if self.outputs[i+1] != None:
+                            self.grid[self.outputs[i+1][0]][self.outputs[i+1][1]].switch = int(feedback[i+22])
+                            
+            thdIN = Thread(target = INS)
+            thdOUT = Thread(target = OUTS)
+            
+            thdIN.setDaemon(True)
+            thdOUT.setDaemon(True)
+            
+            thdIN.start()
+            thdOUT.start()
+            ####################################################################
+            
+            ####ADDED BY MICHAEL, MODIFIED BY MIGUEL (IF STATEMENT)
+            #if self.currentHW == "ArduinoNano" or self.currentHW == "ArduinoUno":
+            #    for i in range(5):
+            #        if self.inputs[i+1] != None:
+            #            self.grid[self.inputs[i+1][0]][self.inputs[i+1][1]].switch = int(feedback[i])
+            #    for i in range(7):
+            #        if self.outputs[i+1] != None:
+            #            self.grid[self.outputs[i+1][0]][self.outputs[i+1][1]].switch = int(feedback[i+5])
+            #
+            #if self.currentHW == "ArduinoMega":
+            #    for i in range(22):
+            #        if self.inputs[i+1] != None:
+            #            self.grid[self.inputs[i+1][0]][self.inputs[i+1][1]].switch = int(feedback[i])
+            #    for i in range(22):
+            #        if self.outputs[i+1] != None:
+            #            self.grid[self.outputs[i+1][0]][self.outputs[i+1][1]].switch = int(feedback[i+22])
+            ####
             
             #x += 1
         
