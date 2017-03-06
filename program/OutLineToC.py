@@ -126,7 +126,7 @@ class OutLineToC():
             C_txt = C_txt +"static volatile uint8_t sample_count;\n"
         
         ###MODIFIED BY MIGUEL
-        if self.currentHW == "ArduinoMega"
+        if self.currentHW == "ArduinoMega":
             C_txt = C_txt +"inline ISR(TIMER0_OVF_vect)\n"
             C_txt = C_txt +"{\n"
             C_txt = C_txt +"    timerOF=1;\n"
@@ -137,7 +137,7 @@ class OutLineToC():
             C_txt = C_txt +"    {    \n"
             C_txt = C_txt +"        if(uart_buffer_empty())\n"
             C_txt = C_txt +"        {   \n"
-            C_txt = C_txt +"            char portStates[20]=\"\";\n"
+            C_txt = C_txt +"            char portStates[44]=\"\";\n"
             C_txt = C_txt +"            \n"
             C_txt = C_txt +"            //Inputs:\n"
             C_txt = C_txt +"            if((PINK & (1 << PINK0)) > 0)\n"
@@ -572,7 +572,7 @@ class OutLineToC():
             C_txt = C_txt +"        TimerSetup = 0;\n"
             C_txt = C_txt +"    }\n"
             C_txt = C_txt +"    \n"
-            C_txt = C_txt +"}\n"
+            C_txt = C_txt +"}\n"    
         ###
         
         if self.currentHW == "ArduinoMega"or self.currentHW == "ArduinoUno" or self.currentHW == "ArduinoNano":

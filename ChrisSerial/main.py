@@ -427,9 +427,9 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
         
         #x = 0
         feedback = []
-        
-        WaltSerial = SerialCommunicator(self.PORT, self.currentHW)
 
+        se = SerialCommunicator(self.PORT)
+        
         while self.live:
             # if(self.currentHW == "ArduinoNano"):
                 # print "Hardware is Nano"
@@ -440,10 +440,7 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
             # else:
                 # print "No hardware selected"
             
-            ###MODIFIED BY MIGUEL (FOR MEGA)
-            if (WaltSerial.getArduinoState() is not None):
-                feedback = WaltSerial.getArduinoState()
-            ###
+            feedback = se.getArduinoState()
             
             
             ###ADDED BY MICHAEL, MODIFIED BY MIGUEL (IF STATEMENT)
@@ -455,9 +452,11 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
                     if self.outputs[i+1] != None:
                         self.grid[self.outputs[i+1][0]][self.outputs[i+1][1]].switch = int(feedback[i+5])
 
+            print feedback,"\n"
             if self.currentHW == "ArduinoMega":
                 for i in range(22):
                     if self.inputs[i+1] != None:
+                        
                         self.grid[self.inputs[i+1][0]][self.inputs[i+1][1]].switch = int(feedback[i])
                 for i in range(22):
                     if self.outputs[i+1] != None:
@@ -468,7 +467,7 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
         
             ManageGrid(self.grid, self.scene,self.Tools,self.items).updateIOelements(self.inputs, self.outputs)
         
-            #time.sleep(.1)
+            time.sleep(.1)
             
             QApplication.processEvents()
             
