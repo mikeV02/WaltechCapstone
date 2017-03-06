@@ -94,7 +94,7 @@ class tester():
             
             maybePort = "com"+str(i)
             print "maybe port : ",maybePort
-            commandAvrDude = r"..\\WinAVR\\bin\\avrdude.exe -F -p m2560 -P " + maybePort + " -c wiring"
+            commandAvrDude = r"..\\WinAVR\\bin\\avrdude.exe -C ../avrdude.conf -p m2560 -P " + maybePort + " -c wiring -F -D"
             commandwfile = commandAvrDude #why?  
             start = datetime.datetime.now()
             process = subprocess.Popen(commandwfile,stdout = subprocess.PIPE, stderr= subprocess.PIPE,shell=True)
@@ -131,7 +131,7 @@ class tester():
             return None, None
             ###
         else: 
-            commandAvrDude = r"..\\WinAVR\\bin\\avrdude.exe -F -p m2560 -P " + USBserialPort + " -c wiring"
+            commandAvrDude = r"..\\WinAVR\\bin\\avrdude.exe  -C ../avrdude.conf -p m2560 -P " + USBserialPort + " -c wiring -F -D"
             ###MODIFIED BY MIGUEL
             return commandAvrDude, USBserialPort
             ###
