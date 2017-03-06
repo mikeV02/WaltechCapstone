@@ -505,8 +505,11 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
             
             #x += 1
         
+            ###ADDED BY MIGUEL (FIXING DELAY)
+            ManageGrid(self.grid, self.scene,self.Tools,self.items).totalRedraw()
+            ###
+            
             ManageGrid(self.grid, self.scene,self.Tools,self.items).updateIOelements(self.inputs, self.outputs)
-        
             #time.sleep(.1)
             
             QApplication.processEvents()
