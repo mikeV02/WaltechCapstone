@@ -24,18 +24,6 @@ class OutLineToC():
         self.grid = grid
         self.currentHW = currentHW
         
-        if self.currentHW == "Waltech":
-            #>>>inputs for Waltech IC
-            self.inPutList = ["PINA",4],["PINA",3],["PINA",2],["PINA",1]\
-                            ,["PINB",0],["PINB",1],["PINB",2],["PINB",3]\
-                            ,["PINC",0],["PINC",1],["PINC",2],["PINC",3]
-            #>>>outputs:                
-            self.outPutList = ["PORTD",2],["PORTD",3],["PORTD",4],["PORTD",5]\
-                            ,["PORTB",4],["PORTA",5],["PORTA",6],["PORTA",7]\
-                            ,["PORTC",4],["PORTC",5],["PORTC",6],["PORTC",7]
-            self.ADCList = []
-            self.PWMList = []
-                            
         if currentHW == "ArduinoUno":
             #>>>inputs 
             self.inPutList = ["PINC",4],["PINC",5],["PIND",2],["PIND",3]\
@@ -112,6 +100,7 @@ class OutLineToC():
 
         ###ADDED BY MIGUEL
         C_txt = C_txt + '#include "uart.c"\n\n'
+        C_txt = C_txt + '#include <util/delay.h>\n\n'
         ###
 
         C_txt = C_txt +"volatile uint8_t timerOF=0;\n"
@@ -199,7 +188,7 @@ class OutLineToC():
             C_txt = C_txt +"            if((PINB & (1 << PINB0)) > 0)\n"
             C_txt = C_txt +"            {\n"
             C_txt = C_txt +"                strcat(portStates,\"1\");\n"
-            C_txt = C_txt +"            }else if((PIND & (1 << PINK4)) == 0){\n" #IN 9
+            C_txt = C_txt +"            }else if((PINB & (1 << PINB0)) == 0){\n" #IN 9
             C_txt = C_txt +"                strcat(portStates,\"0\");\n"
             C_txt = C_txt +"            }\n"
             C_txt = C_txt +"                \n"
@@ -612,8 +601,6 @@ class OutLineToC():
             C_txt = C_txt +"    return (ADCtotal/OVERSAMPLES); //mx osamples = 63  othewise will overflow total register with 10 bit adc results\n}\n"
 
 
-
-
         C_txt = C_txt +"int main()\n"
         C_txt = C_txt +"{\n"
 
@@ -632,10 +619,7 @@ class OutLineToC():
         if self.currentHW == "ArduinoMega"or self.currentHW == "ArduinoUno" or self.currentHW == "ArduinoNano":
             C_txt = self.pullupInPuts(C_txt)
         C_txt = C_txt +"    //set up loop timer:\n"
-        if self.currentHW == "Waltech":
-            C_txt = C_txt +"    TIMSK |= (1<<TOIE0);// overflow capture enable\n"
-            C_txt = C_txt +"    TCNT0 = 101;// start at this\n"
-            C_txt = C_txt +"    TCCR0 |= (1<<CS02);// timer started with /256 prescaler  fills up @61 hz\n"
+        
         if self.currentHW == "ArduinoMega"or self.currentHW == "ArduinoUno" or self.currentHW == "ArduinoNano":
             C_txt = C_txt +"    TIMSK0 |= (1<<TOIE0);// overflow capture enable\n"
             C_txt = C_txt +"    TCNT0 = 101;// start at this\n"
@@ -643,6 +627,7 @@ class OutLineToC():
             C_txt = self.setUpPWMs(outLine,C_txt)
             
         C_txt = C_txt +"    sei();\n"
+
         C_txt = self.initVarsForMicro(outLine,C_txt)
         C_txt = C_txt +"    uint8_t W = 1;\n"
         C_txt = C_txt +"    while (1)\n"
@@ -650,11 +635,6 @@ class OutLineToC():
         C_txt = C_txt +"        if (timerOF == 1)\n"
         C_txt = C_txt +"        {\n"
         
-        if self.currentHW == "Waltech":
-            C_txt = C_txt +"           timerOF=0;//reset timer flag\n"
-            C_txt = C_txt +"           TCNT0 = 101;// start at this\n"
-            C_txt = self.findInPuts(outLine,C_txt)
-            
         if self.currentHW == "ArduinoMega"or self.currentHW == "ArduinoUno" or self.currentHW == "ArduinoNano":
             C_txt = C_txt +"           timerOF=0;//reset timer flag\n"
             C_txt = C_txt +"           TCNT0 = 101;// start at this\n"#ok
