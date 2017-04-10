@@ -16,7 +16,7 @@ from PyQt4 import QtCore, QtGui
 ##010##
 class cellStruct():
     def __init__(self, midPointX, midPointY, MTorElement, rungOrOR,\
-                variableName, ioAssign, comment, setPoint,\
+                variableName, type, ioAssign, comment, setPoint,\
                  branch, node, brchST, brchE, nodeST, nodeE,\
                  source_A, source_B, const_A, const_B, functType, switch):
         self. midPointX = midPointX
@@ -24,6 +24,7 @@ class cellStruct():
         self. MTorElement = MTorElement 
         self. rungOrOR = rungOrOR
         self. variableName = variableName 
+        self. type = type
         self. ioAssign = ioAssign
         self. comment = comment
         self. setPoint = setPoint
@@ -216,6 +217,7 @@ class ManageGrid():
                 self.grid[cellNum[0]][cellNum[1]].MTorElement = "blankOR"   
             ##011##
             self.grid[cellNum[0]][cellNum[1]].variableName = None
+            self.grid[cellNum[0]][cellNum[1]].type = None
             self.grid[cellNum[0]][cellNum[1]].ioAssign = None
             self.grid[cellNum[0]][cellNum[1]].comment = None
             self.grid[cellNum[0]][cellNum[1]].setPoint = None
@@ -234,7 +236,7 @@ class ManageGrid():
         Y=row*60#get Y of rung to be displaced
         self.grid.insert(row,[])#insert a rung
         for i in range(width):#fill with mt cells : for in range 0 to width
-            self.grid[row].append(cellStruct(i*60, Y, "MT","Rung", None, None, None, None, False, False, False, False, False, False,None,None,None,None,None, False))
+            self.grid[row].append(cellStruct(i*60, Y, "MT","Rung", None, None, None, None, None, False, False, False, False, False, False,None,None,None,None,None, False))
         #shift Y values down on grid below
         height = len(self.grid)
         for i in range(row,height):
@@ -656,6 +658,7 @@ class ManageGrid():
         ##012##       
         self.grid[cellNum[0]][cellNum[1]].MTorElement = tempCellData.MTorElement
         self.grid[cellNum[0]][cellNum[1]].variableName = tempCellData.variableName
+        self.grid[cellNum[0]][cellNum[1]].type = tempCellData.type
         self.grid[cellNum[0]][cellNum[1]].ioAssign = tempCellData.ioAssign
         self.grid[cellNum[0]][cellNum[1]].comment = tempCellData.comment
         self.grid[cellNum[0]][cellNum[1]].setPoint = tempCellData.setPoint

@@ -2,8 +2,8 @@
 
 # Form implementation generated from reading ui file 'counter.ui'
 #
-# Created: Mon Sep 15 16:35:13 2014
-#      by: PyQt4 UI code generator 4.10.4
+# Created: Wed Mar 29 23:23:34 2017
+#      by: PyQt4 UI code generator 4.11
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -26,9 +26,9 @@ except AttributeError:
 class Ui_CounterDialog(object):
     def setupUi(self, CounterDialog):
         CounterDialog.setObjectName(_fromUtf8("CounterDialog"))
-        CounterDialog.resize(182, 139)
+        CounterDialog.resize(194, 174)
         self.buttonBox = QtGui.QDialogButtonBox(CounterDialog)
-        self.buttonBox.setGeometry(QtCore.QRect(30, 100, 121, 32))
+        self.buttonBox.setGeometry(QtCore.QRect(30, 130, 121, 32))
         self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
         self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
         self.buttonBox.setObjectName(_fromUtf8("buttonBox"))
@@ -52,6 +52,14 @@ class Ui_CounterDialog(object):
         self.spinBox.setGeometry(QtCore.QRect(70, 40, 91, 22))
         self.spinBox.setMaximum(65535)
         self.spinBox.setObjectName(_fromUtf8("spinBox"))
+        self.label_9 = QtGui.QLabel(CounterDialog)
+        self.label_9.setGeometry(QtCore.QRect(20, 100, 46, 13))
+        self.label_9.setObjectName(_fromUtf8("label_9"))
+        self.comboBox_3 = QtGui.QComboBox(CounterDialog)
+        self.comboBox_3.setGeometry(QtCore.QRect(70, 100, 101, 22))
+        self.comboBox_3.setObjectName(_fromUtf8("comboBox_3"))
+        self.comboBox_3.addItem(_fromUtf8(""))
+        self.comboBox_3.addItem(_fromUtf8(""))
 
         self.retranslateUi(CounterDialog)
         QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(_fromUtf8("accepted()")), CounterDialog.accept)
@@ -64,14 +72,7 @@ class Ui_CounterDialog(object):
         self.label_7.setText(_translate("CounterDialog", "Name:", None))
         self.label_5.setToolTip(_translate("CounterDialog", "<html><head/><body><p>maximum: 65535</p></body></html>", None))
         self.label_5.setText(_translate("CounterDialog", "Setpoint", None))
-
-
-if __name__ == "__main__":
-    import sys
-    app = QtGui.QApplication(sys.argv)
-    CounterDialog = QtGui.QDialog()
-    ui = Ui_CounterDialog()
-    ui.setupUi(CounterDialog)
-    CounterDialog.show()
-    sys.exit(app.exec_())
+        self.label_9.setText(_translate("CounterDialog", "Type:", None))
+        self.comboBox_3.setItemText(0, _translate("CounterDialog", "Counter_Up", None))
+        self.comboBox_3.setItemText(1, _translate("CounterDialog", "Counter_Down", None))
 

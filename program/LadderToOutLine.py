@@ -149,7 +149,7 @@ class ladderToOutLine():
             p = self.rightTurnListCheck(i,j, rightTurnList)
             self.branchStart(i,position-1,branchList,outLine,rightTurnList)# check for branch and add to branchList
             if self.grid[p][position-1].variableName !=None :
-                outLine.append([ "rungstate_"+str(self.grid[p][position-1].MTorElement) +"_"+ str(self.grid[p][position-1].variableName)])
+                outLine.append([ "rungstate_"+str(self.grid[p][position-1].MTorElement) +"_"+ str(self.grid[p][position-1].variableName) + "_" + str(self.grid[p][position-1].type)])
             else:
                 outLine.append(["rungstate_"+str(self.grid[p][position-1].MTorElement) +"_"+ str(p) +"_"+ str(position-1)])
             print "added", outLine[-1][0]
@@ -185,6 +185,7 @@ class ladderToOutLine():
                     #width == position means an output
             print "adding result"
             outLine.append(["Result_"+ str(self.grid[i][-1].variableName),\
+                        str(self.grid[i][j].type),  \
                         str(self.grid[i][j].MTorElement), \
                         str(self.grid[i][j].source_A), \
                         str(self.grid[i][j].source_B), \
@@ -461,12 +462,14 @@ class ladderToOutLine():
         if self.grid[i][j].MTorElement == "Timer" \
                 and j<width-1:
             outLine.append(["Timer_" + str(self.grid[i][j].variableName),\
+                        str(self.grid[i][j].type), \
                         str(self.grid[i][j].MTorElement), \
                         str(int(self.grid[i][j].setPoint*100))])
                         
         if self.grid[i][j].MTorElement == "Counter" \
                 and j<width-1:
             outLine.append(["Counter_" + str(self.grid[i][j].variableName),\
+                        str(self.grid[i][j].type), \
                         str(self.grid[i][j].MTorElement), \
                         str(self.grid[i][j].setPoint),\
                         "latching"])

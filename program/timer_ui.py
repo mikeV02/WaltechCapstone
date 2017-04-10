@@ -2,8 +2,8 @@
 
 # Form implementation generated from reading ui file 'timer.ui'
 #
-# Created: Mon Sep 15 16:35:13 2014
-#      by: PyQt4 UI code generator 4.10.4
+# Created: Wed Mar 29 23:33:54 2017
+#      by: PyQt4 UI code generator 4.11
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -26,9 +26,9 @@ except AttributeError:
 class Ui_TimerDialog(object):
     def setupUi(self, TimerDialog):
         TimerDialog.setObjectName(_fromUtf8("TimerDialog"))
-        TimerDialog.resize(183, 138)
+        TimerDialog.resize(184, 174)
         self.buttonBox = QtGui.QDialogButtonBox(TimerDialog)
-        self.buttonBox.setGeometry(QtCore.QRect(30, 100, 121, 32))
+        self.buttonBox.setGeometry(QtCore.QRect(30, 130, 121, 32))
         self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
         self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
         self.buttonBox.setObjectName(_fromUtf8("buttonBox"))
@@ -54,6 +54,14 @@ class Ui_TimerDialog(object):
         self.doubleSpinBox.setMaximum(655.34)
         self.doubleSpinBox.setSingleStep(0.01)
         self.doubleSpinBox.setObjectName(_fromUtf8("doubleSpinBox"))
+        self.label_9 = QtGui.QLabel(TimerDialog)
+        self.label_9.setGeometry(QtCore.QRect(10, 100, 46, 13))
+        self.label_9.setObjectName(_fromUtf8("label_9"))
+        self.comboBox_3 = QtGui.QComboBox(TimerDialog)
+        self.comboBox_3.setGeometry(QtCore.QRect(70, 100, 101, 22))
+        self.comboBox_3.setObjectName(_fromUtf8("comboBox_3"))
+        self.comboBox_3.addItem(_fromUtf8(""))
+        self.comboBox_3.addItem(_fromUtf8(""))
 
         self.retranslateUi(TimerDialog)
         QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(_fromUtf8("accepted()")), TimerDialog.accept)
@@ -67,14 +75,7 @@ class Ui_TimerDialog(object):
         self.label_5.setText(_translate("TimerDialog", "Sec delay:", None))
         self.label_7.setText(_translate("TimerDialog", "Name:", None))
         self.doubleSpinBox.setToolTip(_translate("TimerDialog", "<html><head/><body><p>10 miniutes max</p></body></html>", None))
-
-
-if __name__ == "__main__":
-    import sys
-    app = QtGui.QApplication(sys.argv)
-    TimerDialog = QtGui.QDialog()
-    ui = Ui_TimerDialog()
-    ui.setupUi(TimerDialog)
-    TimerDialog.show()
-    sys.exit(app.exec_())
+        self.label_9.setText(_translate("TimerDialog", "Type:", None))
+        self.comboBox_3.setItemText(0, _translate("TimerDialog", "Timer_On_Delay", None))
+        self.comboBox_3.setItemText(1, _translate("TimerDialog", "Retentive_Timer_On", None))
 

@@ -115,339 +115,369 @@ class OutLineToC():
             C_txt = C_txt +"static volatile uint8_t sample_count;\n"
         
         ###MODIFIED BY MIGUEL
+        C_txt = C_txt + " char* my_itoa(int value, char* result, int base)\n"
+        C_txt = C_txt + " {\n"
+        C_txt = C_txt + "     // check that the base if valid\n"
+        C_txt = C_txt + "     if (base < 2 || base > 36) { *result = '\0'; return result; }\n"
+        C_txt = C_txt + " \n"
+        C_txt = C_txt + "     char* ptr = result;\n"
+        C_txt = C_txt + "     char *ptr1 = result;\n"
+        C_txt = C_txt + "     char tmp_char;\n"
+        C_txt = C_txt + " \n"
+        C_txt = C_txt + "     int tmp_value;\n"
+        C_txt = C_txt + " \n"
+        C_txt = C_txt + "     do {\n"
+        C_txt = C_txt + "         tmp_value = value;\n"
+        C_txt = C_txt + "         value /= base;\n"
+        C_txt = C_txt + "         *ptr++ = \"zyxwvutsrqponmlkjihgfedcba9876543210123456789abcdefghijklmnopqrstuvwxyz\" [35 + (tmp_value - value * base)];\n"
+        C_txt = C_txt + "     } while ( value );\n"
+        C_txt = C_txt + " \n"
+        C_txt = C_txt + "     // Apply negative sign\n"
+        C_txt = C_txt + "     if (tmp_value < 0) *ptr++ = '-';\n"
+        C_txt = C_txt + "     *ptr-- = '\0';\n"
+        C_txt = C_txt + "     while(ptr1 < ptr) {\n"
+        C_txt = C_txt + "         tmp_char = *ptr;\n"
+        C_txt = C_txt + "         *ptr--= *ptr1;\n"
+        C_txt = C_txt + "         *ptr1++ = tmp_char;\n"
+        C_txt = C_txt + "     }\n"
+        C_txt = C_txt + "     return result;\n"
+        C_txt = C_txt + " }\n"
+        
         if self.currentHW == "ArduinoMega":
             C_txt = C_txt +"inline ISR(TIMER0_OVF_vect)\n"
             C_txt = C_txt +"{\n"
             C_txt = C_txt +"    timerOF=1;\n"
             C_txt = C_txt +"    \n"
-            C_txt = C_txt +"    TimerSetup = TimerSetup + 1;\n"
-            C_txt = C_txt +"    \n"
-            C_txt = C_txt +"    if(TimerSetup > 1)  //sets speed to a quarter of a second\n"
-            C_txt = C_txt +"    {    \n"
-            C_txt = C_txt +"        if(uart_buffer_empty())\n"
-            C_txt = C_txt +"        {   \n"
-            C_txt = C_txt +"            char portStates[44]=\"\";\n"
-            C_txt = C_txt +"            \n"
-            C_txt = C_txt +"            //Inputs:\n"
-            C_txt = C_txt +"            if((PINK & (1 << PINK0)) > 0)\n"
-            C_txt = C_txt +"            {\n"
-            C_txt = C_txt +"                strcat(portStates,\"1\");\n"
-            C_txt = C_txt +"            }else if((PINK & (1 << PINK0)) == 0){\n" #IN 1
-            C_txt = C_txt +"                strcat(portStates,\"0\");\n"
-            C_txt = C_txt +"            }\n"
-            C_txt = C_txt +"            \n"
-            C_txt = C_txt +"            if((PINK & (1 << PINK1)) > 0)\n"
-            C_txt = C_txt +"            {\n"
-            C_txt = C_txt +"                strcat(portStates,\"1\");\n"
-            C_txt = C_txt +"            }else if((PINK & (1 << PINK1)) == 0){\n" #IN 2
-            C_txt = C_txt +"                strcat(portStates,\"0\");\n"
-            C_txt = C_txt +"            }\n"
-            C_txt = C_txt +"            \n"
-            C_txt = C_txt +"            if((PINK & (1 << PINK2)) > 0)\n"
-            C_txt = C_txt +"            {\n"
-            C_txt = C_txt +"                strcat(portStates,\"1\");\n"
-            C_txt = C_txt +"            }else if((PINK & (1 << PINK2)) == 0){\n" #IN 3
-            C_txt = C_txt +"                strcat(portStates,\"0\");\n"
-            C_txt = C_txt +"            }\n"
-            C_txt = C_txt +"            \n"
-            C_txt = C_txt +"            if((PINK & (1 << PINK3)) > 0)\n"
-            C_txt = C_txt +"            {\n"
-            C_txt = C_txt +"                strcat(portStates,\"1\");\n"
-            C_txt = C_txt +"            }else if((PINK & (1 << PINK3)) == 0){\n" #IN 4
-            C_txt = C_txt +"                strcat(portStates,\"0\");\n"
-            C_txt = C_txt +"            }\n"
-            C_txt = C_txt +"            \n"
-            C_txt = C_txt +"            if((PINK & (1 << PINK4)) > 0)\n"
-            C_txt = C_txt +"            {\n"
-            C_txt = C_txt +"                strcat(portStates,\"1\");\n"
-            C_txt = C_txt +"            }else if((PINK & (1 << PINK4)) == 0){\n" #IN 5
-            C_txt = C_txt +"                strcat(portStates,\"0\");\n"
-            C_txt = C_txt +"            }\n"
-            C_txt = C_txt +"                \n"
-            C_txt = C_txt +"            if((PINK & (1 << PINK5)) > 0)\n"
-            C_txt = C_txt +"            {\n"
-            C_txt = C_txt +"                strcat(portStates,\"1\");\n"
-            C_txt = C_txt +"            }else if((PINK & (1 << PINK5)) == 0){\n" #IN 6
-            C_txt = C_txt +"                strcat(portStates,\"0\");\n"
-            C_txt = C_txt +"            }\n"
-            C_txt = C_txt +"                \n"
-            C_txt = C_txt +"            if((PINK & (1 << PINK6)) > 0)\n"
-            C_txt = C_txt +"            {\n"
-            C_txt = C_txt +"                strcat(portStates,\"1\");\n"
-            C_txt = C_txt +"            }else if((PINK & (1 << PINK6)) == 0){\n" #IN 7
-            C_txt = C_txt +"                strcat(portStates,\"0\");\n"
-            C_txt = C_txt +"            }\n"
-            C_txt = C_txt +"                \n"
-            C_txt = C_txt +"            if((PINK & (1 << PINK7)) > 0)\n"
-            C_txt = C_txt +"            {\n"
-            C_txt = C_txt +"                strcat(portStates,\"1\");\n"
-            C_txt = C_txt +"            }else if((PINK & (1 << PINK7)) == 0){\n" #IN 8
-            C_txt = C_txt +"                strcat(portStates,\"0\");\n"
-            C_txt = C_txt +"            }\n"
-            C_txt = C_txt +"                \n"
-            C_txt = C_txt +"            if((PINB & (1 << PINB0)) > 0)\n"
-            C_txt = C_txt +"            {\n"
-            C_txt = C_txt +"                strcat(portStates,\"1\");\n"
-            C_txt = C_txt +"            }else if((PINB & (1 << PINB0)) == 0){\n" #IN 9
-            C_txt = C_txt +"                strcat(portStates,\"0\");\n"
-            C_txt = C_txt +"            }\n"
-            C_txt = C_txt +"                \n"
-            C_txt = C_txt +"            if((PINB & (1 << PINB2)) > 0)\n"
-            C_txt = C_txt +"            {\n"
-            C_txt = C_txt +"                strcat(portStates,\"1\");\n"
-            C_txt = C_txt +"            }else if((PINB & (1 << PINB2)) == 0){\n" #IN 10
-            C_txt = C_txt +"                strcat(portStates,\"0\");\n"
-            C_txt = C_txt +"            }\n"
-            C_txt = C_txt +"                \n"
-            C_txt = C_txt +"            if((PINL & (1 << PINL0)) > 0)\n"
-            C_txt = C_txt +"            {\n"
-            C_txt = C_txt +"                strcat(portStates,\"1\");\n"
-            C_txt = C_txt +"            }else if((PINL & (1 << PINL0)) == 0){\n" #IN 11
-            C_txt = C_txt +"                strcat(portStates,\"0\");\n"
-            C_txt = C_txt +"            }\n"
-            C_txt = C_txt +"                \n"
-            C_txt = C_txt +"            if((PINL & (1 << PINL2)) > 0)\n"
-            C_txt = C_txt +"            {\n"
-            C_txt = C_txt +"                strcat(portStates,\"1\");\n"
-            C_txt = C_txt +"            }else if((PINL & (1 << PINL2)) == 0){\n" #IN 12
-            C_txt = C_txt +"                strcat(portStates,\"0\");\n"
-            C_txt = C_txt +"            }\n"
-            C_txt = C_txt +"                \n"
-            C_txt = C_txt +"            if((PINL & (1 << PINL4)) > 0)\n"
-            C_txt = C_txt +"            {\n"
-            C_txt = C_txt +"                strcat(portStates,\"1\");\n"
-            C_txt = C_txt +"            }else if((PINL & (1 << PINL4)) == 0){\n" #IN 13
-            C_txt = C_txt +"                strcat(portStates,\"0\");\n"
-            C_txt = C_txt +"            }\n"
-            C_txt = C_txt +"                \n"
-            C_txt = C_txt +"            if((PINL & (1 << PINL6)) > 0)\n"
-            C_txt = C_txt +"            {\n"
-            C_txt = C_txt +"                strcat(portStates,\"1\");\n"
-            C_txt = C_txt +"            }else if((PINL & (1 << PINL6)) == 0){\n" #IN 14
-            C_txt = C_txt +"                strcat(portStates,\"0\");\n"
-            C_txt = C_txt +"            }\n"
-            C_txt = C_txt +"                \n"
-            C_txt = C_txt +"            if((PING & (1 << PING0)) > 0)\n"
-            C_txt = C_txt +"            {\n"
-            C_txt = C_txt +"                strcat(portStates,\"1\");\n"
-            C_txt = C_txt +"            }else if((PING & (1 << PING0)) == 0){\n" #IN 15
-            C_txt = C_txt +"                strcat(portStates,\"0\");\n"
-            C_txt = C_txt +"            }\n"
-            C_txt = C_txt +"                \n"
-            C_txt = C_txt +"            if((PING & (1 << PING2)) > 0)\n"
-            C_txt = C_txt +"            {\n"
-            C_txt = C_txt +"                strcat(portStates,\"1\");\n"
-            C_txt = C_txt +"            }else if((PING & (1 << PING2)) == 0){\n" #IN 16
-            C_txt = C_txt +"                strcat(portStates,\"0\");\n"
-            C_txt = C_txt +"            }\n"
-            C_txt = C_txt +"                \n"
-            C_txt = C_txt +"            if((PINC & (1 << PINC0)) > 0)\n"
-            C_txt = C_txt +"            {\n"
-            C_txt = C_txt +"                strcat(portStates,\"1\");\n"
-            C_txt = C_txt +"            }else if((PINC & (1 << PINC0)) == 0){\n" #IN 17
-            C_txt = C_txt +"                strcat(portStates,\"0\");\n"
-            C_txt = C_txt +"            }\n"
-            C_txt = C_txt +"                \n"
-            C_txt = C_txt +"            if((PINC & (1 << PINC2)) > 0)\n"
-            C_txt = C_txt +"            {\n"
-            C_txt = C_txt +"                strcat(portStates,\"1\");\n"
-            C_txt = C_txt +"            }else if((PINC & (1 << PINC2)) == 0){\n" #IN 18
-            C_txt = C_txt +"                strcat(portStates,\"0\");\n"
-            C_txt = C_txt +"            }\n"
-            C_txt = C_txt +"                \n"
-            C_txt = C_txt +"            if((PINC & (1 << PINC4)) > 0)\n"
-            C_txt = C_txt +"            {\n"
-            C_txt = C_txt +"                strcat(portStates,\"1\");\n"
-            C_txt = C_txt +"            }else if((PINC & (1 << PINC4)) == 0){\n" #IN 19
-            C_txt = C_txt +"                strcat(portStates,\"0\");\n"
-            C_txt = C_txt +"            }\n"
-            C_txt = C_txt +"                \n"
-            C_txt = C_txt +"            if((PINC & (1 << PINC6)) > 0)\n"
-            C_txt = C_txt +"            {\n"
-            C_txt = C_txt +"                strcat(portStates,\"1\");\n"
-            C_txt = C_txt +"            }else if((PINC & (1 << PINC6)) == 0){\n" #IN 20
-            C_txt = C_txt +"                strcat(portStates,\"0\");\n"
-            C_txt = C_txt +"            }\n"
-            C_txt = C_txt +"                \n"
-            C_txt = C_txt +"            if((PIND & (1 << PIND0)) > 0)\n"
-            C_txt = C_txt +"            {\n"
-            C_txt = C_txt +"                strcat(portStates,\"1\");\n"
-            C_txt = C_txt +"            }else if((PIND & (1 << PIND0)) == 0){\n" #IN 21
-            C_txt = C_txt +"                strcat(portStates,\"0\");\n"
-            C_txt = C_txt +"            }\n"
-            C_txt = C_txt +"                \n"
-            C_txt = C_txt +"            if((PIND & (1 << PIND1)) > 0)\n"
-            C_txt = C_txt +"            {\n"
-            C_txt = C_txt +"                strcat(portStates,\"1\");\n"
-            C_txt = C_txt +"            }else if((PIND & (1 << PIND1)) == 0){\n" #IN 22
-            C_txt = C_txt +"                strcat(portStates,\"0\");\n"
-            C_txt = C_txt +"            }\n"
-            C_txt = C_txt +"                \n"
-            C_txt = C_txt +"            //Outputs:\n"
-            C_txt = C_txt +"            if((PINB & (1 << PINB1)) > 0)\n"
-            C_txt = C_txt +"            {\n"
-            C_txt = C_txt +"                strcat(portStates,\"1\");\n"
-            C_txt = C_txt +"            }else if((PINB & (1 << PINB1)) == 0){\n" #OUT 1
-            C_txt = C_txt +"                strcat(portStates,\"0\");\n"
-            C_txt = C_txt +"            }\n"
-            C_txt = C_txt +"            \n"
-            C_txt = C_txt +"            if((PINB & (1 << PINB3)) > 0)\n"
-            C_txt = C_txt +"            {\n"
-            C_txt = C_txt +"                strcat(portStates,\"1\");\n"
-            C_txt = C_txt +"            }else if((PINB & (1 << PINB3)) == 0){\n" #OUT 2
-            C_txt = C_txt +"                strcat(portStates,\"0\");\n"
-            C_txt = C_txt +"            }\n"
-            C_txt = C_txt +"            \n"
-            C_txt = C_txt +"            if((PINL & (1 << PINL1)) > 0)\n"
-            C_txt = C_txt +"            {\n"
-            C_txt = C_txt +"                strcat(portStates,\"1\");\n"
-            C_txt = C_txt +"            }else if((PINL & (1 << PINL1)) == 0){\n" #OUT 3
-            C_txt = C_txt +"                strcat(portStates,\"0\");\n"
-            C_txt = C_txt +"            }\n"
-            C_txt = C_txt +"            \n"
-            C_txt = C_txt +"            if((PINL & (1 << PINL3)) > 0)\n"
-            C_txt = C_txt +"            {\n"
-            C_txt = C_txt +"                strcat(portStates,\"1\");\n"
-            C_txt = C_txt +"            }else if((PINL & (1 << PINL3)) == 0)\n" #OUT 4
-            C_txt = C_txt +"            {\n"
-            C_txt = C_txt +"                strcat(portStates,\"0\");\n"
-            C_txt = C_txt +"            }\n"
-            C_txt = C_txt +"            \n"
-            C_txt = C_txt +"            if((PINL & (1 << PINL5)) > 0)\n"
-            C_txt = C_txt +"            {\n"
-            C_txt = C_txt +"                strcat(portStates,\"1\");\n"
-            C_txt = C_txt +"            }else if((PINL & (1 << PINL5)) == 0){\n" #OUT 5
-            C_txt = C_txt +"                strcat(portStates,\"0\");\n"
-            C_txt = C_txt +"            }\n"
-            C_txt = C_txt +"            \n"
-            C_txt = C_txt +"            if((PINL & (1 << PINL7)) > 0)\n"
-            C_txt = C_txt +"            {\n"
-            C_txt = C_txt +"                strcat(portStates,\"1\");\n"
-            C_txt = C_txt +"            }else if((PINL & (1 << PINL7)) == 0){\n" #OUT 6
-            C_txt = C_txt +"                strcat(portStates,\"0\");\n"
-            C_txt = C_txt +"            }\n"
-            C_txt = C_txt +"            \n"
-            C_txt = C_txt +"            if((PING & (1 << PING1)) > 0)\n"
-            C_txt = C_txt +"            {\n"
-            C_txt = C_txt +"                strcat(portStates,\"1\");\n"
-            C_txt = C_txt +"            }else if((PING & (1 << PING1)) == 0){\n" #OUT 7
-            C_txt = C_txt +"                strcat(portStates,\"0\");\n"
-            C_txt = C_txt +"            }\n"
-            C_txt = C_txt +"            \n"
-            C_txt = C_txt +"            if((PIND & (1 << PIND7)) > 0)\n"
-            C_txt = C_txt +"            {\n"
-            C_txt = C_txt +"                strcat(portStates,\"1\");\n"
-            C_txt = C_txt +"            }else if((PIND & (1 << PIND7)) == 0){\n" #OUT 8
-            C_txt = C_txt +"                strcat(portStates,\"0\");\n"
-            C_txt = C_txt +"            }\n"
-            C_txt = C_txt +"            \n"
-            C_txt = C_txt +"            if((PINC & (1 << PINC1)) > 0)\n"
-            C_txt = C_txt +"            {\n"
-            C_txt = C_txt +"                strcat(portStates,\"1\");\n"
-            C_txt = C_txt +"            }else if((PINC & (1 << PINC1)) == 0){\n" #OUT 9
-            C_txt = C_txt +"                strcat(portStates,\"0\");\n"
-            C_txt = C_txt +"            }\n"
-            C_txt = C_txt +"            \n"
-            C_txt = C_txt +"            if((PINC & (1 << PINC3)) > 0)\n"
-            C_txt = C_txt +"            {\n"
-            C_txt = C_txt +"                strcat(portStates,\"1\");\n"
-            C_txt = C_txt +"            }else if((PINC & (1 << PINC3)) == 0){\n" #OUT 10
-            C_txt = C_txt +"                strcat(portStates,\"0\");\n"
-            C_txt = C_txt +"            }\n"
-            C_txt = C_txt +"            \n"
-            C_txt = C_txt +"            if((PINC & (1 << PINC5)) > 0)\n"
-            C_txt = C_txt +"            {\n"
-            C_txt = C_txt +"                strcat(portStates,\"1\");\n"
-            C_txt = C_txt +"            }else if((PINC & (1 << PINC5)) == 0){\n" #OUT 11
-            C_txt = C_txt +"                strcat(portStates,\"0\");\n"
-            C_txt = C_txt +"            }\n"
-            C_txt = C_txt +"            \n"
-            C_txt = C_txt +"            if((PINC & (1 << PINC7)) > 0)\n"
-            C_txt = C_txt +"            {\n"
-            C_txt = C_txt +"                strcat(portStates,\"1\");\n"
-            C_txt = C_txt +"            }else if((PINC & (1 << PINC7)) == 0){\n" #OUT 12
-            C_txt = C_txt +"                strcat(portStates,\"0\");\n"
-            C_txt = C_txt +"            }\n"
-            C_txt = C_txt +"            \n"
-            C_txt = C_txt +"            if((PINA & (1 << PINA6)) > 0)\n"
-            C_txt = C_txt +"            {\n"
-            C_txt = C_txt +"                strcat(portStates,\"1\");\n"
-            C_txt = C_txt +"            }else if((PINA & (1 << PINA6)) == 0){\n" #OUT 13
-            C_txt = C_txt +"                strcat(portStates,\"0\");\n"
-            C_txt = C_txt +"            }\n"
-            C_txt = C_txt +"            \n"
-            C_txt = C_txt +"            if((PINA & (1 << PINA4)) > 0)\n"
-            C_txt = C_txt +"            {\n"
-            C_txt = C_txt +"                strcat(portStates,\"1\");\n"
-            C_txt = C_txt +"            }else if((PINA & (1 << PINA4)) == 0){\n" #OUT 14
-            C_txt = C_txt +"                strcat(portStates,\"0\");\n"
-            C_txt = C_txt +"            }\n"
-            C_txt = C_txt +"            \n"
-            C_txt = C_txt +"            if((PINA & (1 << PINA2)) > 0)\n"
-            C_txt = C_txt +"            {\n"
-            C_txt = C_txt +"                strcat(portStates,\"1\");\n"
-            C_txt = C_txt +"            }else if((PINA & (1 << PINA2)) == 0){\n" #OUT 15
-            C_txt = C_txt +"                strcat(portStates,\"0\");\n"
-            C_txt = C_txt +"            }\n"
-            C_txt = C_txt +"            \n"
-            C_txt = C_txt +"            if((PINA & (1 << PINA0)) > 0)\n"
-            C_txt = C_txt +"            {\n"
-            C_txt = C_txt +"                strcat(portStates,\"1\");\n"
-            C_txt = C_txt +"            }else if((PINA & (1 << PINA0)) == 0){\n" #OUT 16
-            C_txt = C_txt +"                strcat(portStates,\"0\");\n"
-            C_txt = C_txt +"            }\n"
-            C_txt = C_txt +"            \n"
-            C_txt = C_txt +"            if((PIND & (1 << PIND2)) > 0)\n"
-            C_txt = C_txt +"            {\n"
-            C_txt = C_txt +"                strcat(portStates,\"1\");\n"
-            C_txt = C_txt +"            }else if((PIND & (1 << PIND2)) == 0){\n" #OUT 17
-            C_txt = C_txt +"                strcat(portStates,\"0\");\n"
-            C_txt = C_txt +"            }\n"
-            C_txt = C_txt +"            \n"
-            C_txt = C_txt +"            if((PIND & (1 << PIND3)) > 0)\n"
-            C_txt = C_txt +"            {\n"
-            C_txt = C_txt +"                strcat(portStates,\"1\");\n"
-            C_txt = C_txt +"            }else if((PIND & (1 << PIND3)) == 0){\n" #OUT 18
-            C_txt = C_txt +"                strcat(portStates,\"0\");\n"
-            C_txt = C_txt +"            }\n"
-            C_txt = C_txt +"            \n"
-            C_txt = C_txt +"            if((PINH & (1 << PINH0)) > 0)\n"
-            C_txt = C_txt +"            {\n"
-            C_txt = C_txt +"                strcat(portStates,\"1\");\n"
-            C_txt = C_txt +"            }else if((PINH & (1 << PINH0)) == 0){\n" #OUT 19
-            C_txt = C_txt +"                strcat(portStates,\"0\");\n"
-            C_txt = C_txt +"            }\n"
-            C_txt = C_txt +"            \n"
-            C_txt = C_txt +"            if((PINH & (1 << PINH1)) > 0)\n"
-            C_txt = C_txt +"            {\n"
-            C_txt = C_txt +"                strcat(portStates,\"1\");\n"
-            C_txt = C_txt +"            }else if((PINH & (1 << PINH1)) == 0){\n" #OUT 20
-            C_txt = C_txt +"                strcat(portStates,\"0\");\n"
-            C_txt = C_txt +"            }\n"
-            C_txt = C_txt +"            \n"
-            C_txt = C_txt +"            if((PINJ & (1 << PINJ0)) > 0)\n"
-            C_txt = C_txt +"            {\n"
-            C_txt = C_txt +"                strcat(portStates,\"1\");\n"
-            C_txt = C_txt +"            }else if((PINJ & (1 << PINJ0)) == 0){\n" #OUT 21
-            C_txt = C_txt +"                strcat(portStates,\"0\");\n"
-            C_txt = C_txt +"            }\n"
-            C_txt = C_txt +"            \n"
-            C_txt = C_txt +"            if((PINJ & (1 << PINJ1)) > 0)\n"
-            C_txt = C_txt +"            {\n"
-            C_txt = C_txt +"                strcat(portStates,\"1\");\n"
-            C_txt = C_txt +"            }else if((PINJ & (1 << PINJ1)) == 0){\n" #OUT 22
-            C_txt = C_txt +"                strcat(portStates,\"0\");\n"
-            C_txt = C_txt +"            }\n"
-            C_txt = C_txt +"            \n"
-            C_txt = C_txt +"            strcat(portStates,\"\\n\0\");\n"
-            C_txt = C_txt +"            \n"
-            C_txt = C_txt +"            uart_getc();\n"
-            C_txt = C_txt +"            \n"
-            C_txt = C_txt +"            uart_puts(portStates);\n"
-            C_txt = C_txt +"        }\n"
-            C_txt = C_txt +"        TimerSetup = 0;\n"
-            C_txt = C_txt +"    }\n"
-            C_txt = C_txt +"    \n"
+            # C_txt = C_txt +"    TimerSetup = TimerSetup + 1;\n"
+            # C_txt = C_txt +"    \n"
+            # C_txt = C_txt +"    if(TimerSetup > 1)  //sets speed to a quarter of a second\n"
+            # C_txt = C_txt +"    {    \n"
+            # C_txt = C_txt +"        if(uart_buffer_empty())\n"
+            # C_txt = C_txt +"        {   \n"
+            # C_txt = C_txt +"            char portStates[44]=\"\";\n"
+            # C_txt = C_txt +"            \n"
+
+            # C_txt = C_txt +"            //Inputs:\n"
+            
+            # C_txt = C_txt +"            uint16_t pin = (PINK & (1 << PINK0));\n"
+            # C_txt = C_txt +"            my_itoa(pin, portStates, 2);\n"# << PINK0;\n"# & (1 << PINK0;\n"
+            #C_txt = C_txt +"            strcat(portStates, c);\n" #IN 1
+
+            # C_txt = C_txt +"            \n"
+            # C_txt = C_txt +"            if((PINK & (1 << PINK1)) > 0)\n"
+            # C_txt = C_txt +"            {\n"
+            # C_txt = C_txt +"                strcat(portStates,\"1\");\n"
+            # C_txt = C_txt +"            }else if((PINK & (1 << 1)) == 0){\n" #IN 2
+            # C_txt = C_txt +"                strcat(portStates,\"0\");\n"
+            # C_txt = C_txt +"            }\n"
+            # C_txt = C_txt +"            \n"
+            # C_txt = C_txt +"            if((PINK & (1 << PINK2)) > 0)\n"
+            # C_txt = C_txt +"            {\n"
+            # C_txt = C_txt +"                strcat(portStates,\"1\");\n"
+            # C_txt = C_txt +"            }else if((PINK & (1 << PINK2)) == 0){\n" #IN 3
+            # C_txt = C_txt +"                strcat(portStates,\"0\");\n"
+            # C_txt = C_txt +"            }\n"
+            # C_txt = C_txt +"            \n"
+            # C_txt = C_txt +"            if((PINK & (1 << PINK3)) > 0)\n"
+            # C_txt = C_txt +"            {\n"
+            # C_txt = C_txt +"                strcat(portStates,\"1\");\n"
+            # C_txt = C_txt +"            }else if((PINK & (1 << PINK3)) == 0){\n" #IN 4
+            # C_txt = C_txt +"                strcat(portStates,\"0\");\n"
+            # C_txt = C_txt +"            }\n"
+            # C_txt = C_txt +"            \n"
+            # C_txt = C_txt +"            if((PINK & (1 << PINK4)) > 0)\n"
+            # C_txt = C_txt +"            {\n"
+            # C_txt = C_txt +"                strcat(portStates,\"1\");\n"
+            # C_txt = C_txt +"            }else if((PINK & (1 << PINK4)) == 0){\n" #IN 5
+            # C_txt = C_txt +"                strcat(portStates,\"0\");\n"
+            # C_txt = C_txt +"            }\n"
+            # C_txt = C_txt +"                \n"
+            # C_txt = C_txt +"            if((PINK & (1 << PINK5)) > 0)\n"
+            # C_txt = C_txt +"            {\n"
+            # C_txt = C_txt +"                strcat(portStates,\"1\");\n"
+            # C_txt = C_txt +"            }else if((PINK & (1 << PINK5)) == 0){\n" #IN 6
+            # C_txt = C_txt +"                strcat(portStates,\"0\");\n"
+            # C_txt = C_txt +"            }\n"
+            # C_txt = C_txt +"                \n"
+            # C_txt = C_txt +"            if((PINK & (1 << PINK6)) > 0)\n"
+            # C_txt = C_txt +"            {\n"
+            # C_txt = C_txt +"                strcat(portStates,\"1\");\n"
+            # C_txt = C_txt +"            }else if((PINK & (1 << PINK6)) == 0){\n" #IN 7
+            # C_txt = C_txt +"                strcat(portStates,\"0\");\n"
+            # C_txt = C_txt +"            }\n"
+            # C_txt = C_txt +"                \n"
+            # C_txt = C_txt +"            if((PINK & (1 << PINK7)) > 0)\n"
+            # C_txt = C_txt +"            {\n"
+            # C_txt = C_txt +"                strcat(portStates,\"1\");\n"
+            # C_txt = C_txt +"            }else if((PINK & (1 << PINK7)) == 0){\n" #IN 8
+            # C_txt = C_txt +"                strcat(portStates,\"0\");\n"
+            # C_txt = C_txt +"            }\n"
+            # C_txt = C_txt +"                \n"
+            # C_txt = C_txt +"            if((PINB & (1 << PINB0)) > 0)\n"
+            # C_txt = C_txt +"            {\n"
+            # C_txt = C_txt +"                strcat(portStates,\"1\");\n"
+            # C_txt = C_txt +"            }else if((PINB & (1 << PINB0)) == 0){\n" #IN 9
+            # C_txt = C_txt +"                strcat(portStates,\"0\");\n"
+            # C_txt = C_txt +"            }\n"
+            # C_txt = C_txt +"                \n"
+            # C_txt = C_txt +"            if((PINB & (1 << PINB2)) > 0)\n"
+            # C_txt = C_txt +"            {\n"
+            # C_txt = C_txt +"                strcat(portStates,\"1\");\n"
+            # C_txt = C_txt +"            }else if((PINB & (1 << PINB2)) == 0){\n" #IN 10
+            # C_txt = C_txt +"                strcat(portStates,\"0\");\n"
+            # C_txt = C_txt +"            }\n"
+            # C_txt = C_txt +"                \n"
+            # C_txt = C_txt +"            if((PINL & (1 << PINL0)) > 0)\n"
+            # C_txt = C_txt +"            {\n"
+            # C_txt = C_txt +"                strcat(portStates,\"1\");\n"
+            # C_txt = C_txt +"            }else if((PINL & (1 << PINL0)) == 0){\n" #IN 11
+            # C_txt = C_txt +"                strcat(portStates,\"0\");\n"
+            # C_txt = C_txt +"            }\n"
+            # C_txt = C_txt +"                \n"
+            # C_txt = C_txt +"            if((PINL & (1 << PINL2)) > 0)\n"
+            # C_txt = C_txt +"            {\n"
+            # C_txt = C_txt +"                strcat(portStates,\"1\");\n"
+            # C_txt = C_txt +"            }else if((PINL & (1 << PINL2)) == 0){\n" #IN 12
+            # C_txt = C_txt +"                strcat(portStates,\"0\");\n"
+            # C_txt = C_txt +"            }\n"
+            # C_txt = C_txt +"                \n"
+            # C_txt = C_txt +"            if((PINL & (1 << PINL4)) > 0)\n"
+            # C_txt = C_txt +"            {\n"
+            # C_txt = C_txt +"                strcat(portStates,\"1\");\n"
+            # C_txt = C_txt +"            }else if((PINL & (1 << PINL4)) == 0){\n" #IN 13
+            # C_txt = C_txt +"                strcat(portStates,\"0\");\n"
+            # C_txt = C_txt +"            }\n"
+            # C_txt = C_txt +"                \n"
+            # C_txt = C_txt +"            if((PINL & (1 << PINL6)) > 0)\n"
+            # C_txt = C_txt +"            {\n"
+            # C_txt = C_txt +"                strcat(portStates,\"1\");\n"
+            # C_txt = C_txt +"            }else if((PINL & (1 << PINL6)) == 0){\n" #IN 14
+            # C_txt = C_txt +"                strcat(portStates,\"0\");\n"
+            # C_txt = C_txt +"            }\n"
+            # C_txt = C_txt +"                \n"
+            # C_txt = C_txt +"            if((PING & (1 << PING0)) > 0)\n"
+            # C_txt = C_txt +"            {\n"
+            # C_txt = C_txt +"                strcat(portStates,\"1\");\n"
+            # C_txt = C_txt +"            }else if((PING & (1 << PING0)) == 0){\n" #IN 15
+            # C_txt = C_txt +"                strcat(portStates,\"0\");\n"
+            # C_txt = C_txt +"            }\n"
+            # C_txt = C_txt +"                \n"
+            # C_txt = C_txt +"            if((PING & (1 << PING2)) > 0)\n"
+            # C_txt = C_txt +"            {\n"
+            # C_txt = C_txt +"                strcat(portStates,\"1\");\n"
+            # C_txt = C_txt +"            }else if((PING & (1 << PING2)) == 0){\n" #IN 16
+            # C_txt = C_txt +"                strcat(portStates,\"0\");\n"
+            # C_txt = C_txt +"            }\n"
+            # C_txt = C_txt +"                \n"
+            # C_txt = C_txt +"            if((PINC & (1 << PINC0)) > 0)\n"
+            # C_txt = C_txt +"            {\n"
+            # C_txt = C_txt +"                strcat(portStates,\"1\");\n"
+            # C_txt = C_txt +"            }else if((PINC & (1 << PINC0)) == 0){\n" #IN 17
+            # C_txt = C_txt +"                strcat(portStates,\"0\");\n"
+            # C_txt = C_txt +"            }\n"
+            # C_txt = C_txt +"                \n"
+            # C_txt = C_txt +"            if((PINC & (1 << PINC2)) > 0)\n"
+            # C_txt = C_txt +"            {\n"
+            # C_txt = C_txt +"                strcat(portStates,\"1\");\n"
+            # C_txt = C_txt +"            }else if((PINC & (1 << PINC2)) == 0){\n" #IN 18
+            # C_txt = C_txt +"                strcat(portStates,\"0\");\n"
+            # C_txt = C_txt +"            }\n"
+            # C_txt = C_txt +"                \n"
+            # C_txt = C_txt +"            if((PINC & (1 << PINC4)) > 0)\n"
+            # C_txt = C_txt +"            {\n"
+            # C_txt = C_txt +"                strcat(portStates,\"1\");\n"
+            # C_txt = C_txt +"            }else if((PINC & (1 << PINC4)) == 0){\n" #IN 19
+            # C_txt = C_txt +"                strcat(portStates,\"0\");\n"
+            # C_txt = C_txt +"            }\n"
+            # C_txt = C_txt +"                \n"
+            # C_txt = C_txt +"            if((PINC & (1 << PINC6)) > 0)\n"
+            # C_txt = C_txt +"            {\n"
+            # C_txt = C_txt +"                strcat(portStates,\"1\");\n"
+            # C_txt = C_txt +"            }else if((PINC & (1 << PINC6)) == 0){\n" #IN 20
+            # C_txt = C_txt +"                strcat(portStates,\"0\");\n"
+            # C_txt = C_txt +"            }\n"
+            # C_txt = C_txt +"                \n"
+            # C_txt = C_txt +"            if((PIND & (1 << PIND0)) > 0)\n"
+            # C_txt = C_txt +"            {\n"
+            # C_txt = C_txt +"                strcat(portStates,\"1\");\n"
+            # C_txt = C_txt +"            }else if((PIND & (1 << PIND0)) == 0){\n" #IN 21
+            # C_txt = C_txt +"                strcat(portStates,\"0\");\n"
+            # C_txt = C_txt +"            }\n"
+            # C_txt = C_txt +"                \n"
+            # C_txt = C_txt +"            if((PIND & (1 << PIND1)) > 0)\n"
+            # C_txt = C_txt +"            {\n"
+            # C_txt = C_txt +"                strcat(portStates,\"1\");\n"
+            # C_txt = C_txt +"            }else if((PIND & (1 << PIND1)) == 0){\n" #IN 22
+            # C_txt = C_txt +"                strcat(portStates,\"0\");\n"
+            # C_txt = C_txt +"            }\n"
+            # C_txt = C_txt +"                \n"
+            # C_txt = C_txt +"            //Outputs:\n"
+            # C_txt = C_txt +"            if((PINB & (1 << PINB1)) > 0)\n"
+            # C_txt = C_txt +"            {\n"
+            # C_txt = C_txt +"                strcat(portStates,\"1\");\n"
+            # C_txt = C_txt +"            }else if((PINB & (1 << PINB1)) == 0){\n" #OUT 1
+            # C_txt = C_txt +"                strcat(portStates,\"0\");\n"
+            # C_txt = C_txt +"            }\n"
+            # C_txt = C_txt +"            \n"
+            # C_txt = C_txt +"            if((PINB & (1 << PINB3)) > 0)\n"
+            # C_txt = C_txt +"            {\n"
+            # C_txt = C_txt +"                strcat(portStates,\"1\");\n"
+            # C_txt = C_txt +"            }else if((PINB & (1 << PINB3)) == 0){\n" #OUT 2
+            # C_txt = C_txt +"                strcat(portStates,\"0\");\n"
+            # C_txt = C_txt +"            }\n"
+            # C_txt = C_txt +"            \n"
+            # C_txt = C_txt +"            if((PINL & (1 << PINL1)) > 0)\n"
+            # C_txt = C_txt +"            {\n"
+            # C_txt = C_txt +"                strcat(portStates,\"1\");\n"
+            # C_txt = C_txt +"            }else if((PINL & (1 << PINL1)) == 0){\n" #OUT 3
+            # C_txt = C_txt +"                strcat(portStates,\"0\");\n"
+            # C_txt = C_txt +"            }\n"
+            # C_txt = C_txt +"            \n"
+            # C_txt = C_txt +"            if((PINL & (1 << PINL3)) > 0)\n"
+            # C_txt = C_txt +"            {\n"
+            # C_txt = C_txt +"                strcat(portStates,\"1\");\n"
+            # C_txt = C_txt +"            }else if((PINL & (1 << PINL3)) == 0)\n" #OUT 4
+            # C_txt = C_txt +"            {\n"
+            # C_txt = C_txt +"                strcat(portStates,\"0\");\n"
+            # C_txt = C_txt +"            }\n"
+            # C_txt = C_txt +"            \n"
+            # C_txt = C_txt +"            if((PINL & (1 << PINL5)) > 0)\n"
+            # C_txt = C_txt +"            {\n"
+            # C_txt = C_txt +"                strcat(portStates,\"1\");\n"
+            # C_txt = C_txt +"            }else if((PINL & (1 << PINL5)) == 0){\n" #OUT 5
+            # C_txt = C_txt +"                strcat(portStates,\"0\");\n"
+            # C_txt = C_txt +"            }\n"
+            # C_txt = C_txt +"            \n"
+            # C_txt = C_txt +"            if((PINL & (1 << PINL7)) > 0)\n"
+            # C_txt = C_txt +"            {\n"
+            # C_txt = C_txt +"                strcat(portStates,\"1\");\n"
+            # C_txt = C_txt +"            }else if((PINL & (1 << PINL7)) == 0){\n" #OUT 6
+            # C_txt = C_txt +"                strcat(portStates,\"0\");\n"
+            # C_txt = C_txt +"            }\n"
+            # C_txt = C_txt +"            \n"
+            # C_txt = C_txt +"            if((PING & (1 << PING1)) > 0)\n"
+            # C_txt = C_txt +"            {\n"
+            # C_txt = C_txt +"                strcat(portStates,\"1\");\n"
+            # C_txt = C_txt +"            }else if((PING & (1 << PING1)) == 0){\n" #OUT 7
+            # C_txt = C_txt +"                strcat(portStates,\"0\");\n"
+            # C_txt = C_txt +"            }\n"
+            # C_txt = C_txt +"            \n"
+            # C_txt = C_txt +"            if((PIND & (1 << PIND7)) > 0)\n"
+            # C_txt = C_txt +"            {\n"
+            # C_txt = C_txt +"                strcat(portStates,\"1\");\n"
+            # C_txt = C_txt +"            }else if((PIND & (1 << PIND7)) == 0){\n" #OUT 8
+            # C_txt = C_txt +"                strcat(portStates,\"0\");\n"
+            # C_txt = C_txt +"            }\n"
+            # C_txt = C_txt +"            \n"
+            # C_txt = C_txt +"            if((PINC & (1 << PINC1)) > 0)\n"
+            # C_txt = C_txt +"            {\n"
+            # C_txt = C_txt +"                strcat(portStates,\"1\");\n"
+            # C_txt = C_txt +"            }else if((PINC & (1 << PINC1)) == 0){\n" #OUT 9
+            # C_txt = C_txt +"                strcat(portStates,\"0\");\n"
+            # C_txt = C_txt +"            }\n"
+            # C_txt = C_txt +"            \n"
+            # C_txt = C_txt +"            if((PINC & (1 << PINC3)) > 0)\n"
+            # C_txt = C_txt +"            {\n"
+            # C_txt = C_txt +"                strcat(portStates,\"1\");\n"
+            # C_txt = C_txt +"            }else if((PINC & (1 << PINC3)) == 0){\n" #OUT 10
+            # C_txt = C_txt +"                strcat(portStates,\"0\");\n"
+            # C_txt = C_txt +"            }\n"
+            # C_txt = C_txt +"            \n"
+            # C_txt = C_txt +"            if((PINC & (1 << PINC5)) > 0)\n"
+            # C_txt = C_txt +"            {\n"
+            # C_txt = C_txt +"                strcat(portStates,\"1\");\n"
+            # C_txt = C_txt +"            }else if((PINC & (1 << PINC5)) == 0){\n" #OUT 11
+            # C_txt = C_txt +"                strcat(portStates,\"0\");\n"
+            # C_txt = C_txt +"            }\n"
+            # C_txt = C_txt +"            \n"
+            # C_txt = C_txt +"            if((PINC & (1 << PINC7)) > 0)\n"
+            # C_txt = C_txt +"            {\n"
+            # C_txt = C_txt +"                strcat(portStates,\"1\");\n"
+            # C_txt = C_txt +"            }else if((PINC & (1 << PINC7)) == 0){\n" #OUT 12
+            # C_txt = C_txt +"                strcat(portStates,\"0\");\n"
+            # C_txt = C_txt +"            }\n"
+            # C_txt = C_txt +"            \n"
+            # C_txt = C_txt +"            if((PINA & (1 << PINA6)) > 0)\n"
+            # C_txt = C_txt +"            {\n"
+            # C_txt = C_txt +"                strcat(portStates,\"1\");\n"
+            # C_txt = C_txt +"            }else if((PINA & (1 << PINA6)) == 0){\n" #OUT 13
+            # C_txt = C_txt +"                strcat(portStates,\"0\");\n"
+            # C_txt = C_txt +"            }\n"
+            # C_txt = C_txt +"            \n"
+            # C_txt = C_txt +"            if((PINA & (1 << PINA4)) > 0)\n"
+            # C_txt = C_txt +"            {\n"
+            # C_txt = C_txt +"                strcat(portStates,\"1\");\n"
+            # C_txt = C_txt +"            }else if((PINA & (1 << PINA4)) == 0){\n" #OUT 14
+            # C_txt = C_txt +"                strcat(portStates,\"0\");\n"
+            # C_txt = C_txt +"            }\n"
+            # C_txt = C_txt +"            \n"
+            # C_txt = C_txt +"            if((PINA & (1 << PINA2)) > 0)\n"
+            # C_txt = C_txt +"            {\n"
+            # C_txt = C_txt +"                strcat(portStates,\"1\");\n"
+            # C_txt = C_txt +"            }else if((PINA & (1 << PINA2)) == 0){\n" #OUT 15
+            # C_txt = C_txt +"                strcat(portStates,\"0\");\n"
+            # C_txt = C_txt +"            }\n"
+            # C_txt = C_txt +"            \n"
+            # C_txt = C_txt +"            if((PINA & (1 << PINA0)) > 0)\n"
+            # C_txt = C_txt +"            {\n"
+            # C_txt = C_txt +"                strcat(portStates,\"1\");\n"
+            # C_txt = C_txt +"            }else if((PINA & (1 << PINA0)) == 0){\n" #OUT 16
+            # C_txt = C_txt +"                strcat(portStates,\"0\");\n"
+            # C_txt = C_txt +"            }\n"
+            # C_txt = C_txt +"            \n"
+            # C_txt = C_txt +"            if((PIND & (1 << PIND2)) > 0)\n"
+            # C_txt = C_txt +"            {\n"
+            # C_txt = C_txt +"                strcat(portStates,\"1\");\n"
+            # C_txt = C_txt +"            }else if((PIND & (1 << PIND2)) == 0){\n" #OUT 17
+            # C_txt = C_txt +"                strcat(portStates,\"0\");\n"
+            # C_txt = C_txt +"            }\n"
+            # C_txt = C_txt +"            \n"
+            # C_txt = C_txt +"            if((PIND & (1 << PIND3)) > 0)\n"
+            # C_txt = C_txt +"            {\n"
+            # C_txt = C_txt +"                strcat(portStates,\"1\");\n"
+            # C_txt = C_txt +"            }else if((PIND & (1 << PIND3)) == 0){\n" #OUT 18
+            # C_txt = C_txt +"                strcat(portStates,\"0\");\n"
+            # C_txt = C_txt +"            }\n"
+            # C_txt = C_txt +"            \n"
+            # C_txt = C_txt +"            if((PINH & (1 << PINH0)) > 0)\n"
+            # C_txt = C_txt +"            {\n"
+            # C_txt = C_txt +"                strcat(portStates,\"1\");\n"
+            # C_txt = C_txt +"            }else if((PINH & (1 << PINH0)) == 0){\n" #OUT 19
+            # C_txt = C_txt +"                strcat(portStates,\"0\");\n"
+            # C_txt = C_txt +"            }\n"
+            # C_txt = C_txt +"            \n"
+            # C_txt = C_txt +"            if((PINH & (1 << PINH1)) > 0)\n"
+            # C_txt = C_txt +"            {\n"
+            # C_txt = C_txt +"                strcat(portStates,\"1\");\n"
+            # C_txt = C_txt +"            }else if((PINH & (1 << PINH1)) == 0){\n" #OUT 20
+            # C_txt = C_txt +"                strcat(portStates,\"0\");\n"
+            # C_txt = C_txt +"            }\n"
+            # C_txt = C_txt +"            \n"
+            # C_txt = C_txt +"            if((PINJ & (1 << PINJ0)) > 0)\n"
+            # C_txt = C_txt +"            {\n"
+            # C_txt = C_txt +"                strcat(portStates,\"1\");\n"
+            # C_txt = C_txt +"            }else if((PINJ & (1 << PINJ0)) == 0){\n" #OUT 21
+            # C_txt = C_txt +"                strcat(portStates,\"0\");\n"
+            # C_txt = C_txt +"            }\n"
+            # C_txt = C_txt +"            \n"
+            # C_txt = C_txt +"            if((PINJ & (1 << PINJ1)) > 0)\n"
+            # C_txt = C_txt +"            {\n"
+            # C_txt = C_txt +"                strcat(portStates,\"1\");\n"
+            # C_txt = C_txt +"            }else if((PINJ & (1 << PINJ1)) == 0){\n" #OUT 22
+            # C_txt = C_txt +"                strcat(portStates,\"0\");\n"
+            # C_txt = C_txt +"            }\n"
+            # C_txt = C_txt +"            \n"
+            # C_txt = C_txt +"            strcat(portStates,\"\\n\0\");\n"
+            # C_txt = C_txt +"            \n"
+            # C_txt = C_txt +"            uart_getc();\n"
+            # C_txt = C_txt +"            \n"
+            # C_txt = C_txt +"            uart_puts(portStates);\n"
+            # #C_txt = C_txt +"            uart_putw_dec(pin);\n"
+            # #C_txt = C_txt +"           uart_putc(pin);\n"
+            # C_txt = C_txt +"        }\n"
+            # C_txt = C_txt +"        TimerSetup = 0;\n"
+            # C_txt = C_txt +"    }\n"
+            # C_txt = C_txt +"    \n"
             C_txt = C_txt +"}\n"
         ###
 
@@ -466,12 +496,11 @@ class OutLineToC():
             C_txt = C_txt +"            char portStates[20]=\"\";\n"
             C_txt = C_txt +"            \n"
             C_txt = C_txt +"            //Inputs:\n"
-            C_txt = C_txt +"            if((PINC & (1 << PINC4)) > 0)\n"
-            C_txt = C_txt +"            {\n"
-            C_txt = C_txt +"                strcat(portStates,\"1\");\n"
-            C_txt = C_txt +"            }else if((PINC & (1 << PINC4)) == 0){\n" #IN 1
-            C_txt = C_txt +"                strcat(portStates,\"0\");\n"
-            C_txt = C_txt +"            }\n"
+
+            C_txt = C_txt +"            char c[] = {PINC & (1 << PINC4)};\n"
+            C_txt = C_txt +"            strcat(portStates, c);\n" #IN 1
+
+            C_txt = C_txt +"            \n"
             C_txt = C_txt +"            \n"
             C_txt = C_txt +"            if((PINC & (1 << PINC5)) > 0)\n"
             C_txt = C_txt +"            {\n"
@@ -613,7 +642,7 @@ class OutLineToC():
             C_txt = C_txt +"//set up ADC\n"    
             C_txt = C_txt +"    ADCSRA |= ( (1<<ADPS2)|(1<<ADPS1)|(1<<ADPS0) );//  sets adc clock prescaler to 128 //checked\n"
             C_txt = C_txt +"    ADCSRA |= (1<<ADIE); // enable ADC conversion complete interrupt\n"
-            C_txt = C_txt +"    ADCSRA |= (1<<ADATE);// set to auto trigger (free running by default)\n"	
+            C_txt = C_txt +"    ADCSRA |= (1<<ADATE);// set to auto trigger (free running by default)\n"    
         C_txt = self.DDROutPuts(C_txt)#//do DDR's#//use outputlist to generate
         #pullups on for Arduino:
         if self.currentHW == "ArduinoMega"or self.currentHW == "ArduinoUno" or self.currentHW == "ArduinoNano":
@@ -784,7 +813,7 @@ class OutLineToC():
         
         print "saving C and Compiling"
         
-        plat = sys.platform.lower()	# try to detect the OS so that a device can be selected...
+        plat = sys.platform.lower()    # try to detect the OS so that a device can be selected...
         print "checked platform", plat
         opSys = "UNK" #default
         
@@ -802,54 +831,6 @@ class OutLineToC():
         
         
         
-        
-        
-        
-        
-        
-    #go through grid and assign inputs to variables    
-    def findInPuts(self,outLine,C_txt):
-        C_txt = C_txt +"           //inputs:\n"
-        for i in range (len(outLine)):
-            #WAS if len(outLine[i])>2 and "in_" in str(outLine[i][2]) :
-            if len(outLine[i])>2 and str(outLine[i][2])[:3] == "in_" :
-                inNum = (int(outLine[i][2].split("in_")[1])) -1
-                microPinString = str(self.inPutList[inNum][0])+ " &(1<<"+str(self.inPutList[inNum][1])+");\n"
-                #very unlikley that an element name has "&(1<<" in it  plus the rest of the micropinstring
-                if outLine[i][1] == "contNO" and microPinString not in C_txt: 
-                    C_txt = C_txt + "           "+str(outLine[i][0])+"_NO = "+microPinString
-                if outLine[i][1] == "contNC" and microPinString not in C_txt:
-                    C_txt = C_txt + "           "+str(outLine[i][0])+"_NC =~ "+microPinString
-            #link inputs to outputs if names shared:
-            #print "linking output names"
-            if len(outLine[i])>1 and outLine[i][1] == "contNO":
-                basename = (str(outLine[i][0])[5:])
-                for x in range (len(outLine)):
-                    if outLine[x][0][:7] == "output_" and outLine[x][0][7:] == basename:
-                        #if "output_"+basename in C_txt: 
-                        C_txt = C_txt +"             if(output_"+basename+" == 1){\n"
-                        C_txt = C_txt +"                "+str(outLine[i][0])+"_NO=1;}\n"
-                        C_txt = C_txt +"             else {\n"
-                        C_txt = C_txt +"                "+str(outLine[i][0])+"_NO=0;} //link name\n"
-            if len(outLine[i])>1 and outLine[i][1] == "contNC":
-                basename = (str(outLine[i][0])[5:])
-                for x in range (len(outLine)):
-                    if outLine[x][0][:7] == "output_" and outLine[x][0][7:] == basename:
-                        #if "output_"+basename in C_txt: 
-                        C_txt = C_txt +"             if(output_"+basename+" == 0){\n"
-                        C_txt = C_txt +"                "+str(outLine[i][0])+"_NC=1;}\n"
-                        C_txt = C_txt +"             else {\n"
-                        C_txt = C_txt +"                "+str(outLine[i][0])+"_NC=0;} //link name\n"
-        C_txt = C_txt +"\n"
-        
-        return C_txt
-    """don't need    
-    def findFalling(self,outLine,C_txt):
-        #need to write c code to set the falling variable based on the last one
-        #will need to setup a falling variable ahead of time like initVarsForMicro
-        return C_txt
-    """
-
     #go through grid and assign inputs to variables for Arduino different only because hi is on  
     def findInPutsArd(self,outLine,C_txt):
         C_txt = C_txt +"           //inputs:\n"
@@ -887,42 +868,91 @@ class OutLineToC():
         return C_txt
 
 
-
+    ### MODIFIED BY TEDDY
     def addCounter(self,outline, C_txt, outlineEntry, wholeOutline):
         C_txt = C_txt +"             "+  outlineEntry +" = W;\n"
         baseName = outlineEntry[10:]
-        C_txt = C_txt +"             if((prev_rungstate_"+baseName+" == 0) && (rungstate_"+baseName+" == 1)){\n"
-        C_txt = C_txt +"                 reg_"+baseName +"++;\n"
-        C_txt = C_txt +"                 if (reg_"+baseName+" == 65535) {reg_"+baseName+"--;}//avoid overrun\n" 
-        C_txt = C_txt +"                 if (setpoint_"+baseName+" <= reg_"+baseName+") {"+baseName+"=1;}\n"
-        #C_txt = C_txt +"                 if (setpoint_"+baseName+" <= reg_"+baseName+") {W=1;}\n"
-        C_txt = C_txt +"             }\n"
-        C_txt = C_txt +"             prev_rungstate_"+baseName+" = rungstate_"+baseName+";\n"
-        #check reset/ shared name with output:
-        baseName = baseName[8:]
-        #if "output_"+baseName in C_txt:
-        for x in range (len(wholeOutline)):
-            if wholeOutline[x][0][:7] == "output_" and wholeOutline[x][0][7:] == baseName:
-                C_txt = C_txt +"             if(output_"+baseName+" == 1){reg_Counter_"+baseName+"=0; Counter_"+baseName+"=0;} //reset\n"
-        return C_txt
+        if "Counter_Down" in str(baseName):
+            print "Counter_Down"
+            C_txt = C_txt +"             if((prev_rungstate_"+baseName+" == 0) && (rungstate_"+baseName+" == 1)){\n"
+            #C_txt = C_txt +"                 reg_"+baseName+" = 10; \n"
+            C_txt = C_txt +"                 reg_"+baseName +"--;\n"
+            C_txt = C_txt +"                 if (reg_"+baseName+" == -65534) {reg_"+baseName+"++;}//avoid overrun\n" 
+            C_txt = C_txt +"                 if (setpoint_"+baseName+" >= reg_"+baseName+") {"+baseName+"=1;}\n"
+            #C_txt = C_txt +"                 if (setpoint_"+baseName+" <= reg_"+baseName+") {W=1;}\n"
+            C_txt = C_txt +"             }\n"
+            C_txt = C_txt +"             prev_rungstate_"+baseName+" = rungstate_"+baseName+";\n"
+            #check reset/ shared name with output:
+            baseName = baseName[8:]
+            #if "output_"+baseName in C_txt:
+            for x in range (len(wholeOutline)):
+                if wholeOutline[x][0][:7] == "output_" and wholeOutline[x][0][7:] == baseName:
+                    C_txt = C_txt +"             if(output_"+baseName+" == 1){reg_Counter_"+baseName+"=10; Counter_"+baseName+"=10;} //reset\n"
+            return C_txt
+        	
+        else:
+            print "Counter_Up"
+            C_txt = C_txt +"             if((prev_rungstate_"+baseName+" == 0) && (rungstate_"+baseName+" == 1)){\n"
+            C_txt = C_txt +"                 reg_"+baseName +"++;\n"
+            C_txt = C_txt +"                 if (reg_"+baseName+" == 65535) {reg_"+baseName+"--;}//avoid overrun\n" 
+            C_txt = C_txt +"                 if (setpoint_"+baseName+" <= reg_"+baseName+") {"+baseName+"=1;}\n"
+            #C_txt = C_txt +"                 if (setpoint_"+baseName+" <= reg_"+baseName+") {W=1;}\n"
+            C_txt = C_txt +"             }\n"
+            C_txt = C_txt +"             prev_rungstate_"+baseName+" = rungstate_"+baseName+";\n"
+            #check reset/ shared name with output:
+            baseName = baseName[8:]
+            #if "output_"+baseName in C_txt:
+            for x in range (len(wholeOutline)):
+                if wholeOutline[x][0][:7] == "output_" and wholeOutline[x][0][7:] == baseName:
+                    C_txt = C_txt +"             if(output_"+baseName+" == 1){reg_Counter_"+baseName+"=0; Counter_"+baseName+"=0;} //reset\n"
+            return C_txt
+            
         
     def addTimer(self,outline, C_txt, outlineEntry):
         C_txt = C_txt +"             "+  outlineEntry +" = W;\n"
         baseName = outlineEntry[10:]
-        C_txt = C_txt +"             if((prev_rungstate_"+baseName+" == 0) && (rungstate_"+baseName+" == 1)){\n"
-        C_txt = C_txt +"                run_"+baseName +"=1;}\n"
-        C_txt = C_txt +"             if(run_"+baseName+" == 1){\n"
-        C_txt = C_txt +"                reg_"+baseName +"++;\n"
-        C_txt = C_txt +"                if (reg_"+baseName+" == 65535) {reg_"+baseName+"--;}//avoid overrun\n" 
-        C_txt = C_txt +"                if (setpoint_"+baseName+" <= reg_"+baseName+") {"+baseName+"=1;}\n"
-        C_txt = C_txt +"             }\n"
+
+        if "Retentive_Timer_On" in str(baseName):
+            print "Retentive_Timer_On"
+            C_txt = C_txt +"             if((prev_rungstate_"+baseName+" == 0) && (rungstate_"+baseName+" == 1)){\n"
+            C_txt = C_txt +"                run_"+baseName +"=1;}\n"
+            C_txt = C_txt +"             if(run_"+baseName+" == 1){\n"
+            C_txt = C_txt +"                reg_"+baseName +"++;\n"
+            C_txt = C_txt +"                if (reg_"+baseName+" == 65535) {reg_"+baseName+"--;}//avoid overrun\n" 
+            C_txt = C_txt +"                if (setpoint_"+baseName+" <= reg_"+baseName+") {"+baseName+"=1;}\n"
+            C_txt = C_txt +"             }\n"
+            C_txt = C_txt +"             \n"
+            
+            C_txt = C_txt +"             if((prev_rungstate_"+baseName+" == 1) && (rungstate_"+baseName+" == 0))\n"
+            C_txt = C_txt +"             {\n" 
+            #C_txt = C_txt +"                reg_"+baseName+"=0;\n"
+            #C_txt = C_txt +"                "+baseName+"=0;\n"
+            C_txt = C_txt +"                run_"+baseName+"=0;} //reset\n\n"
+            C_txt = C_txt +"             prev_rungstate_"+baseName+" = rungstate_"+baseName+";\n"
+            return C_txt
+		
+        else:
+            print "Timer_On_Delay"
+            C_txt = C_txt +"             if((prev_rungstate_"+baseName+" == 0) && (rungstate_"+baseName+" == 1))\n"
+            C_txt = C_txt +"             {\n"
+            C_txt = C_txt +"                run_"+baseName +"=1;}\n"
+            C_txt = C_txt +"             if(run_"+baseName+" == 1){\n"
+            C_txt = C_txt +"                reg_"+baseName +"++;\n"
+            C_txt = C_txt +"                if (reg_"+baseName+" == 65535) {reg_"+baseName+"--;}//avoid overrun\n" 
+            C_txt = C_txt +"                if (setpoint_"+baseName+" <= reg_"+baseName+") {"+baseName+"=1;}\n"
+            C_txt = C_txt +"             }\n"
+            C_txt = C_txt +"             \n"
         
-        #check reset/ shared name with output:
-        #baseName = baseName[6:]
-        C_txt = C_txt +"             if((prev_rungstate_"+baseName+" == 1) && (rungstate_"+baseName+" == 0)){\n" 
-        C_txt = C_txt +"                reg_"+baseName+"=0; "+baseName+"=0; run_"+baseName+"=0;} //reset\n"
-        C_txt = C_txt +"             prev_rungstate_"+baseName+" = rungstate_"+baseName+";\n"
-        return C_txt
+            #check reset/ shared name with output:
+            #baseName = baseName[6:]
+            C_txt = C_txt +"             if((prev_rungstate_"+baseName+" == 1) && (rungstate_"+baseName+" == 0)){\n" 
+            C_txt = C_txt +"                reg_"+baseName+"=0;\n"
+            C_txt = C_txt +"                "+baseName+"=0;\n"
+            C_txt = C_txt +"                run_"+baseName+"=0;} //reset\n"
+            C_txt = C_txt +"             prev_rungstate_"+baseName+" = rungstate_"+baseName+";\n"
+            return C_txt
+            
+        ###
     
     def addFall(self,outline, C_txt, outlineEntry):
         baseName = outlineEntry[10:]

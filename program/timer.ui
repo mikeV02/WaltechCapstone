@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>183</width>
-    <height>138</height>
+    <width>184</width>
+    <height>174</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,7 +17,7 @@
    <property name="geometry">
     <rect>
      <x>30</x>
-     <y>100</y>
+     <y>130</y>
      <width>121</width>
      <height>32</height>
     </rect>
@@ -115,6 +115,39 @@
    <property name="singleStep">
     <double>0.010000000000000</double>
    </property>
+  </widget>
+  <widget class="QLabel" name="label_9">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>100</y>
+     <width>46</width>
+     <height>13</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Type:</string>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="comboBox_3">
+   <property name="geometry">
+    <rect>
+     <x>70</x>
+     <y>100</y>
+     <width>101</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <item>
+    <property name="text">
+     <string>Timer_On_Delay</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>Retentive_Timer_On</string>
+    </property>
+   </item>
   </widget>
  </widget>
  <resources/>

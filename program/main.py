@@ -99,7 +99,7 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
         self.ui.tableWidget.setColumnWidth(3, 140)
 		
 		#Setup Data table on right:
-        self.ui.tableDataFiles.setColumnWidth(0, 75)
+        #self.ui.tableDataFiles.setColumnWidth(0, 75)
 
         #setup datagrid and elements:
         self.Tools = elementList(elementStruct)
@@ -278,13 +278,39 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
         print "PWM,ADC ",PWMADC
         return PWMADC
 
+    #def checkInputNums(self):
+        #for i in range(22, 0, -1):
+        #    if self.inputs[i] != None: return i
+
+    #def checkOutputNums(self):
+        #for i in range(22, 0, -1):
+        #    if self.outputs[i] != None: return i
+
+    ### TEDDY
     def checkInputNums(self):
-        for i in range(22, 0, -1):
-            if self.inputs[i] != None: return i
+        height = len(self.grid)
+        width = len(self.grid[0])
+        MaxIONum = 0
+        for i in range(height):
+
+            for j in range(width):
+                if self.grid[i][j].ioAssign != None and self.grid[i][j].ioAssign[:3] == 'in_':
+                    #print "input:  ", self.grid[i][j].ioAssign[3:]
+                    if int(self.grid[i][j].ioAssign[3:]) > MaxIONum: MaxIONum = int(self.grid[i][j].ioAssign[3:])
+        return MaxIONum
 
     def checkOutputNums(self):
-        for i in range(22, 0, -1):
-            if self.outputs[i] != None: return i
+        height = len(self.grid)
+        width = len(self.grid[0])
+        MaxIONum = 0
+        for i in range(height):
+
+            for j in range(width):
+                if self.grid[i][j].ioAssign != None and self.grid[i][j].ioAssign[:4] == 'out_':
+                    #print "input:  ", self.grid[i][j].ioAssign[3:]
+                    if int(self.grid[i][j].ioAssign[4:]) > MaxIONum: MaxIONum = int(self.grid[i][j].ioAssign[4:])
+        return MaxIONum
+    ##########hardware choosing^^^^^   
 
     def USBHelp(self):
        self.dialog = popupDialogs.USBHelpDialog()
@@ -367,7 +393,8 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
         self.currentTool = 0 #to track the tool being used
         width=10
         for i in range(width):#fill the first row
-            self.grid[0].append(cellStruct(i*60, 60, "MT","Rung", None, None, None, None, False, False, False, False, False, False,None,None,None,None,None, False))
+            self.grid[0].append(cellStruct(i*60, 60, "MT","Rung", None, None, None, None, None, False, False, False, False, False, False,None,None,None,None,None, False))
+            #self.grid[0].append(cellStruct(i*60, 60, "MT","Rung", None, None, None, None, None, False, False, False, False, False, False,None,None,None,None,None))
         for i in range(1,6):# add 5 more rungs to start
             ManageGrid(self.grid, self.scene,self.Tools,self.items).insertRung(i)        
   
@@ -397,6 +424,8 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
                     try: uiList.setItem(numRows-1,2,QtGui.QTableWidgetItem(self.grid[i][j].MTorElement))
                     except: pass
                     try: uiList.setItem(numRows-1,3,QtGui.QTableWidgetItem(str(i)+","+str(j)))
+                    except: pass
+                    try: uiList.setItem(numRows-1,4,QtGui.QTableWidgetItem(str(i)+","+str(j)))
                     except: pass
                     uiList.setSortingEnabled(True)
   
@@ -445,62 +474,63 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
                 feedback = WaltSerial.getArduinoState()
             ###
             
+            print feedback
             
             #########################ADDED/MODIFIED BY MIGUEL OPTIONAL THREADING
-            import threading
+            # import threading
             
-            def INS():
-                if self.currentHW == "ArduinoNano" or self.currentHW == "ArduinoUno":
-                    for i in range(5):
-                        if self.inputs[i+1] != None:
-                            self.grid[self.inputs[i+1][0]][self.inputs[i+1][1]].switch = int(feedback[i])
+            # def INS():
+            #     if self.currentHW == "ArduinoNano" or self.currentHW == "ArduinoUno":
+            #         for i in range(5):
+            #             if self.inputs[i+1] != None:
+            #                 self.grid[self.inputs[i+1][0]][self.inputs[i+1][1]].switch = int(feedback[i])
                             
-                if self.currentHW == "ArduinoMega":
-                    for i in range(22):
-                        if self.inputs[i+1] != None:
-                            self.grid[self.inputs[i+1][0]][self.inputs[i+1][1]].switch = int(feedback[i])
+            #     if self.currentHW == "ArduinoMega":
+            #         for i in range(22):
+            #             if self.inputs[i+1] != None:
+            #                 self.grid[self.inputs[i+1][0]][self.inputs[i+1][1]].switch = int(feedback[i])
                         
                         
-            def OUTS():
-                if self.currentHW == "ArduinoNano" or self.currentHW == "ArduinoUno":
-                    for i in range(7):
-                        if self.outputs[i+1] != None:
-                            self.grid[self.outputs[i+1][0]][self.outputs[i+1][1]].switch = int(feedback[i+5])
+            # def OUTS():
+            #     if self.currentHW == "ArduinoNano" or self.currentHW == "ArduinoUno":
+            #         for i in range(7):
+            #             if self.outputs[i+1] != None:
+            #                 self.grid[self.outputs[i+1][0]][self.outputs[i+1][1]].switch = int(feedback[i+5])
                             
-                if self.currentHW == "ArduinoMega":
-                    for i in range(22):
-                        if self.outputs[i+1] != None:
-                            self.grid[self.outputs[i+1][0]][self.outputs[i+1][1]].switch = int(feedback[i+22])
+            #     if self.currentHW == "ArduinoMega":
+            #         for i in range(22):
+            #             if self.outputs[i+1] != None:
+            #                 self.grid[self.outputs[i+1][0]][self.outputs[i+1][1]].switch = int(feedback[i+22])
                             
-            thdIN = threading.Thread(target = INS)
-            thdOUT = threading.Thread(target = OUTS)
+            # thdIN = threading.Thread(target = INS)
+            # thdOUT = threading.Thread(target = OUTS)
             
-            thdIN.setDaemon(True)
-            thdOUT.setDaemon(True)
+            # thdIN.setDaemon(True)
+            # thdOUT.setDaemon(True)
             
-            thdIN.start()
-            thdOUT.start()
+            # thdIN.start()
+            # thdOUT.start()
             
-            thdIN.join()
-            thdOUT.join()
+            # thdIN.join()
+            # thdOUT.join()
             ####################################################################
             
             ####ADDED BY MICHAEL, MODIFIED BY MIGUEL (IF STATEMENT)
-            #if self.currentHW == "ArduinoNano" or self.currentHW == "ArduinoUno":
-            #    for i in range(5):
-            #        if self.inputs[i+1] != None:
-            #            self.grid[self.inputs[i+1][0]][self.inputs[i+1][1]].switch = int(feedback[i])
-            #    for i in range(7):
-            #        if self.outputs[i+1] != None:
-            #            self.grid[self.outputs[i+1][0]][self.outputs[i+1][1]].switch = int(feedback[i+5])
-            #
-            #if self.currentHW == "ArduinoMega":
-            #    for i in range(22):
-            #        if self.inputs[i+1] != None:
-            #            self.grid[self.inputs[i+1][0]][self.inputs[i+1][1]].switch = int(feedback[i])
-            #    for i in range(22):
-            #        if self.outputs[i+1] != None:
-            #            self.grid[self.outputs[i+1][0]][self.outputs[i+1][1]].switch = int(feedback[i+22])
+            if self.currentHW == "ArduinoNano" or self.currentHW == "ArduinoUno":
+               for i in range(5):
+                   if self.inputs[i+1] != None:
+                       self.grid[self.inputs[i+1][0]][self.inputs[i+1][1]].switch = int(feedback[i])
+               for i in range(7):
+                   if self.outputs[i+1] != None:
+                       self.grid[self.outputs[i+1][0]][self.outputs[i+1][1]].switch = int(feedback[i+5])
+            
+            if self.currentHW == "ArduinoMega":
+               for i in range(22):
+                   if self.inputs[i+1] != None:
+                       self.grid[self.inputs[i+1][0]][self.inputs[i+1][1]].switch = int(feedback[i])
+               for i in range(22):
+                   if self.outputs[i+1] != None:
+                       self.grid[self.outputs[i+1][0]][self.outputs[i+1][1]].switch = int(feedback[i+22])
             ####
             
             #x += 1
@@ -1020,7 +1050,7 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
     #doesn't do anything with the grid.          
     def runPopup(self, tool, cellNum):
         popUpOKed = False #becomes true if dialog is OK'ed
-        tempCellInfo = cellStruct(None,None,None,None,None,None,None,None, False, False, False, False, False, False,None,None,None,None,None, False) 
+        tempCellInfo = cellStruct(None,None,None,None,None,None,None,None,None, False, False, False, False, False, False,None,None,None,None,None, False) 
         ##004##
         if tool == "Coil" or tool =="CoilNot":#do dialog for this tool:
             self.dialog = popupDialogs.CoilDialog(self.grid, cellNum,self.currentHW)
@@ -1066,6 +1096,8 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
                 if not re.match(r'^[a-zA-Z0-9_]+$', tempCellInfo.variableName):
                     print "bad name"
                     tempCellInfo.variableName = "please_rename"
+            try: tempCellInfo.type = self.dialog.ui.comboBox_3.currentText() #type
+            except: pass
             try: tempCellInfo.comment = self.dialog.ui.lineEdit.text()#comment
             except: pass
             try: tempCellInfo.setPoint = self.dialog.ui.doubleSpinBox.value() #setpoint decimal

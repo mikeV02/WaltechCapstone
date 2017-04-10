@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>182</width>
-    <height>139</height>
+    <width>194</width>
+    <height>174</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,7 +17,7 @@
    <property name="geometry">
     <rect>
      <x>30</x>
-     <y>100</y>
+     <y>130</y>
      <width>121</width>
      <height>32</height>
     </rect>
@@ -106,6 +106,39 @@
    <property name="maximum">
     <number>65535</number>
    </property>
+  </widget>
+  <widget class="QLabel" name="label_9">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>100</y>
+     <width>46</width>
+     <height>13</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Type:</string>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="comboBox_3">
+   <property name="geometry">
+    <rect>
+     <x>70</x>
+     <y>100</y>
+     <width>101</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <item>
+    <property name="text">
+     <string>Counter_Up</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>Counter_Down</string>
+    </property>
+   </item>
   </widget>
  </widget>
  <resources/>
