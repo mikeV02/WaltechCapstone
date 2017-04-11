@@ -153,8 +153,6 @@ class ladderToOutLine():
             else:
                 outLine.append(["rungstate_"+str(self.grid[p][position-1].MTorElement) +"_"+ str(p) +"_"+ str(position-1)])
             print "added", outLine[-1][0]
-
-        
         
         #>>>add output
         

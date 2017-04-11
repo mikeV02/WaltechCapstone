@@ -93,10 +93,12 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
         self.items=[QtGui.QGraphicsTextItem(),QtGui.QGraphicsRectItem()]#for squares and indexes that follow mouse
         self.ui.graphicsView.viewport().installEventFilter(self)#for mouse functions
         #Setup IO table on right
-        self.ui.tableWidget.setColumnWidth(0, 140)
-        self.ui.tableWidget.setColumnWidth(1, 140)
-        self.ui.tableWidget.setColumnWidth(2, 140)
-        self.ui.tableWidget.setColumnWidth(3, 140)
+        # self.ui.tableWidget.setColumnWidth(0, 140)
+        # self.ui.tableWidget.setColumnWidth(1, 140)
+        # self.ui.tableWidget.setColumnWidth(2, 140)
+        # self.ui.tableWidget.setColumnWidth(3, 140)
+        Strech = QtGui.QHeaderView.Stretch
+        self.ui.tableWidget.horizontalHeader().setResizeMode(Strech)
 		
 		#Setup Data table on right:
         #self.ui.tableDataFiles.setColumnWidth(0, 75)

@@ -115,33 +115,33 @@ class OutLineToC():
             C_txt = C_txt +"static volatile uint8_t sample_count;\n"
         
         ###MODIFIED BY MIGUEL
-        C_txt = C_txt + " char* my_itoa(int value, char* result, int base)\n"
-        C_txt = C_txt + " {\n"
-        C_txt = C_txt + "     // check that the base if valid\n"
-        C_txt = C_txt + "     if (base < 2 || base > 36) { *result = '\0'; return result; }\n"
-        C_txt = C_txt + " \n"
-        C_txt = C_txt + "     char* ptr = result;\n"
-        C_txt = C_txt + "     char *ptr1 = result;\n"
-        C_txt = C_txt + "     char tmp_char;\n"
-        C_txt = C_txt + " \n"
-        C_txt = C_txt + "     int tmp_value;\n"
-        C_txt = C_txt + " \n"
-        C_txt = C_txt + "     do {\n"
-        C_txt = C_txt + "         tmp_value = value;\n"
-        C_txt = C_txt + "         value /= base;\n"
-        C_txt = C_txt + "         *ptr++ = \"zyxwvutsrqponmlkjihgfedcba9876543210123456789abcdefghijklmnopqrstuvwxyz\" [35 + (tmp_value - value * base)];\n"
-        C_txt = C_txt + "     } while ( value );\n"
-        C_txt = C_txt + " \n"
-        C_txt = C_txt + "     // Apply negative sign\n"
-        C_txt = C_txt + "     if (tmp_value < 0) *ptr++ = '-';\n"
-        C_txt = C_txt + "     *ptr-- = '\0';\n"
-        C_txt = C_txt + "     while(ptr1 < ptr) {\n"
-        C_txt = C_txt + "         tmp_char = *ptr;\n"
-        C_txt = C_txt + "         *ptr--= *ptr1;\n"
-        C_txt = C_txt + "         *ptr1++ = tmp_char;\n"
-        C_txt = C_txt + "     }\n"
-        C_txt = C_txt + "     return result;\n"
-        C_txt = C_txt + " }\n"
+        # C_txt = C_txt + "char* my_itoa(int value, char* result, int base)\n"
+        # C_txt = C_txt + " {\n"
+        # C_txt = C_txt + "     // check that the base if valid\n"
+        # C_txt = C_txt + "     if (base < 2 || base > 36) { *result = '\0'; return result; }\n"
+        # C_txt = C_txt + " \n"
+        # C_txt = C_txt + "     char* ptr = result;\n"
+        # C_txt = C_txt + "     char *ptr1 = result;\n"
+        # C_txt = C_txt + "     char tmp_char;\n"
+        # C_txt = C_txt + " \n"
+        # C_txt = C_txt + "     int tmp_value;\n"
+        # C_txt = C_txt + " \n"
+        # C_txt = C_txt + "     do {\n"
+        # C_txt = C_txt + "         tmp_value = value;\n"
+        # C_txt = C_txt + "         value /= base;\n"
+        # C_txt = C_txt + "         *ptr++ = \"zyxwvutsrqponmlkjihgfedcba9876543210123456789abcdefghijklmnopqrstuvwxyz\" [35 + (tmp_value - value * base)];\n"
+        # C_txt = C_txt + "     } while ( value );\n"
+        # C_txt = C_txt + " \n"
+        # C_txt = C_txt + "     // Apply negative sign\n"
+        # C_txt = C_txt + "     if (tmp_value < 0) *ptr++ = '-';\n"
+        # C_txt = C_txt + "     *ptr-- = '\0';\n"
+        # C_txt = C_txt + "     while(ptr1 < ptr) {\n"
+        # C_txt = C_txt + "         tmp_char = *ptr;\n"
+        # C_txt = C_txt + "         *ptr--= *ptr1;\n"
+        # C_txt = C_txt + "         *ptr1++ = tmp_char;\n"
+        # C_txt = C_txt + "     }\n"
+        # C_txt = C_txt + "     return result;\n"
+        # C_txt = C_txt + "}\n"
         
         if self.currentHW == "ArduinoMega":
             C_txt = C_txt +"inline ISR(TIMER0_OVF_vect)\n"
@@ -729,10 +729,19 @@ class OutLineToC():
                     #element on rung, no parallel: (apply to W)
                     if currentBranchList[-1] == None:
                         if (len(outLine[i])>3) and  ("latching" in outLine[i][3]):
-                            C_txt = C_txt + "             if("+varNameStr+ " == 0){W = 0;}\n"
+                            C_txt = C_txt + "             if("+varNameStr+ " == 0)\n"
+                            C_txt = C_txt + "             {\n"
+                            C_txt = C_txt + "                 W = 0;\n"
+                            C_txt = C_txt + "             }\n"
                             C_txt = C_txt + "             else{W = 1;}\n"
                         else:
-                            C_txt = C_txt + "             if("+varNameStr+ " == 0){W = 0;}\n"
+                            if "Timer_" in str(outLine[i][0])or "Counter_" in str(outLine[i][0]):
+                                C_txt = C_txt + "             if("+varNameStr+ "_" +  str(outLine[i][1]) +" == 0)\n"
+                                C_txt = C_txt + "             {\n"
+                                C_txt = C_txt + "                 W = 0;\n"
+                                C_txt = C_txt + "             }\n"
+                            else:
+                                C_txt = C_txt + "             if("+varNameStr+ " == 0){W = 0;}\n"
                     #element with parallel (apply to last item in branchlist )
                     if  currentBranchList[-1] != None:
                         if (len(outLine[i])>3) and  ("latching" in outLine[i][3]):
@@ -868,19 +877,32 @@ class OutLineToC():
         return C_txt
 
 
-    ### MODIFIED BY TEDDY
+    ### ADDED BY TEDDY ___ MODIFIED BY MIGUEL
     def addCounter(self,outline, C_txt, outlineEntry, wholeOutline):
         C_txt = C_txt +"             "+  outlineEntry +" = W;\n"
         baseName = outlineEntry[10:]
         if "Counter_Down" in str(baseName):
             print "Counter_Down"
-            C_txt = C_txt +"             if((prev_rungstate_"+baseName+" == 0) && (rungstate_"+baseName+" == 1)){\n"
+            C_txt = C_txt +"             \n"
+            C_txt = C_txt +"             if((prev_rungstate_"+baseName+" == 0) && (rungstate_"+baseName+" == 1))\n"
+            C_txt = C_txt +"             {\n"
             #C_txt = C_txt +"                 reg_"+baseName+" = 10; \n"
-            C_txt = C_txt +"                 reg_"+baseName +"--;\n"
-            C_txt = C_txt +"                 if (reg_"+baseName+" == -65534) {reg_"+baseName+"++;}//avoid overrun\n" 
-            C_txt = C_txt +"                 if (setpoint_"+baseName+" >= reg_"+baseName+") {"+baseName+"=1;}\n"
+            C_txt = C_txt +"                 setpoint_"+baseName +"--;\n"
+            C_txt = C_txt +"                 reg_"+baseName+" = setpoint_"+baseName+";\n"
+            C_txt = C_txt +"                 \n"
+            C_txt = C_txt +"                 if (setpoint_"+baseName+" == -65534)//avoid overrun\n"
+            C_txt = C_txt +"                 {\n"
+            C_txt = C_txt +"                     setpoint_"+baseName+"++;\n"
+            C_txt = C_txt +"                 }\n" 
+            C_txt = C_txt +"                 \n"
+            #C_txt = C_txt +"                 if (setpoint_"+baseName+" >= reg_"+baseName+")\n"
+            C_txt = C_txt +"                 if (reg_"+baseName+" <= 0)\n"
+            C_txt = C_txt +"                 {\n"
+            C_txt = C_txt +"                    "+baseName+"=1;\n"
+            C_txt = C_txt +"                 }\n"
             #C_txt = C_txt +"                 if (setpoint_"+baseName+" <= reg_"+baseName+") {W=1;}\n"
             C_txt = C_txt +"             }\n"
+            C_txt = C_txt +"                 \n"
             C_txt = C_txt +"             prev_rungstate_"+baseName+" = rungstate_"+baseName+";\n"
             #check reset/ shared name with output:
             baseName = baseName[8:]
@@ -892,12 +914,22 @@ class OutLineToC():
         	
         else:
             print "Counter_Up"
-            C_txt = C_txt +"             if((prev_rungstate_"+baseName+" == 0) && (rungstate_"+baseName+" == 1)){\n"
+            C_txt = C_txt +"             if((prev_rungstate_"+baseName+" == 0) && (rungstate_"+baseName+" == 1))\n"
+            C_txt = C_txt +"             {\n"
             C_txt = C_txt +"                 reg_"+baseName +"++;\n"
-            C_txt = C_txt +"                 if (reg_"+baseName+" == 65535) {reg_"+baseName+"--;}//avoid overrun\n" 
-            C_txt = C_txt +"                 if (setpoint_"+baseName+" <= reg_"+baseName+") {"+baseName+"=1;}\n"
+            C_txt = C_txt +"                 \n"
+            C_txt = C_txt +"                 if (reg_"+baseName+" == 65535)//avoid overrun\n"
+            C_txt = C_txt +"                 {\n"
+            C_txt = C_txt +"                     reg_"+baseName+"--;\n"
+            C_txt = C_txt +"                 }\n" 
+            C_txt = C_txt +"                 \n"
+            C_txt = C_txt +"                 if (setpoint_"+baseName+" <= reg_"+baseName+")\n"
+            C_txt = C_txt +"                 {\n"
+            C_txt = C_txt +"                    "+baseName+"=1;\n"
+            C_txt = C_txt +"                 }\n"
             #C_txt = C_txt +"                 if (setpoint_"+baseName+" <= reg_"+baseName+") {W=1;}\n"
-            C_txt = C_txt +"             }\n"
+            C_txt = C_txt +"                 }\n"
+            C_txt = C_txt +"                 \n"
             C_txt = C_txt +"             prev_rungstate_"+baseName+" = rungstate_"+baseName+";\n"
             #check reset/ shared name with output:
             baseName = baseName[8:]
@@ -909,25 +941,38 @@ class OutLineToC():
             
         
     def addTimer(self,outline, C_txt, outlineEntry):
-        C_txt = C_txt +"             "+  outlineEntry +" = W;\n"
+        C_txt = C_txt +"             "+  outlineEntry +" = W;\n\n"
         baseName = outlineEntry[10:]
 
         if "Retentive_Timer_On" in str(baseName):
             print "Retentive_Timer_On"
-            C_txt = C_txt +"             if((prev_rungstate_"+baseName+" == 0) && (rungstate_"+baseName+" == 1)){\n"
-            C_txt = C_txt +"                run_"+baseName +"=1;}\n"
-            C_txt = C_txt +"             if(run_"+baseName+" == 1){\n"
+            C_txt = C_txt +"             if((prev_rungstate_"+baseName+" == 0) && (rungstate_"+baseName+" == 1))\n"
+            C_txt = C_txt +"             {\n"
+            C_txt = C_txt +"                run_"+baseName +"=1;\n"
+            C_txt = C_txt +"             }\n\n"
+            C_txt = C_txt +"             if(run_"+baseName+" == 1)\n"
+            C_txt = C_txt +"             {\n"
             C_txt = C_txt +"                reg_"+baseName +"++;\n"
-            C_txt = C_txt +"                if (reg_"+baseName+" == 65535) {reg_"+baseName+"--;}//avoid overrun\n" 
-            C_txt = C_txt +"                if (setpoint_"+baseName+" <= reg_"+baseName+") {"+baseName+"=1;}\n"
+            C_txt = C_txt +"                \n"
+            C_txt = C_txt +"                if (reg_"+baseName+" == 65535)//avoid overrun\n" 
+            C_txt = C_txt +"                {\n"
+            C_txt = C_txt +"                    reg_"+baseName+"--;\n"
+            C_txt = C_txt +"                }\n"
+            C_txt = C_txt +"                \n"
+            C_txt = C_txt +"                if (setpoint_"+baseName+" <= reg_"+baseName+")\n"
+            C_txt = C_txt +"                {\n"
+            C_txt = C_txt +"                    "+baseName+"=1;\n"
+            C_txt = C_txt +"                }\n"
+            C_txt = C_txt +"                \n"
             C_txt = C_txt +"             }\n"
             C_txt = C_txt +"             \n"
-            
-            C_txt = C_txt +"             if((prev_rungstate_"+baseName+" == 1) && (rungstate_"+baseName+" == 0))\n"
+            C_txt = C_txt +"             if((prev_rungstate_"+baseName+" == 1) && (rungstate_"+baseName+" == 0))//reset\n"
             C_txt = C_txt +"             {\n" 
             #C_txt = C_txt +"                reg_"+baseName+"=0;\n"
             #C_txt = C_txt +"                "+baseName+"=0;\n"
-            C_txt = C_txt +"                run_"+baseName+"=0;} //reset\n\n"
+            C_txt = C_txt +"                run_"+baseName+"=0;\n"
+            C_txt = C_txt +"             }\n"
+            C_txt = C_txt +"             \n"
             C_txt = C_txt +"             prev_rungstate_"+baseName+" = rungstate_"+baseName+";\n"
             return C_txt
 		
@@ -935,13 +980,32 @@ class OutLineToC():
             print "Timer_On_Delay"
             C_txt = C_txt +"             if((prev_rungstate_"+baseName+" == 0) && (rungstate_"+baseName+" == 1))\n"
             C_txt = C_txt +"             {\n"
-            C_txt = C_txt +"                run_"+baseName +"=1;}\n"
-            C_txt = C_txt +"             if(run_"+baseName+" == 1){\n"
+            C_txt = C_txt +"                run_"+baseName +"=1;\n"
+            C_txt = C_txt +"             }\n\n"
+            C_txt = C_txt +"             if(run_"+baseName+" == 1)\n"
+            C_txt = C_txt +"             {\n"
             C_txt = C_txt +"                reg_"+baseName +"++;\n"
-            C_txt = C_txt +"                if (reg_"+baseName+" == 65535) {reg_"+baseName+"--;}//avoid overrun\n" 
-            C_txt = C_txt +"                if (setpoint_"+baseName+" <= reg_"+baseName+") {"+baseName+"=1;}\n"
+            C_txt = C_txt +"                \n"
+            C_txt = C_txt +"                if (reg_"+baseName+" == 65535)//avoid overrun\n" 
+            C_txt = C_txt +"                {\n"
+            C_txt = C_txt +"                    reg_"+baseName+"--;\n"
+            C_txt = C_txt +"                }\n"
+            C_txt = C_txt +"                \n"
+            C_txt = C_txt +"                if (setpoint_"+baseName+" <= reg_"+baseName+")\n"
+            C_txt = C_txt +"                {\n"
+            C_txt = C_txt +"                    "+baseName+"=1;\n"
+            C_txt = C_txt +"                }\n"
+            C_txt = C_txt +"                \n"
             C_txt = C_txt +"             }\n"
             C_txt = C_txt +"             \n"
+            C_txt = C_txt +"             if((prev_rungstate_"+baseName+" == 1) && (rungstate_"+baseName+" == 0))//reset\n"
+            C_txt = C_txt +"             {\n" 
+            C_txt = C_txt +"                reg_"+baseName+"=0;\n"
+            C_txt = C_txt +"                "+baseName+"=0;\n"
+            C_txt = C_txt +"                run_"+baseName+"=0;\n"
+            C_txt = C_txt +"             }\n"
+            C_txt = C_txt +"             \n"
+            C_txt = C_txt +"             prev_rungstate_"+baseName+" = rungstate_"+baseName+";\n"
         
             #check reset/ shared name with output:
             #baseName = baseName[6:]
@@ -1197,13 +1261,21 @@ class OutLineToC():
            
             #WAS if "Counter_" in outLine[i][0] ==  :
             if outLine[i][0][:8]== "Counter_"  : 
+
                 if "\n    uint8_t "+ str(outLine[i][0]) +" = 0;\n" not in C_txt and "rungstate_" not in outLine[i][0]:
-                    
-                    C_txt = C_txt + "\n    uint8_t "+ str(outLine[i][0]) +" = 0;\n"
-                    C_txt = C_txt + "    uint16_t setpoint_"+ str(outLine[i][0]) +" = "+outLine[i][2]+";\n"
-                    C_txt = C_txt + "    uint16_t reg_"+ str(outLine[i][0]) +" = 0;\n"
-                    C_txt = C_txt + "    uint8_t prev_rungstate_"+ str(outLine[i][0]) +" = 0;\n"
-                    C_txt = C_txt + "    uint8_t rungstate_"+ str(outLine[i][0]) +" = 0;\n\n"
+    
+                                                                      ###ADDED BY MIGUEL
+                    C_txt = C_txt + "\n    uint8_t "+ outLine[i][0] + "_" +str(outLine[i][1]) +" = 0;\n"
+                                                                                   ###ADDED BY MIGUEL
+                    C_txt = C_txt + "    uint16_t setpoint_"+ str(outLine[i][0]) + "_" +str(outLine[i][1])  +" = "+outLine[i][3]+";\n"
+                                                                              ###ADDED BY MIGUEL
+                    C_txt = C_txt + "    uint16_t reg_"+ str(outLine[i][0]) + "_" +str(outLine[i][1])  +" = 0;\n\n"
+                                                                                        ###ADDED BY MIGUEL
+                    C_txt = C_txt + "    uint8_t prev_rungstate_"+ str(outLine[i][0]) + "_" +str(outLine[i][1])  +" = 0;\n"
+                                                                                   ###ADDED BY MIGUEL
+                    C_txt = C_txt + "    uint8_t rungstate_"+ str(outLine[i][0]) + "_" +str(outLine[i][1])  +" = 0;\n\n"
+                                                                             ###ADDED BY MIGUEL
+                    C_txt = C_txt + "    uint8_t run_"+ str(outLine[i][0]) + "_" +str(outLine[i][1])  +" = 0;\n\n"
             
             if "ADC_" ==  outLine[i][0][:4] : 
                 if "    uint16_t reg_"+ str(outLine[i][0]) +" = 0;\n" not in C_txt :
@@ -1216,14 +1288,21 @@ class OutLineToC():
 
             #WAS if "Timer_" in outLine[i][0] :
             if  outLine[i][0][:6] == "Timer_" : 
+
                 if "\n    uint8_t "+ str(outLine[i][0]) +" = 0;\n" not in C_txt and "rungstate_" not in outLine[i][0]:
-                    
-                    C_txt = C_txt + "\n    uint8_t "+ str(outLine[i][0]) +" = 0;\n"
-                    C_txt = C_txt + "    uint16_t setpoint_"+ str(outLine[i][0]) +" = "+outLine[i][2]+";\n"
-                    C_txt = C_txt + "    uint16_t reg_"+ str(outLine[i][0]) +" = 0;\n\n"
-                    C_txt = C_txt + "    uint8_t prev_rungstate_"+ str(outLine[i][0]) +" = 0;\n"
-                    C_txt = C_txt + "    uint8_t rungstate_"+ str(outLine[i][0]) +" = 0;\n\n"
-                    C_txt = C_txt + "    uint8_t run_"+ str(outLine[i][0]) +" = 0;\n\n"
+
+                                                                      ###ADDED BY MIGUEL
+                    C_txt = C_txt + "\n    uint8_t "+ outLine[i][0] + "_" +str(outLine[i][1]) +" = 0;\n"
+                                                                                   ###ADDED BY MIGUEL
+                    C_txt = C_txt + "    uint16_t setpoint_"+ str(outLine[i][0]) + "_" +str(outLine[i][1])  +" = "+outLine[i][3]+";\n"
+                                                                              ###ADDED BY MIGUEL
+                    C_txt = C_txt + "    uint16_t reg_"+ str(outLine[i][0]) + "_" +str(outLine[i][1])  +" = 0;\n\n"
+                                                                                        ###ADDED BY MIGUEL
+                    C_txt = C_txt + "    uint8_t prev_rungstate_"+ str(outLine[i][0]) + "_" +str(outLine[i][1])  +" = 0;\n"
+                                                                                   ###ADDED BY MIGUEL
+                    C_txt = C_txt + "    uint8_t rungstate_"+ str(outLine[i][0]) + "_" +str(outLine[i][1])  +" = 0;\n\n"
+                                                                             ###ADDED BY MIGUEL
+                    C_txt = C_txt + "    uint8_t run_"+ str(outLine[i][0]) + "_" +str(outLine[i][1])  +" = 0;\n\n"
             #WAS if "Fall_" in outLine[i][0] :
             if  outLine[i][0][:5] ==  "Fall_" : 
                 if "\n    uint8_t "+ str(outLine[i][0]) +" = 0;\n" not in C_txt and "rungstate_" not in outLine[i][0]:
