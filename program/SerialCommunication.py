@@ -24,12 +24,12 @@ class SerialCommunicator():
 
         #needed to finish the setup
         time.sleep(1)
-        self.ser.write("ready")
+        #self.ser.write("ready")
        
        
     #gets the state of the arduino        
     def getArduinoState(self):
-        # self.ser.write("ready")
+        self.ser.write("ready")
 
         # global last_received
         # buffer_string = ''
