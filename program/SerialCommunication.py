@@ -21,7 +21,7 @@ class SerialCommunicator():
             timeout=1)
             
         self.HW = HW
-        self.PN = PortNumber
+        #self.PN = PortNumber
 
         #needed to finish the setup
         time.sleep(1)
