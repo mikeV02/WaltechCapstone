@@ -21,6 +21,7 @@ class SerialCommunicator():
             timeout=1)
             
         self.HW = HW
+        self.PN = PortNumber
 
         #needed to finish the setup
         time.sleep(1)
@@ -29,7 +30,7 @@ class SerialCommunicator():
        
     #gets the state of the arduino        
     def getArduinoState(self):
-        self.ser.write("ready")
+        #self.ser.write("ready")
 
         # global last_received
         # buffer_string = ''
@@ -45,22 +46,28 @@ class SerialCommunicator():
 
         #     return last_received
                 
-        #self.ser.write("ready")
-        received = ""
+        self.ser.write("ready")
+        received = ''
 
-        self.ser.reset_input_buffer()    #when put together it flushes everything
+        #self.ser.reset_input_buffer()    #when put together it flushes everything
+
         received = self.ser.readline()     #but the read size
-        
+        #time.sleep(.1)
+
         if self.HW == "ArduinoNano" or self.HW == "ArduinoUno":
-            if len(received) == 14:
-                return received
+            return received
                 
         if self.HW == "ArduinoMega":
-            if len(received) == 46:
-                return received
+            return received
         
-#se = SerialCommunicator("/dev/ttyACM1", "ArduinoMega", fdk)
+# se = SerialCommunicator("/dev/ttyACM0", "ArduinoMega")
 
-#while 1:#se.ser.inWaiting() > 0:
-#    if (se.getArduinoState() != None):
-#se.getArduinoState()
+# #while 1:#se.ser.inWaiting() > 0:
+# #    if (se.getArduinoState() != None):
+# while 1:
+#     rvd = se.getArduinoState()
+
+#     if (rvd is not None):
+#         print "{0:08b}".format(ord(rvd[0])) + "{0:08b}".format(ord(rvd[1])) + "{0:06b}".format(ord(rvd[2]))[0:6]\
+#             + "{0:08b}".format(ord(rvd[3]))  + "{0:08b}".format(ord(rvd[4]))  + "{0:08b}".format(ord(rvd[5]))[0:6]
+#         #print rvd

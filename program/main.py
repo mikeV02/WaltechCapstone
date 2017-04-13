@@ -471,12 +471,20 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
             # else:
                 # print "No hardware selected"
             
-            ###MODIFIED BY MIGUEL (FOR MEGA)
+            ###MODIFIED BY MIGUEL GO LIVE TIMERS
             if (WaltSerial.getArduinoState() is not None):
                 feedback = WaltSerial.getArduinoState()
-            ###
             
+            if self.currentHW == "ArduinoMega":
+                feedback = "{0:08b}".format(ord(feedback[0])) + "{0:08b}".format(ord(feedback[1])) + "{0:06b}".format(ord(feedback[2]))[0:6]\
+                + "{0:08b}".format(ord(feedback[3]))  + "{0:08b}".format(ord(feedback[4]))  + "{0:08b}".format(ord(feedback[5]))[0:6]
+
+            if self.currentHW == "ArduinoUno" or self.currentHW == "ArduinoNano":
+                feedback = "{0:08b}".format(ord(feedback[0])) + "{0:08b}".format(ord(feedback[1]))
+
             print feedback
+
+            ###
             
             #########################ADDED/MODIFIED BY MIGUEL OPTIONAL THREADING
             # import threading
