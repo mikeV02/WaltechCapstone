@@ -456,9 +456,10 @@ class ladderToOutLine():
                         str(self.grid[i][j].MTorElement), \
                         str(self.grid[i][j].setPoint),\
                         "latching"])
-                        
+        ###MIGUEL
         if self.grid[i][j].MTorElement == "Timer" \
                 and j<width-1:
+                #TmCnt += 1
             outLine.append(["Timer_" + str(self.grid[i][j].variableName),\
                         str(self.grid[i][j].type), \
                         str(self.grid[i][j].MTorElement), \
@@ -466,6 +467,7 @@ class ladderToOutLine():
                         
         if self.grid[i][j].MTorElement == "Counter" \
                 and j<width-1:
+                #CnCnt += 1
             outLine.append(["Counter_" + str(self.grid[i][j].variableName),\
                         str(self.grid[i][j].type), \
                         str(self.grid[i][j].MTorElement), \
