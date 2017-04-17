@@ -169,9 +169,15 @@ class ladderToOutLine():
                     #is not adc
                     #width == position means an output
             print "adding output"
+            
+            ###MODIFIED BY MIGUEL
             outLine.append(["output_" + str(self.grid[i][-1].variableName),\
-                        str(self.grid[i][-1].ioAssign)])
-            print "added", outLine[-1][0]
+                        str(self.grid[i][-1].ioAssign),\
+                        str(self.grid[i][-1].doneBit)])
+            ###
+            # outLine.append(["output_" + str(self.grid[i][-1].variableName),\
+            #     str(self.grid[i][-1].ioAssign)])
+            # print "added", outLine[-1][0]
             
         ##021##
         #>>>add result (math, move, ADC)
@@ -458,10 +464,10 @@ class ladderToOutLine():
                         str(self.grid[i][j].MTorElement), \
                         str(self.grid[i][j].setPoint),\
                         "latching"])
-        ###MIGUEL
+        
         if self.grid[i][j].MTorElement == "Timer" \
                 and j<width-1:
-                #TmCnt += 1
+
             outLine.append(["Timer_" + str(self.grid[i][j].variableName),\
                         str(self.grid[i][j].type), \
                         str(self.grid[i][j].MTorElement), \
@@ -472,7 +478,7 @@ class ladderToOutLine():
                         
         if self.grid[i][j].MTorElement == "Counter" \
                 and j<width-1:
-                #CnCnt += 1
+
             outLine.append(["Counter_" + str(self.grid[i][j].variableName),\
                         str(self.grid[i][j].type), \
                         str(self.grid[i][j].MTorElement), \

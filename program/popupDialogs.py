@@ -50,6 +50,9 @@ class CoilDialog(QtGui.QDialog):
         cellSearch(grid,cellNum,self.currentHW).makeNamelistCoil(self.ui.comboBox_2)
         cellSearch(grid,cellNum,self.currentHW).makeIOlist(self.ui.comboBox,False)
         cellSearch(grid,cellNum,self.currentHW).fillComment(self.ui.lineEdit)
+
+        ###ADDED BY MIGUEL
+        cellSearch(grid,cellNum,self.currentHW).makeDoneBitLis(self.ui.comboBox_3)
             
 
        
@@ -341,6 +344,23 @@ class cellSearch(): #Functions for pre-filling the boxes in the Popup dialogs
         self.grid = grid
         self.cellNum = cellNum
         self.currentHW = currentHW
+
+
+    ###ADDED BY MIGUEL
+    def makeDoneBitLis(self, combobox):
+        doneBitList = []
+        doneBitList.append("Select Item For Done Bit")
+        for i in range(len(self.grid)):
+            for j in range(len(self.grid[i])):
+                if self.grid[i][j].variableName != None:
+                    varName = self.grid[i][j].variableName
+                    type = self.grid[i][j].MTorElement
+                    if type == "Timer" or type == "Counter":
+                        doneBitList.append(type+"_"+varName)
+                        print doneBitList
+
+        combobox.addItems(doneBitList)
+
         
     def makeSharedNameList(self,elType):# elType is a string like "Coil" 
     #scan the grid for names != None, put in comboBox

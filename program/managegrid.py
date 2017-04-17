@@ -18,7 +18,7 @@ class cellStruct():
     def __init__(self, midPointX, midPointY, MTorElement, rungOrOR,\
                 variableName, type, ioAssign, comment, setPoint,\
                  branch, node, brchST, brchE, nodeST, nodeE,\
-                 source_A, source_B, const_A, const_B, functType, switch):
+                 source_A, source_B, const_A, const_B, functType, switch, doneBit):
         self. midPointX = midPointX
         self. midPointY = midPointY
         self. MTorElement = MTorElement 
@@ -40,6 +40,9 @@ class cellStruct():
         self. const_B = const_B
         self. functType = functType
         self. switch = switch
+
+        ###BY MIGUEL
+        self. doneBit = doneBit
 	
     def toggleBit(self):
 		if self.switch == False: self.switch = True
@@ -226,6 +229,7 @@ class ManageGrid():
             self.grid[cellNum[0]][cellNum[1]].source_B = None
             self.grid[cellNum[0]][cellNum[1]].const_B = None
             self.grid[cellNum[0]][cellNum[1]].functType = None
+            self.grid[cellNum[0]][cellNum[1]].doneBit = None
         else:
             self.removeRung(cellNum[0])  
         self.totalRedraw()
@@ -236,7 +240,7 @@ class ManageGrid():
         Y=row*60#get Y of rung to be displaced
         self.grid.insert(row,[])#insert a rung
         for i in range(width):#fill with mt cells : for in range 0 to width
-            self.grid[row].append(cellStruct(i*60, Y, "MT","Rung", None, None, None, None, None, False, False, False, False, False, False,None,None,None,None,None, False))
+            self.grid[row].append(cellStruct(i*60, Y, "MT","Rung", None, None, None, None, None, False, False, False, False, False, False,None,None,None,None,None, False, None))
         #shift Y values down on grid below
         height = len(self.grid)
         for i in range(row,height):
@@ -668,6 +672,11 @@ class ManageGrid():
         self.grid[cellNum[0]][cellNum[1]].source_B = tempCellData.source_B
         self.grid[cellNum[0]][cellNum[1]].const_B = tempCellData.const_B
         self.grid[cellNum[0]][cellNum[1]].functType = tempCellData.functType # not used
+
+        ###BY MIGUEL
+        self.grid[cellNum[0]][cellNum[1]].doneBit = tempCellData.doneBit
+        ###
+
         #try:
          #   tempCellData.setPoint += 1
         #except TypeError:

@@ -398,7 +398,7 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
         self.currentTool = 0 #to track the tool being used
         width=10
         for i in range(width):#fill the first row
-            self.grid[0].append(cellStruct(i*60, 60, "MT","Rung", None, None, None, None, None, False, False, False, False, False, False,None,None,None,None,None, False))
+            self.grid[0].append(cellStruct(i*60, 60, "MT","Rung", None, None, None, None, None, False, False, False, False, False, False,None,None,None,None,None, False, None))
             #self.grid[0].append(cellStruct(i*60, 60, "MT","Rung", None, None, None, None, None, False, False, False, False, False, False,None,None,None,None,None))
         for i in range(1,6):# add 5 more rungs to start
             ManageGrid(self.grid, self.scene,self.Tools,self.items).insertRung(i)        
@@ -424,9 +424,9 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
                     numRows= uiList.rowCount()
                     try: uiList.setItem(numRows-1,0,QtGui.QTableWidgetItem(self.grid[i][j].variableName))
                     except: pass
-                    try: uiList.setItem(numRows-1,1,QtGui.QTableWidgetItem(self.grid[i][j].ioAssign))
+                    try: uiList.setItem(numRows-1,2,QtGui.QTableWidgetItem(self.grid[i][j].ioAssign))
                     except: pass
-                    try: uiList.setItem(numRows-1,2,QtGui.QTableWidgetItem(self.grid[i][j].MTorElement))
+                    try: uiList.setItem(numRows-1,1,QtGui.QTableWidgetItem(self.grid[i][j].MTorElement))
                     except: pass
                     try: uiList.setItem(numRows-1,3,QtGui.QTableWidgetItem(str(i)+","+str(j)))
                     except: pass
@@ -482,6 +482,8 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
         self.live = True
         self.ui.liveButton.clicked.disconnect()
         self.ui.liveButton.clicked.connect(self.stopFeedback)
+        self.ui.liveButton.setText("Stop Live")
+
         
         CounterLocations = []
         TimerLocations = []
@@ -671,6 +673,7 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
                        self.grid[self.outputs[i+1][0]][self.outputs[i+1][1]].switch = int(feedback[i+22])
             ####
 
+
             #x += 1
         
             ###ADDED BY MIGUEL (FIXING DELAY)
@@ -686,6 +689,7 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
         self.live = False
         self.ui.liveButton.clicked.disconnect()
         self.ui.liveButton.clicked.connect(self.startFeedback)
+        self.ui.liveButton.setText("Go Live")
         
 
     def showInfo(self):
@@ -1077,7 +1081,6 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
                     cellNum[1] = len(self.grid[0])-1 #right most spot
                     print ("elemnt to right")
                     if self.grid[cellNum[0]][cellNum[1]].MTorElement == "blankOR":
-                        tempCellInfo = self.runPopup(toolToPlace[0],cellNum,0)# cause popup dialog
                         if tempCellInfo != False:
                             ManageGrid(self.grid, self.scene, self.Tools,self.items)\
                                 .placeElememt(cellNum,tempCellInfo,toolToPlace)
@@ -1188,7 +1191,7 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
     #doesn't do anything with the grid.          
     def runPopup(self, tool, cellNum, leftOrRight):
         popUpOKed = False #becomes true if dialog is OK'ed
-        tempCellInfo = cellStruct(None,None,None,None,None,None,None,None,None, False, False, False, False, False, False,None,None,None,None,None, False) 
+        tempCellInfo = cellStruct(None,None,None,None,None,None,None,None,None, False, False, False, False, False, False,None,None,None,None,None, False, None) 
         ##004##
         if tool == "Coil" or tool =="CoilNot":#do dialog for this tool:
             self.dialog = popupDialogs.CoilDialog(self.grid, cellNum,self.currentHW)
@@ -1281,6 +1284,12 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
             try: tempCellInfo.const_A = self.dialog.ui.spinBox_A.value()
             except: pass
             try: tempCellInfo.const_B = self.dialog.ui.spinBox_B.value()
+            except: pass
+
+            ###BY MIGUEL DONE Bit
+            try:
+                tempCellInfo.doneBit = self.dialog.ui.comboBox_3.currentText() #DoneBit
+                print "\n\n\n\n\n"+tempCellInfo+"\n\n\n\n"
             except: pass
 
 

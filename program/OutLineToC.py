@@ -799,7 +799,25 @@ class OutLineToC():
             #OUTPUT:
             #WAS: if "output_" in str(outLine[i][0]):
             if str(outLine[i][0])[:7] ==  "output_":
-                C_txt = C_txt +"              "+  str(outLine[i][0]) +" = W;\n"
+                
+                ### ADDED AND MODIFIED BY MIGUEL //DONE BIT
+                if "Timer" in str(outLine[i][2]) or "Counter" in str(outLine[i][2]):
+                    doneBit = str(outLine[i][2])
+
+                    for index in range(len(outLine)):
+                        
+                        if (doneBit == str(outLine[index][0])):
+                            
+                            try:
+                                C_txt = C_txt +"              "+  str(outLine[i][0]) +" = " + \
+                                    str(outLine[index][0])+"_"+str(outLine[index][1]) + ";\n"
+
+                            except:
+                                pass
+                else:
+                    C_txt = C_txt +"              "+  str(outLine[i][0]) +" = W;\n"
+                ###
+
             
             #MATH:
             #WAS: if "Result_" in str(outLine[i][0]):
