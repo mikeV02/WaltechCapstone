@@ -76,6 +76,11 @@ class Ui_TimerDialog(object):
         self.label_7.setText(_translate("TimerDialog", "Name:", None))
         self.doubleSpinBox.setToolTip(_translate("TimerDialog", "<html><head/><body><p>10 miniutes max</p></body></html>", None))
         self.label_9.setText(_translate("TimerDialog", "Type:", None))
-        self.comboBox_3.setItemText(0, _translate("TimerDialog", "Timer_On_Delay", None))
+        self.comboBox_3.setItemText(0, _translate("TimerDialog", "Timer_On_Delay", None))    
         self.comboBox_3.setItemText(1, _translate("TimerDialog", "Retentive_Timer_On", None))
+
+    def switchCombo(self):
+        self.comboBox_3.setItemText(0, _translate("TimerDialog", "Retentive_Timer_On", None))
+        self.comboBox_3.setItemText(1, _translate("TimerDialog", "Timer_On_Delay", None))
+
 

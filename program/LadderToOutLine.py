@@ -24,6 +24,8 @@ class ladderToOutLine():
     
     def __init__(self,grid):#bring in all the things being sent down here
         self.grid = grid
+        self.CounterList = [];
+        self.TimerList = [];
 
     def makeOutLine(self):
         #go through the grid and create a text file with if-then and or statements
@@ -107,7 +109,7 @@ class ladderToOutLine():
         for i in range(len(outLine)):
             print outLine[i]
         
-        return outLine
+        return outLine, self.CounterList,self.TimerList
 
 
 #>>>>>>>>>>>>>>>>>>functions below<<<<<<<<<<<<<<<<<<<<<<<
@@ -464,6 +466,9 @@ class ladderToOutLine():
                         str(self.grid[i][j].type), \
                         str(self.grid[i][j].MTorElement), \
                         str(int(self.grid[i][j].setPoint*100))])
+                       
+            if ("Timer_"+str(self.grid[i][j].variableName)) not in self.TimerList:
+                self.TimerList.append("Timer_"+str(self.grid[i][j].variableName))
                         
         if self.grid[i][j].MTorElement == "Counter" \
                 and j<width-1:
@@ -473,6 +478,9 @@ class ladderToOutLine():
                         str(self.grid[i][j].MTorElement), \
                         str(self.grid[i][j].setPoint),\
                         "latching"])
+            if ("Counter_" + str(self.grid[i][j].variableName)) not in self.CounterList:
+                self.CounterList.append("Counter_" + str(self.grid[i][j].variableName))
+            
         #"Equals" "Greater""Lessthan""GreaterOrEq""LessOrEq"
         if self.grid[i][j].MTorElement == "Equals" \
                 and j<width-1:

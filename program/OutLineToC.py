@@ -1263,7 +1263,7 @@ class OutLineToC():
             #WAS if "Counter_" in outLine[i][0] ==  :
             if outLine[i][0][:8]== "Counter_"  : 
 
-                if "\n    uint8_t "+ str(outLine[i][0]) +" = 0;\n" not in C_txt and "rungstate_" not in outLine[i][0]:
+                if "\n    uint8_t "+ outLine[i][0] + "_" +str(outLine[i][1]) +" = 0;\n" not in C_txt and "rungstate_" not in outLine[i][0]:
     
                                                                       ###ADDED BY MIGUEL
                     C_txt = C_txt + "\n    uint8_t "+ outLine[i][0] + "_" +str(outLine[i][1]) +" = 0;\n"
@@ -1290,7 +1290,7 @@ class OutLineToC():
             #WAS if "Timer_" in outLine[i][0] :
             if  outLine[i][0][:6] == "Timer_" : 
 
-                if "\n    uint8_t "+ str(outLine[i][0]) +" = 0;\n" not in C_txt and "rungstate_" not in outLine[i][0]:
+                if "\n    uint8_t "+ outLine[i][0] + "_" +str(outLine[i][1]) +" = 0;\n" not in C_txt and "rungstate_" not in outLine[i][0]:
 
                                                                       ###ADDED BY MIGUEL
                     C_txt = C_txt + "\n    uint8_t "+ outLine[i][0] + "_" +str(outLine[i][1]) +" = 0;\n"

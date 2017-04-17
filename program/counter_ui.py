@@ -76,3 +76,6 @@ class Ui_CounterDialog(object):
         self.comboBox_3.setItemText(0, _translate("CounterDialog", "Counter_Up", None))
         self.comboBox_3.setItemText(1, _translate("CounterDialog", "Counter_Down", None))
 
+    def switchCombo(self):
+        self.comboBox_3.setItemText(0, _translate("CounterDialog", "Counter_Down", None))
+        self.comboBox_3.setItemText(1, _translate("CounterDialog", "Couter_Up", None))

@@ -88,6 +88,9 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
         #make a scene:
         self.scene = QtGui.QGraphicsScene()
 
+        self.CounterList = []
+        self.TimerList = []
+        
         #set it to show in the graphicsview window:
         self.ui.graphicsView.setScene(self.scene)
         self.items=[QtGui.QGraphicsTextItem(),QtGui.QGraphicsRectItem()]#for squares and indexes that follow mouse
@@ -447,20 +450,127 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
         font.setWeight(QFont.Normal)
         self.ui.textBrowser.setCurrentFont(font)
         QApplication.processEvents()#this makes the UI update before going on.
-        outLine = ladderToOutLine(self.grid).makeOutLine()
+        outLine,self.CounterList,self.TimerList = ladderToOutLine(self.grid).makeOutLine()
+        #self.CounterandTimerCheck(outLine)
+        #print "Counter List: \n"
+        #for i in range(len(self.CounterList)):
+        #    print self.CounterList[i], "\n"
+        #print "Timer List: \n"
+        #for i in range(len(self.TimerList)):
+        #    print self.TimerList[i], "\n"
         OutLineToC(self.grid,self.currentHW).makeC(outLine,self.ui.textBrowser)
         #hexMaker(self).self.saveCfileAndCompile(C_txt,displayOutputPlace)
 		
+    def CounterandTimerCheck(self,outLine):
+        
+        self.CounterList = 0
+        self.TimerList = 0
+    
+        #for i in range (len(outLine)): 
+        #
+        #    if outLine[i][0][:8]== "Counter_"  : 
+        #        print str(outLine[i][0]),"\n",i,"\n\n"
+        #        #if "\n    uint8_t "+ str(outLine[i][0]) +" = 0;\n" not in C_txt and "rungstate_" not in outLine[i][0]:
+        #    
+        #    
+        #    if  outLine[i][0][:6] == "Timer_" : 
+        #        print str(outLine[i][0]),"\n",i,"\n\n"
+        #        #if "\n    uint8_t "+ str(outLine[i][0]) +" = 0;\n" not in C_txt and "rungstate_" not in outLine[i][0]:
+        
+        
     def startFeedback(self):
         self.live = True
         self.ui.liveButton.clicked.disconnect()
         self.ui.liveButton.clicked.connect(self.stopFeedback)
+        
+        CounterLocations = []
+        TimerLocations = []
+        
+        CounterPrecedingElement = []
+        TimerPrecedingElement = []
         
         #x = 0
         feedback = []
         
         WaltSerial = SerialCommunicator(self.PORT, self.currentHW)
 
+        for x in range(len(self.grid)):
+            for y in range(len(self.grid[x])):
+                if self.grid[x][y].variableName is not None:
+                    if (self.grid[x][y].MTorElement+"_"+self.grid[x][y].variableName) in self.CounterList:
+                        CounterLocations.extend((x,y))
+                    if (self.grid[x][y].MTorElement+"_"+self.grid[x][y].variableName) in self.TimerList:
+                        #print self.grid[x][y].MTorElement+"_"+self.grid[x][y].variableName, "\n"
+                        TimerLocations.extend((x,y))
+                       
+
+        
+        if len(self.TimerList) > 0:
+            for timer in range(len(self.TimerList)):
+                print TimerLocations[timer * 2]," ",TimerLocations[(timer * 2) + 1] - 1
+                x,y = TimerLocations[timer * 2], (TimerLocations[(timer * 2) + 1] - 1)
+                
+                if y < 0:
+                        TimerPrecedingElement.extend((-1,-1))
+                
+                while y > -1:
+                    if self.grid[x][y].variableName is not None:
+                        TimerPrecedingElement.extend((x,y))
+                        break            
+                    elif y == 0:
+                        TimerPrecedingElement.extend((-1,-1))
+                        y = y - 1
+    
+                    y = y - 1
+                    
+        if len(self.CounterList) > 0:
+            for timer in range(len(self.CounterList)):
+                print CounterLocations[timer * 2]," ",CounterLocations[(timer * 2) + 1] - 1
+                x,y = CounterLocations[timer * 2], (CounterLocations[(timer * 2) + 1] - 1)
+                
+                if y < 0:
+                        CounterPrecedingElement.extend((-1,-1))
+                
+                while y > -1:
+                    if self.grid[x][y].variableName is not None:
+                        CounterPrecedingElement.extend((x,y))
+                        break            
+                    elif y == 0:
+                        CounterPrecedingElement.extend((-1,-1))
+                        y = y - 1
+    
+                    y = y - 1
+         
+                
+        
+        
+        print "Previous Elements: \n"
+        
+        for i in range(len(TimerPrecedingElement)/2):
+            print TimerPrecedingElement[(i*2)], " ", TimerPrecedingElement[(i*2) +1], "\n"
+        
+        for i in range(len(CounterPrecedingElement)/2):
+            print CounterPrecedingElement[(i*2)], " ", CounterPrecedingElement[(i*2) +1], "\n"
+        
+        print "Timers: \n"
+        for i in range(len(self.TimerList)):
+            #print len(TimerLocations), "\n"
+            print self.TimerList[i], " ",TimerLocations[i * 2], " ",TimerLocations[(i * 2) + 1] , "\n"
+            
+        print "Counters: \n"
+        for i in range(len(self.CounterList)):
+            print self.CounterList[i], " ",CounterLocations[i * 2], " ", CounterLocations[(i * 2) + 1] , "\n"
+        
+        
+        prevInputToCounter = []    
+        Countervalues = []
+
+        for i in range(len(self.CounterList)):
+            prevInputToCounter.append(0);
+            
+        for i in range(len(self.CounterList)):
+            Countervalues.append(0);
+        
         while self.live:
             # if(self.currentHW == "ArduinoNano"):
                 # print "Hardware is Nano"
@@ -470,6 +580,19 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
                 # print "Hardware is Mega"
             # else:
                 # print "No hardware selected"
+            
+
+            
+            
+            
+            for i in range(len(self.CounterList)):
+                if(self.grid[CounterPrecedingElement[(2*i)]][CounterPrecedingElement[(2*i)+1]].MTorElement == "contNC"):         
+                    if self.grid[CounterPrecedingElement[(2*i)]][CounterPrecedingElement[(2*i)+1]].switch == 1 and prevInputToCounter[i] == 0:
+                        Countervalues[i] += 1
+
+                        print Countervalues[i]
+                    prevInputToCounter[i] = self.grid[CounterPrecedingElement[(2*i)]][CounterPrecedingElement[(2*i)+1]].switch;       
+
             
             ###MODIFIED BY MIGUEL GO LIVE TIMERS
             if (WaltSerial.getArduinoState() is not None):
@@ -483,6 +606,12 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
                 feedback = "{0:08b}".format(ord(feedback[0]))[0:5] + "{0:08b}".format(ord(feedback[1]))[0:7]
 
             print feedback
+            
+
+            ####check counters current value
+
+            
+            
             ###
             
             #########################ADDED/MODIFIED BY MIGUEL OPTIONAL THREADING
@@ -541,7 +670,7 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
                    if self.outputs[i+1] != None:
                        self.grid[self.outputs[i+1][0]][self.outputs[i+1][1]].switch = int(feedback[i+22])
             ####
-            
+
             #x += 1
         
             ###ADDED BY MIGUEL (FIXING DELAY)
@@ -815,7 +944,7 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
             if len(self.unDoGrid) >30:#limit to 30 undos
                 self.unDoGrid.pop(0)#pop 0
             #run popup:    
-            tempCellData = self.runPopup(tool,cellNum)
+            tempCellData = self.runPopup(tool,cellNum,1)
             if tempCellData != False:# Yes, new data entered, so update list at right:
                 orphan = False
                 if self.grid[cellNum[0]][cellNum[1]].variableName != tempCellData.variableName:#check if leaving orphan names
@@ -909,7 +1038,7 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
                     if self.grid[cellNum[0]][cellNum[1]].MTorElement == "MT"\
                             and cellNum[1] != len(self.grid[cellNum[0]])-1: #not at the far right
                         # cause popup dialog
-                        tempCellInfo = self.runPopup(toolToPlace[0],cellNum)
+                        tempCellInfo = self.runPopup(toolToPlace[0],cellNum,0)
                         if tempCellInfo != False:
                             #update list at right
                             #self.addToList(self.ui.tableWidget,tempCellInfo,(cellNum[0],cellNum[1]))            
@@ -923,7 +1052,7 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
                     cellNum[1] = len(self.grid[0])-1 #right most spot
                     if self.grid[cellNum[0]][cellNum[1]].MTorElement == "MT":
                         # cause popup dialog
-                        tempCellInfo = self.runPopup(toolToPlace[0],cellNum)
+                        tempCellInfo = self.runPopup(toolToPlace[0],cellNum,0)
                         if tempCellInfo != False:
                             #update list at right
                             #self.addToList(self.ui.tableWidget,tempCellInfo,(cellNum[0],cellNum[1]))            
@@ -937,7 +1066,7 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
                         and self.grid[cellNum[0]][cellNum[1]].MTorElement == "blankOR":
                 if self.Tools.toolList[toolToPlace[1]].position == "any":
                     # cause popup dialog
-                    tempCellInfo = self.runPopup(toolToPlace[0],cellNum)
+                    tempCellInfo = self.runPopup(toolToPlace[0],cellNum,0)
                     if tempCellInfo != False:
                         ManageGrid(self.grid, self.scene, self.Tools,self.items)\
                                 .placeElememt(cellNum,tempCellInfo,toolToPlace)
@@ -948,7 +1077,7 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
                     cellNum[1] = len(self.grid[0])-1 #right most spot
                     print ("elemnt to right")
                     if self.grid[cellNum[0]][cellNum[1]].MTorElement == "blankOR":
-                        tempCellInfo = self.runPopup(toolToPlace[0],cellNum)# cause popup dialog
+                        tempCellInfo = self.runPopup(toolToPlace[0],cellNum,0)# cause popup dialog
                         if tempCellInfo != False:
                             ManageGrid(self.grid, self.scene, self.Tools,self.items)\
                                 .placeElememt(cellNum,tempCellInfo,toolToPlace)
@@ -1057,7 +1186,7 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
     #will run popup and return tempCellData with all info from popup 
     #send tool being used, cellNum 
     #doesn't do anything with the grid.          
-    def runPopup(self, tool, cellNum):
+    def runPopup(self, tool, cellNum, leftOrRight):
         popUpOKed = False #becomes true if dialog is OK'ed
         tempCellInfo = cellStruct(None,None,None,None,None,None,None,None,None, False, False, False, False, False, False,None,None,None,None,None, False) 
         ##004##
@@ -1071,11 +1200,33 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
             self.dialog = popupDialogs.EdgeDialog(self.grid, cellNum,self.currentHW)
             popUpOKed = self.dialog.exec_()# For Modal dialogs
         elif tool == "Timer" :#do dialog for this tool:
+            switch = 0
+
+            if leftOrRight == 1:
+                if self.grid[cellNum[0]][cellNum[1]].type == "Retentive_Timer_On":
+                       switch = 1
+            
             self.dialog = popupDialogs.TimerDialog(self.grid, cellNum,self.currentHW)
+
+            if switch == 1:
+                self.dialog.ui.switchCombo()
+                    
             popUpOKed = self.dialog.exec_()# For Modal dialogs
+            
         elif tool == "Counter" :#do dialog for this tool:
+            switch = 0
+            
+            if leftOrRight == 1:
+                if self.grid[cellNum[0]][cellNum[1]].type == "Counter_Down":
+                       switch = 1
+        
             self.dialog = popupDialogs.CounterDialog(self.grid, cellNum,self.currentHW)
+            
+            if switch == 1:
+                self.dialog.ui.switchCombo()
+            
             popUpOKed = self.dialog.exec_()# For Modal dialogs
+            
         elif tool == "Plus"or tool =="Minus"or tool =="Divide"or tool =="Mult" or tool == "Move" :#do dialog for this tool:
             self.dialog = popupDialogs.MathDialog(self.grid, cellNum,self.currentHW,tool)
             popUpOKed = self.dialog.exec_()# For Modal dialogs
@@ -1096,6 +1247,13 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
         if popUpOKed == True:        
             ##008##
             # get all info from popup:
+            
+            if tool == "Timer":
+                self.grid[cellNum[0]][cellNum[1]].type = self.dialog.ui.comboBox_3.currentText()
+            
+            if tool == "Counter":
+                self.grid[cellNum[0]][cellNum[1]].type = self.dialog.ui.comboBox_3.currentText()
+            
             try: tempCellInfo.ioAssign = self.dialog.ui.comboBox.currentText()#I/O assign
             except: pass
             try: tempCellInfo.variableName = self.dialog.ui.comboBox_2.currentText()#variable Name
@@ -1189,3 +1347,7 @@ if __name__=='__main__':
     window = mainWindowUI()
     window.show()
     sys.exit(app.exec_())
+    
+    
+    
+

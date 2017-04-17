@@ -93,6 +93,7 @@ class TimerDialog(QtGui.QDialog):
         QDialog.__init__(self)# Constructs a dialog with parent parent. self being ImageDailog
         # Set up the UI from Designer:
         self.ui = Ui_TimerDialog()
+
         self.ui.setupUi(self)
         self.grid = grid
         self.cellNum = cellNum
