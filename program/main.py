@@ -485,6 +485,7 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
         self.ui.liveButton.setText("Stop Live")
 
         
+        
         CounterLocations = []
         TimerLocations = []
         
@@ -496,82 +497,129 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
         
         WaltSerial = SerialCommunicator(self.PORT, self.currentHW)
 
+		##START ADDED BY CHRIS
+		
+        from CounterTimer import Counter,Timer
+
+        #for timer in range(len(self.grid)):
+        TimerListLive = []
+        CounterListLive = []
+            
+        if len(self.TimerList) > 0:    
+            for timer in range(len(self.TimerList)):
+                temp = Timer(self.TimerList[timer])
+                TimerListLive.append(temp)
+                
+        print len(self.TimerList) , "\n"
+                
+        if len(self.CounterList) > 0:
+            for counter in range(len(self.CounterList)):
+                temp = Counter(self.CounterList[counter])
+                CounterListLive.append(temp)
+   
+		
+        counterIndex = 0
+        timerIndex = 0
+        
         for x in range(len(self.grid)):
             for y in range(len(self.grid[x])):
                 if self.grid[x][y].variableName is not None:
-                    if (self.grid[x][y].MTorElement+"_"+self.grid[x][y].variableName) in self.CounterList:
-                        CounterLocations.extend((x,y))
-                    if (self.grid[x][y].MTorElement+"_"+self.grid[x][y].variableName) in self.TimerList:
-                        #print self.grid[x][y].MTorElement+"_"+self.grid[x][y].variableName, "\n"
-                        TimerLocations.extend((x,y))
+                    print timerIndex
+                    if(counterIndex < len(CounterListLive)):
+                        if (self.grid[x][y].MTorElement+"_"+self.grid[x][y].variableName) == CounterListLive[counterIndex].name:
+                            CounterListLive[counterIndex].setLocationType(x,y,self.grid[x][y].type)
+                            CounterListLive[counterIndex].preset = self.grid[x][y].setPoint
+                            counterIndex = counterIndex + 1
+                    if(timerIndex < len(TimerListLive)):
+                        if (self.grid[x][y].MTorElement+"_"+self.grid[x][y].variableName) == TimerListLive[timerIndex].name:
+                            TimerListLive[timerIndex].setLocationType(x,y,self.grid[x][y].type)
+                            timerIndex = timerIndex + 1
+                    
+        counterIndex = 0
+        timerIndex = 0
+                    
+        #for x in range(len(CounterListLive)):
+        #    print CounterListLive[x].name, CounterListLive[x].x, CounterListLive[x].y, "\n"
+        #    
+        #for x in range(len(TimerListLive)):
+        #    print TimerListLive[x].name, TimerListLive[x].x, TimerListLive[x].y, "\n"                   
                        
-
+        
         
         if len(self.TimerList) > 0:
             for timer in range(len(self.TimerList)):
-                print TimerLocations[timer * 2]," ",TimerLocations[(timer * 2) + 1] - 1
-                x,y = TimerLocations[timer * 2], (TimerLocations[(timer * 2) + 1] - 1)
+                x,y = TimerListLive[timer].x, (TimerListLive[timer].y - 1)
                 
                 if y < 0:
-                        TimerPrecedingElement.extend((-1,-1))
+                        TimerListLive[timer].setPrevElement(-1,-1,"None")
                 
                 while y > -1:
                     if self.grid[x][y].variableName is not None:
-                        TimerPrecedingElement.extend((x,y))
+                        TimerListLive[timer].setPrevElement(x,y,self.grid[x][y].MTorElement)
                         break            
                     elif y == 0:
-                        TimerPrecedingElement.extend((-1,-1))
+                        TimerListLive[timer].setPrevElement(-1,-1,"None")
                         y = y - 1
-    
+        
                     y = y - 1
                     
         if len(self.CounterList) > 0:
             for timer in range(len(self.CounterList)):
-                print CounterLocations[timer * 2]," ",CounterLocations[(timer * 2) + 1] - 1
-                x,y = CounterLocations[timer * 2], (CounterLocations[(timer * 2) + 1] - 1)
+                x,y = CounterListLive[counter].x, (CounterListLive[counter].y - 1)
                 
                 if y < 0:
-                        CounterPrecedingElement.extend((-1,-1))
+                        CounterListLive[counter].setPrevElement(-1,-1,"None")
                 
                 while y > -1:
                     if self.grid[x][y].variableName is not None:
-                        CounterPrecedingElement.extend((x,y))
+                        CounterListLive[counter].setPrevElement(x,y,self.grid[x][y].MTorElement)
                         break            
                     elif y == 0:
-                        CounterPrecedingElement.extend((-1,-1))
+                        CounterListLive[counter].setPrevElement(-1,-1,"None")
                         y = y - 1
-    
+        
                     y = y - 1
-         
-                
-        
-        
-        print "Previous Elements: \n"
-        
-        for i in range(len(TimerPrecedingElement)/2):
-            print TimerPrecedingElement[(i*2)], " ", TimerPrecedingElement[(i*2) +1], "\n"
-        
-        for i in range(len(CounterPrecedingElement)/2):
-            print CounterPrecedingElement[(i*2)], " ", CounterPrecedingElement[(i*2) +1], "\n"
-        
-        print "Timers: \n"
-        for i in range(len(self.TimerList)):
-            #print len(TimerLocations), "\n"
-            print self.TimerList[i], " ",TimerLocations[i * 2], " ",TimerLocations[(i * 2) + 1] , "\n"
-            
-        print "Counters: \n"
-        for i in range(len(self.CounterList)):
-            print self.CounterList[i], " ",CounterLocations[i * 2], " ", CounterLocations[(i * 2) + 1] , "\n"
-        
-        
-        prevInputToCounter = []    
-        Countervalues = []
 
-        for i in range(len(self.CounterList)):
-            prevInputToCounter.append(0);
+                    
+        for x in range(len(CounterListLive)):
+            print CounterListLive[x].name, CounterListLive[x].x, CounterListLive[x].y, CounterListLive[x].type, CounterListLive[x].preset, "\n"
+            print CounterListLive[x].Prevelement, CounterListLive[x].Prevx, CounterListLive[x].Prevy, "\n"
             
-        for i in range(len(self.CounterList)):
-            Countervalues.append(0);
+        for x in range(len(TimerListLive)):
+            print TimerListLive[x].name, TimerListLive[x].x, TimerListLive[x].y,TimerListLive[x].type, "\n"
+            print TimerListLive[x].Prevelement, TimerListLive[x].Prevx, TimerListLive[x].Prevy, "\n"
+                       
+                    
+        #        
+        #
+        #
+        #print "Previous Elements: \n"
+        #
+        #for i in range(len(TimerPrecedingElement)/2):
+        #    print TimerPrecedingElement[(i*2)], " ", TimerPrecedingElement[(i*2) +1], "\n"
+        #
+        #for i in range(len(CounterPrecedingElement)/2):
+        #    print CounterPrecedingElement[(i*2)], " ", CounterPrecedingElement[(i*2) +1], "\n"
+        #
+        #print "Timers: \n"
+        #for i in range(len(self.TimerList)):
+        #    #print len(TimerLocations), "\n"
+        #    print self.TimerList[i], " ",TimerLocations[i * 2], " ",TimerLocations[(i * 2) + 1] , "\n"
+        #    
+        #print "Counters: \n"
+        #for i in range(len(self.CounterList)):
+        #    print self.CounterList[i], " ",CounterLocations[i * 2], " ", CounterLocations[(i * 2) + 1] , "\n"
+        #
+        #
+        #prevInputToCounter = []    
+        #Countervalues = []
+        #
+        #for i in range(len(self.CounterList)):
+        #    prevInputToCounter.append(0);
+        #    
+        #for i in range(len(self.CounterList)):
+        #    Countervalues.append(0);
+        #
         
         while self.live:
             # if(self.currentHW == "ArduinoNano"):
@@ -587,15 +635,22 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
             
             
             
-            for i in range(len(self.CounterList)):
-                if(self.grid[CounterPrecedingElement[(2*i)]][CounterPrecedingElement[(2*i)+1]].MTorElement == "contNC"):         
-                    if self.grid[CounterPrecedingElement[(2*i)]][CounterPrecedingElement[(2*i)+1]].switch == 1 and prevInputToCounter[i] == 0:
-                        Countervalues[i] += 1
-
-                        print Countervalues[i]
-                    prevInputToCounter[i] = self.grid[CounterPrecedingElement[(2*i)]][CounterPrecedingElement[(2*i)+1]].switch;       
-
+            for i in range(len(CounterListLive)):
+                tempPrevx = int(CounterListLive[i].Prevx)
+                tempPrevy = int(CounterListLive[i].Prevy)
+                if(self.grid[tempPrevx][tempPrevy].MTorElement == "contNC" and CounterListLive[i].type == "Counter_Up"):         
+                    if self.grid[tempPrevx][tempPrevy].switch == 1 and CounterListLive[i].prevInput == 0:
+                        CounterListLive[i].currentValue += 1
+                        if CounterListLive[i].currentValue >= CounterListLive[i].preset:
+                            CounterListLive[i].done = 1
+                            print "Done Bit Triggered \n"
+                    CounterListLive[i].prevInput = self.grid[tempPrevx][tempPrevy].switch;       
             
+					
+					
+					
+					
+		#####END ADDED BY CHRIS
             ###MODIFIED BY MIGUEL GO LIVE TIMERS
             if (WaltSerial.getArduinoState() is not None):
                 feedback = WaltSerial.getArduinoState()
