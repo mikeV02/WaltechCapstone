@@ -3,7 +3,7 @@
 class Counter():
     def __init__(self, name):
         self.name = name
-        self.prevInput = 0
+        self.prevInput = 45
         self.currentValue = 0
         self.preset = 0
         self.done = 0
@@ -21,7 +21,7 @@ class Counter():
 class Timer():
     def __init__(self, name):
         self.name = name
-        self.prevInput = 0
+        self.prevInput = 45
         self.currentValue = 0
         self.preset = 0
         self.done = 0

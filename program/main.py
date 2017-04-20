@@ -623,7 +623,7 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
         
         import threading
         
-        def TimerTracker(Timer):
+        def TimerTracker(Timer, CounterListLive, TimerListLive):
             while self.live:
                 tempPrevx = int(Timer.Prevx)
                 tempPrevy = int(Timer.Prevy)
@@ -640,6 +640,28 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
                         Timer.currentValue = 0
                         Timer.done = 0
                     Timer.prevInput = self.grid[tempPrevx][tempPrevy].switch
+                elif ((tempPrevElement == "Counter" or tempPrevElement == "Timer") and Timer.type == "Timer_On_Delay"):
+                    tempVariableName = self.grid[tempPrevx][tempPrevy].MTorElement+"_"+self.grid[tempPrevx][tempPrevy].variableName
+                    if tempPrevElement == "Counter":
+                        for counter in range(len(CounterListLive)):
+                            if CounterListLive[counter].name == tempVariableName:
+                                if CounterListLive[counter].done == 1:
+                                    Timer.currentValue += 1
+                                    print "Timer Done: ", Timer.currentValue, "\n"
+                                    if Timer.currentValue >= Timer.preset:
+                                        Timer.done = 1
+                                        print "Timer Done bit"
+                                elif CounterListLive[counter].done == 1:
+                                    Timer.currentValue = 0
+                                    Timer.done = 0
+                #    elif tempPrevElement == "Timer":
+                #            for timer in range(len(TimerListLive)):
+                #                if TimerListLive[timer].name == tempVariableName:
+                #                    if TimerListLive[timer].done == 1 and CounterListLive[i].prevInput == 0:
+                #                        CounterListLive[i].currentValue += 1
+                #                        if CounterListLive[i].currentValue >= CounterListLive[i].preset:
+                #                            CounterListLive[i].done = 1
+                #                    CounterListLive[i].prevInput = TimerListLive[timer].done
                 
                 if(tempPrevElement == "contNC" and Timer.type == "Retentive_Timer_On"):
                     if self.grid[tempPrevx][tempPrevy].switch == 1:
@@ -657,7 +679,7 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
         TimerThread = []
         
         for i in range(len(TimerListLive)):
-            TimerThread = threading.Thread(target = TimerTracker,args=(TimerListLive[i],))
+            TimerThread = threading.Thread(target = TimerTracker,args=(TimerListLive[i],CounterListLive,TimerListLive,))
             TimerThread.setDaemon(True)
             TimerThread.start()
             
@@ -684,7 +706,9 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
                 if(tempPrevElement == "contNC" and CounterListLive[i].type == "Counter_Up"):         
                     if self.grid[tempPrevx][tempPrevy].switch == 1 and CounterListLive[i].prevInput == 0:
                         CounterListLive[i].currentValue += 1
+                        print "Counter: " , CounterListLive[i].currentValue, "\n"                       
                         if CounterListLive[i].currentValue >= CounterListLive[i].preset:
+                            print "Counter done\n"
                             CounterListLive[i].done = 1
                     CounterListLive[i].prevInput = self.grid[tempPrevx][tempPrevy].switch
                 elif ((tempPrevElement == "Counter" or tempPrevElement == "Timer") and CounterListLive[i].type == "Counter_Up"):
@@ -707,7 +731,7 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
                                     CounterListLive[i].prevInput = TimerListLive[timer].done
                         
                 
-                if(self.grid[tempPrevx][tempPrevy].MTorElement == "contNC" and CounterListLive[i].type == "Counter_Down"):         
+                if(self.grid[tempPrevx][tempPrevy].MTorElement == "contNC" and CounterListLive[i].type == "Counter_Down"):  
                     if self.grid[tempPrevx][tempPrevy].switch == 1 and CounterListLive[i].prevInput == 0:
                         CounterListLive[i].preset -= 1
                         if CounterListLive[i].preset <= 0:
