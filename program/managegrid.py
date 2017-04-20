@@ -43,10 +43,6 @@ class cellStruct():
 
         ###BY MIGUEL
         self. doneBit = doneBit
-	
-    def toggleBit(self):
-		if self.switch == False: self.switch = True
-		else: self.switch = False
         
         
 class ManageGrid():
@@ -690,11 +686,22 @@ class ManageGrid():
         item = QtGui.QGraphicsPixmapItem(pixmap)
         item.setPos(self.grid[cellNum[0]][cellNum[1]].midPointX+9,self.grid[cellNum[0]][cellNum[1]].midPointY-73)
         self.scene.addItem(item)
+        
+        offbrush = QtGui.QBrush()
+        offbrush.setColor(QtCore.Qt.white)
+        offbrush.setStyle(QtCore.Qt.SolidPattern)
+        
+        onbrush = QtGui.QBrush()
+        onbrush.setColor(QtCore.Qt.red)
+        onbrush.setStyle(QtCore.Qt.SolidPattern)
 		
-        #Michael Sharp added this code, distinguishes between on and off elements
+        if self.grid[cellNum[0]][cellNum[1]].switch == False:
+            self.scene.addRect(self.grid[cellNum[0]][cellNum[1]].midPointX+4, self.grid[cellNum[0]][cellNum[1]].midPointY-64, 12, 8, QtGui.QPen(), offbrush)
+            self.scene.addRect(self.grid[cellNum[0]][cellNum[1]].midPointX+38, self.grid[cellNum[0]][cellNum[1]].midPointY-64, 12, 8, QtGui.QPen(), offbrush)
+                    
         if self.grid[cellNum[0]][cellNum[1]].switch == True:
-			self.scene.addRect(self.grid[cellNum[0]][cellNum[1]].midPointX+4, self.grid[cellNum[0]][cellNum[1]].midPointY-64, 12, 8)
-			self.scene.addRect(self.grid[cellNum[0]][cellNum[1]].midPointX+38, self.grid[cellNum[0]][cellNum[1]].midPointY-64, 12, 8)
+            self.scene.addRect(self.grid[cellNum[0]][cellNum[1]].midPointX+4, self.grid[cellNum[0]][cellNum[1]].midPointY-64, 12, 8, QtGui.QPen(), onbrush)
+            self.scene.addRect(self.grid[cellNum[0]][cellNum[1]].midPointX+38, self.grid[cellNum[0]][cellNum[1]].midPointY-64, 12, 8, QtGui.QPen(), onbrush)
         
     def placeText(self, cellNum):#put in name and comment, and setpoint and IO
         i = cellNum[0]

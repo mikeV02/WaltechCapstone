@@ -625,6 +625,7 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
         
         def TimerTracker(Timer, CounterListLive, TimerListLive):
             while self.live:
+                now = time.time()
                 tempPrevx = int(Timer.Prevx)
                 tempPrevy = int(Timer.Prevy)
                 tempPrevElement = self.grid[tempPrevx][tempPrevy].MTorElement
@@ -635,10 +636,11 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
                         print Timer.currentValue,"\n"
                         if Timer.currentValue >= Timer.preset:
                             Timer.done = 1
-                            print "Threaded Done Bit Triggered \n"
+                            self.grid[Timer.x][Timer.y].switch = 1
                     elif self.grid[tempPrevx][tempPrevy].switch == 0:
                         Timer.currentValue = 0
                         Timer.done = 0
+                        self.grid[Timer.x][Timer.y].switch = 0
                     Timer.prevInput = self.grid[tempPrevx][tempPrevy].switch
                 elif ((tempPrevElement == "Counter" or tempPrevElement == "Timer") and Timer.type == "Timer_On_Delay"):
                     tempVariableName = self.grid[tempPrevx][tempPrevy].MTorElement+"_"+self.grid[tempPrevx][tempPrevy].variableName
@@ -650,8 +652,8 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
                                     print "Timer Done: ", Timer.currentValue, "\n"
                                     if Timer.currentValue >= Timer.preset:
                                         Timer.done = 1
-                                        print "Timer Done bit"
-                                elif CounterListLive[counter].done == 1:
+                                        self.grid[Timer.x][Timer.y].switch = 1
+                                elif CounterListLive[counter].done == 0:
                                     Timer.currentValue = 0
                                     Timer.done = 0
                 #    elif tempPrevElement == "Timer":
@@ -670,13 +672,39 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
                         if Timer.currentValue >= Timer.preset:
                             Timer.done = 1
                             print "Threaded Retentive Done Bit Triggered \n"
+                elif ((tempPrevElement == "Counter" or tempPrevElement == "Timer") and Timer.type == "Timer_On_Delay"):
+                    tempVariableName = self.grid[tempPrevx][tempPrevy].MTorElement+"_"+self.grid[tempPrevx][tempPrevy].variableName
+                    if tempPrevElement == "Counter":
+                        for counter in range(len(CounterListLive)):
+                            if CounterListLive[counter].name == tempVariableName:
+                                if CounterListLive[counter].done == 1:
+                                    Timer.currentValue += 1
+                                    print "Threaded Retentive Done Bit Triggered \n"
+                                    if Timer.currentValue >= Timer.preset:
+                                        Timer.done = 1
+                                        self.grid[Timer.x][Timer.y].switch = 1
+                                    
                 
+                #later = time.time()
                 
+                #print "{0:0.8f}".format((later - now)), "\n"
                 
-                time.sleep(.01)
+                self.TimeDone = 0
+                #time.sleep(.01)
             
-        
+        def TimeKeeping():
+            while 1:
+                time.sleep(.1)
+                self.TimeDone = 1
+            
         TimerThread = []
+        
+        self.TimeDone = 0
+        
+        TimeKeeper = threading.Thread(target = TimeKeeping)
+        TimeKeeper.setDaemon(True)
+        TimeKeeper.start()
+            
         
         for i in range(len(TimerListLive)):
             TimerThread = threading.Thread(target = TimerTracker,args=(TimerListLive[i],CounterListLive,TimerListLive,))
@@ -710,6 +738,7 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
                         if CounterListLive[i].currentValue >= CounterListLive[i].preset:
                             print "Counter done\n"
                             CounterListLive[i].done = 1
+                            self.grid[CounterListLive[i].x][CounterListLive[i].y].switch = 1
                     CounterListLive[i].prevInput = self.grid[tempPrevx][tempPrevy].switch
                 elif ((tempPrevElement == "Counter" or tempPrevElement == "Timer") and CounterListLive[i].type == "Counter_Up"):
                     tempVariableName = self.grid[tempPrevx][tempPrevy].MTorElement+"_"+self.grid[tempPrevx][tempPrevy].variableName
@@ -855,6 +884,7 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
         self.ui.liveButton.clicked.disconnect()
         self.ui.liveButton.clicked.connect(self.startFeedback)
         self.ui.liveButton.setText("Go Live")
+        ManageGrid(self.grid, self.scene,self.Tools,self.items).totalRedraw()
         
 
     def showInfo(self):
@@ -1319,13 +1349,6 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
             elif self.Tools.toolList[toolToPlace[1]].toolName == "Narrow":
                 #self.ui.graphicsView.prepareGeometryChange()
                 ManageGrid(self.grid, self.scene, self.Tools,self.items).Shrink(cellNum)#then do function to narrow if can
-		    
-		    #>>>>>toggle an element
-            if self.grid[cellNum[0]][cellNum[1]].MTorElement != "MT" and self.grid[cellNum[0]][cellNum[1]].MTorElement != "blankOR":
-				self.grid[cellNum[0]][cellNum[1]].toggleBit()
-				clickSuccssful = True;
-				print "Bit currently set to: ", self.grid[cellNum[0]][cellNum[1]].switch
-			#>>>>>end of toggle code
 
             #>>>>>cleanup and redraw:
             if clickSuccssful == False:
