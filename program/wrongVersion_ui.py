@@ -2,8 +2,7 @@
 
 # Form implementation generated from reading ui file 'wrongVersion.ui'
 #
-# Created: Mon Sep 15 16:35:14 2014
-#      by: PyQt4 UI code generator 4.10.4
+# Created by: PyQt4 UI code generator 4.12
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -27,13 +26,9 @@ class Ui_wrongVersionDialog(object):
     def setupUi(self, wrongVersionDialog):
         wrongVersionDialog.setObjectName(_fromUtf8("wrongVersionDialog"))
         wrongVersionDialog.resize(312, 84)
-        self.buttonBox = QtGui.QDialogButtonBox(wrongVersionDialog)
-        self.buttonBox.setGeometry(QtCore.QRect(70, 40, 171, 32))
-        self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
-        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
-        self.buttonBox.setObjectName(_fromUtf8("buttonBox"))
+        self.gridLayout = QtGui.QGridLayout(wrongVersionDialog)
+        self.gridLayout.setObjectName(_fromUtf8("gridLayout"))
         self.label = QtGui.QLabel(wrongVersionDialog)
-        self.label.setGeometry(QtCore.QRect(20, 10, 271, 21))
         palette = QtGui.QPalette()
         brush = QtGui.QBrush(QtGui.QColor(170, 0, 0))
         brush.setStyle(QtCore.Qt.SolidPattern)
@@ -49,6 +44,12 @@ class Ui_wrongVersionDialog(object):
         font.setPointSize(12)
         self.label.setFont(font)
         self.label.setObjectName(_fromUtf8("label"))
+        self.gridLayout.addWidget(self.label, 0, 0, 1, 1)
+        self.buttonBox = QtGui.QDialogButtonBox(wrongVersionDialog)
+        self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
+        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
+        self.buttonBox.setObjectName(_fromUtf8("buttonBox"))
+        self.gridLayout.addWidget(self.buttonBox, 1, 0, 1, 1)
 
         self.retranslateUi(wrongVersionDialog)
         QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(_fromUtf8("accepted()")), wrongVersionDialog.accept)

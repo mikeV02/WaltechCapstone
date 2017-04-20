@@ -725,7 +725,12 @@ class OutLineToC():
                 if len(outLine[i])>=2 and ("contNO" in outLine[i][1]):
                     varNameStr=varNameStr+"_NO"
                 if len(outLine[i])>=2 and ("contNC" in outLine[i][1]):
-                    varNameStr=varNameStr+"_NC"      
+                    varNameStr=varNameStr+"_NC"
+                
+                ###ADDED BY MICHAEL
+                if len(outLine[i])>=4 and ("Internal" in outLine[i][2]):
+                    varNameStr=outLine[i][3]
+                ###
                 if "rungstate" not in str(outLine[i][0]):
                     #element on rung, no parallel: (apply to W)
                     if currentBranchList[-1] == None:
@@ -734,7 +739,10 @@ class OutLineToC():
                             C_txt = C_txt + "             {\n"
                             C_txt = C_txt + "                 W = 0;\n"
                             C_txt = C_txt + "             }\n"
-                            C_txt = C_txt + "             else{W = 1;}\n"
+                            C_txt = C_txt + "             else\n"
+                            C_txt = C_txt + "             {\n"
+                            C_txt = C_txt + "                 W = 1;\n"
+                            C_txt = C_txt + "             }\n"
                         else:
                             if "Timer_" in str(outLine[i][0])or "Counter_" in str(outLine[i][0]):
                                 C_txt = C_txt + "             if("+varNameStr+ "_" +  str(outLine[i][1]) +" == 0)\n"
@@ -799,24 +807,7 @@ class OutLineToC():
             #OUTPUT:
             #WAS: if "output_" in str(outLine[i][0]):
             if str(outLine[i][0])[:7] ==  "output_":
-                
-                ### ADDED AND MODIFIED BY MIGUEL //DONE BIT
-                if "Timer" in str(outLine[i][2]) or "Counter" in str(outLine[i][2]):
-                    doneBit = str(outLine[i][2])
-
-                    for index in range(len(outLine)):
-                        
-                        if (doneBit == str(outLine[index][0])):
-                            
-                            try:
-                                C_txt = C_txt +"              "+  str(outLine[i][0]) +" = " + \
-                                    str(outLine[index][0])+"_"+str(outLine[index][1]) + ";\n"
-
-                            except:
-                                pass
-                else:
-                    C_txt = C_txt +"              "+  str(outLine[i][0]) +" = W;\n"
-                ###
+                C_txt = C_txt +"              "+  str(outLine[i][0]) +" = W;\n"
 
             
             #MATH:
@@ -1054,7 +1045,7 @@ class OutLineToC():
         if outline[line][1] == "Constant":
             C_txt = C_txt +"             if("+ str(outline[line][3]) +" == "
         else:
-            C_txt = C_txt +"             if("+self.outputAndName(outline,outline[line],1)+" == "
+            C_txt = C_txt +"             if("+self.outputAndName(outline,outline[line] ,1) + "_" +str(outline[line][2]) +" == "
         if outline[line][2] == "Constant":
             C_txt = C_txt + str(outline[line][4])+"){"
         else:

@@ -2,8 +2,7 @@
 
 # Form implementation generated from reading ui file 'USBHelp.ui'
 #
-# Created: Mon Sep 15 16:35:13 2014
-#      by: PyQt4 UI code generator 4.10.4
+# Created by: PyQt4 UI code generator 4.12
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -27,14 +26,23 @@ class Ui_USBDialog(object):
     def setupUi(self, USBDialog):
         USBDialog.setObjectName(_fromUtf8("USBDialog"))
         USBDialog.resize(539, 316)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(USBDialog.sizePolicy().hasHeightForWidth())
+        USBDialog.setSizePolicy(sizePolicy)
+        USBDialog.setMinimumSize(QtCore.QSize(539, 316))
+        USBDialog.setMaximumSize(QtCore.QSize(539, 316))
+        self.gridLayout = QtGui.QGridLayout(USBDialog)
+        self.gridLayout.setObjectName(_fromUtf8("gridLayout"))
+        self.textBrowser = QtGui.QTextBrowser(USBDialog)
+        self.textBrowser.setObjectName(_fromUtf8("textBrowser"))
+        self.gridLayout.addWidget(self.textBrowser, 0, 0, 1, 1)
         self.buttonBox = QtGui.QDialogButtonBox(USBDialog)
-        self.buttonBox.setGeometry(QtCore.QRect(200, 280, 121, 32))
         self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
         self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
         self.buttonBox.setObjectName(_fromUtf8("buttonBox"))
-        self.textBrowser = QtGui.QTextBrowser(USBDialog)
-        self.textBrowser.setGeometry(QtCore.QRect(10, 10, 521, 261))
-        self.textBrowser.setObjectName(_fromUtf8("textBrowser"))
+        self.gridLayout.addWidget(self.buttonBox, 1, 0, 1, 1)
 
         self.retranslateUi(USBDialog)
         QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(_fromUtf8("accepted()")), USBDialog.accept)

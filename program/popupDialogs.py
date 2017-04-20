@@ -50,9 +50,6 @@ class CoilDialog(QtGui.QDialog):
         cellSearch(grid,cellNum,self.currentHW).makeNamelistCoil(self.ui.comboBox_2)
         cellSearch(grid,cellNum,self.currentHW).makeIOlist(self.ui.comboBox,False)
         cellSearch(grid,cellNum,self.currentHW).fillComment(self.ui.lineEdit)
-
-        ###ADDED BY MIGUEL
-        cellSearch(grid,cellNum,self.currentHW).makeDoneBitLis(self.ui.comboBox_3)
             
 
        
@@ -75,6 +72,26 @@ class ContDialog(QtGui.QDialog):
         cellSearch(grid,cellNum,self.currentHW).makeNamelistCont(self.ui.comboBox_2)
         cellSearch(grid,cellNum,self.currentHW).makeIOlist(self.ui.comboBox,True)
         cellSearch(grid,cellNum,self.currentHW).fillComment(self.ui.lineEdit)
+
+        ###ADDED BY MIGUEL and MICHAEL
+
+        COMBO3 = self.ui.comboBox_3
+        cellSearch(grid,cellNum,self.currentHW).makeDoneBitLis(COMBO3)
+
+        def setComEN():
+            COMBO3.setCurrentIndex(0)
+
+            if (self.ui.comboBox.currentText() == "Internal"):
+                COMBO3.setEnabled(True)
+            else:
+                COMBO3.setEnabled(False)
+                inx = COMBO3.findText("Select Item For Done Bit")
+                COMBO3.setCurrentIndex(inx)
+            
+
+        setComEN()
+        self.ui.comboBox.activated.connect(setComEN)
+        ###
            
 class EdgeDialog(QtGui.QDialog):
     def __init__(self, grid, cellNum, currentHW, parent=None):
@@ -111,6 +128,12 @@ class TimerDialog(QtGui.QDialog):
         cellSearch(grid,cellNum,self.currentHW).makeNamelistCoil(self.ui.comboBox_2)
         cellSearch(grid,cellNum,self.currentHW).fillComment(self.ui.lineEdit)
         cellSearch(grid,cellNum,self.currentHW).fillSpinBox(self.ui.doubleSpinBox)
+
+    ###CREATED BY CHIRS ____ ADDED/MODIFIED BY MIGUEL
+    def switchCombo(self):
+        self.ui.comboBox_3.setItemText(0, "Retentive_Timer_On")
+        self.ui.comboBox_3.setItemText(1, "Timer_On_Delay")
+    ###
         
 class CounterDialog(QtGui.QDialog):
     def __init__(self, grid, cellNum, currentHW, parent=None):
@@ -130,6 +153,12 @@ class CounterDialog(QtGui.QDialog):
         cellSearch(grid,cellNum,self.currentHW).makeNamelistCoil(self.ui.comboBox_2)
         cellSearch(grid,cellNum,self.currentHW).fillComment(self.ui.lineEdit)
         cellSearch(grid,cellNum,self.currentHW).fillSpinBox(self.ui.spinBox)
+
+    ###CREATED BY CHIRS ____ ADDED/MODIFIED BY MIGUEL
+    def switchCombo(self):
+        self.ui.comboBox_3.setItemText(0, "Counter_Down")
+        self.ui.comboBox_3.setItemText(1, "Couter_Up")
+    ###
         
 
 class CompairDialog(QtGui.QDialog):
@@ -346,7 +375,7 @@ class cellSearch(): #Functions for pre-filling the boxes in the Popup dialogs
         self.currentHW = currentHW
 
 
-    ###ADDED BY MIGUEL
+    ###ADDED BY MIGUEL and MICHAEL
     def makeDoneBitLis(self, combobox):
         doneBitList = []
         doneBitList.append("Select Item For Done Bit")
@@ -354,12 +383,24 @@ class cellSearch(): #Functions for pre-filling the boxes in the Popup dialogs
             for j in range(len(self.grid[i])):
                 if self.grid[i][j].variableName != None:
                     varName = self.grid[i][j].variableName
-                    type = self.grid[i][j].MTorElement
-                    if type == "Timer" or type == "Counter":
-                        doneBitList.append(type+"_"+varName)
-                        print doneBitList
+                    EleType = self.grid[i][j].MTorElement
 
+                    if EleType == "Timer" or EleType == "Counter":
+                        T_C_Type = self.grid[i][j].type
+                        doneBitList.append(EleType+"_"+varName+"_"+T_C_Type)
+
+        doneItem = self.grid[self.cellNum[0]][self.cellNum[1]].doneBit
+
+        #check if already assigned (editing instead of new element)
+        if doneItem != None:
+            try:
+                doneBitList.remove(doneItem)
+                doneBitList.insert(0, doneItem)
+            except: pass
+            
         combobox.addItems(doneBitList)
+
+    ###
 
         
     def makeSharedNameList(self,elType):# elType is a string like "Coil" 
@@ -393,6 +434,8 @@ class cellSearch(): #Functions for pre-filling the boxes in the Popup dialogs
         if self.grid[self.cellNum[0]][self.cellNum[1]].variableName != None:
             shareNameList.pop(0)
             shareNameList.insert(0,self.grid[self.cellNum[0]][self.cellNum[1]].variableName)#replace Name_ above with real name
+
+        
   
         return shareNameList
         

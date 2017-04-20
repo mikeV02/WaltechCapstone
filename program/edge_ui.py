@@ -2,8 +2,7 @@
 
 # Form implementation generated from reading ui file 'edge.ui'
 #
-# Created: Mon Sep 15 16:35:13 2014
-#      by: PyQt4 UI code generator 4.10.4
+# Created by: PyQt4 UI code generator 4.12
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -26,18 +25,22 @@ except AttributeError:
 class Ui_EdgeDialog(object):
     def setupUi(self, EdgeDialog):
         EdgeDialog.setObjectName(_fromUtf8("EdgeDialog"))
-        EdgeDialog.resize(180, 88)
+        EdgeDialog.resize(249, 88)
+        EdgeDialog.setMinimumSize(QtCore.QSize(249, 88))
+        EdgeDialog.setMaximumSize(QtCore.QSize(249, 88))
+        self.gridLayout = QtGui.QGridLayout(EdgeDialog)
+        self.gridLayout.setObjectName(_fromUtf8("gridLayout"))
+        self.label_3 = QtGui.QLabel(EdgeDialog)
+        self.label_3.setObjectName(_fromUtf8("label_3"))
+        self.gridLayout.addWidget(self.label_3, 0, 0, 1, 1)
+        self.lineEdit = QtGui.QLineEdit(EdgeDialog)
+        self.lineEdit.setObjectName(_fromUtf8("lineEdit"))
+        self.gridLayout.addWidget(self.lineEdit, 0, 1, 1, 1)
         self.buttonBox = QtGui.QDialogButtonBox(EdgeDialog)
-        self.buttonBox.setGeometry(QtCore.QRect(20, 40, 121, 32))
         self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
         self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
         self.buttonBox.setObjectName(_fromUtf8("buttonBox"))
-        self.label_3 = QtGui.QLabel(EdgeDialog)
-        self.label_3.setGeometry(QtCore.QRect(10, 10, 71, 20))
-        self.label_3.setObjectName(_fromUtf8("label_3"))
-        self.lineEdit = QtGui.QLineEdit(EdgeDialog)
-        self.lineEdit.setGeometry(QtCore.QRect(70, 10, 101, 20))
-        self.lineEdit.setObjectName(_fromUtf8("lineEdit"))
+        self.gridLayout.addWidget(self.buttonBox, 1, 0, 1, 2)
 
         self.retranslateUi(EdgeDialog)
         QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(_fromUtf8("accepted()")), EdgeDialog.accept)

@@ -2,8 +2,7 @@
 
 # Form implementation generated from reading ui file 'ardIOnote.ui'
 #
-# Created: Mon Sep 15 16:35:13 2014
-#      by: PyQt4 UI code generator 4.10.4
+# Created by: PyQt4 UI code generator 4.12
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -27,13 +26,11 @@ class Ui_ardIOnoteDialog(object):
     def setupUi(self, ardIOnoteDialog):
         ardIOnoteDialog.setObjectName(_fromUtf8("ardIOnoteDialog"))
         ardIOnoteDialog.resize(289, 167)
-        self.buttonBox = QtGui.QDialogButtonBox(ardIOnoteDialog)
-        self.buttonBox.setGeometry(QtCore.QRect(30, 120, 171, 32))
-        self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
-        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
-        self.buttonBox.setObjectName(_fromUtf8("buttonBox"))
+        ardIOnoteDialog.setMinimumSize(QtCore.QSize(289, 167))
+        ardIOnoteDialog.setMaximumSize(QtCore.QSize(289, 167))
+        self.gridLayout = QtGui.QGridLayout(ardIOnoteDialog)
+        self.gridLayout.setObjectName(_fromUtf8("gridLayout"))
         self.label = QtGui.QLabel(ardIOnoteDialog)
-        self.label.setGeometry(QtCore.QRect(20, 10, 271, 101))
         palette = QtGui.QPalette()
         brush = QtGui.QBrush(QtGui.QColor(170, 0, 0))
         brush.setStyle(QtCore.Qt.SolidPattern)
@@ -49,6 +46,12 @@ class Ui_ardIOnoteDialog(object):
         font.setPointSize(12)
         self.label.setFont(font)
         self.label.setObjectName(_fromUtf8("label"))
+        self.gridLayout.addWidget(self.label, 0, 0, 1, 1)
+        self.buttonBox = QtGui.QDialogButtonBox(ardIOnoteDialog)
+        self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
+        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
+        self.buttonBox.setObjectName(_fromUtf8("buttonBox"))
+        self.gridLayout.addWidget(self.buttonBox, 1, 0, 1, 1)
 
         self.retranslateUi(ardIOnoteDialog)
         QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(_fromUtf8("accepted()")), ardIOnoteDialog.accept)

@@ -2,8 +2,7 @@
 
 # Form implementation generated from reading ui file 'move.ui'
 #
-# Created: Mon Sep 15 16:35:14 2014
-#      by: PyQt4 UI code generator 4.10.4
+# Created by: PyQt4 UI code generator 4.12
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -27,13 +26,15 @@ class Ui_MoveDialog(object):
     def setupUi(self, MoveDialog):
         MoveDialog.setObjectName(_fromUtf8("MoveDialog"))
         MoveDialog.resize(227, 144)
+        MoveDialog.setMinimumSize(QtCore.QSize(227, 144))
+        MoveDialog.setMaximumSize(QtCore.QSize(227, 144))
         self.buttonBox = QtGui.QDialogButtonBox(MoveDialog)
         self.buttonBox.setGeometry(QtCore.QRect(50, 110, 121, 32))
         self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
         self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
         self.buttonBox.setObjectName(_fromUtf8("buttonBox"))
         self.label_5 = QtGui.QLabel(MoveDialog)
-        self.label_5.setGeometry(QtCore.QRect(30, 10, 41, 16))
+        self.label_5.setGeometry(QtCore.QRect(20, 10, 51, 20))
         self.label_5.setObjectName(_fromUtf8("label_5"))
         self.label_7 = QtGui.QLabel(MoveDialog)
         self.label_7.setGeometry(QtCore.QRect(150, 10, 51, 16))

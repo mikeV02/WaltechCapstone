@@ -2,8 +2,7 @@
 
 # Form implementation generated from reading ui file 'compair.ui'
 #
-# Created: Mon Sep 15 16:35:13 2014
-#      by: PyQt4 UI code generator 4.10.4
+# Created by: PyQt4 UI code generator 4.12
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -33,7 +32,7 @@ class Ui_CompairDialog(object):
         self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
         self.buttonBox.setObjectName(_fromUtf8("buttonBox"))
         self.label_5 = QtGui.QLabel(CompairDialog)
-        self.label_5.setGeometry(QtCore.QRect(30, 10, 41, 16))
+        self.label_5.setGeometry(QtCore.QRect(20, 10, 51, 16))
         self.label_5.setObjectName(_fromUtf8("label_5"))
         self.label_7 = QtGui.QLabel(CompairDialog)
         self.label_7.setGeometry(QtCore.QRect(150, 10, 51, 16))

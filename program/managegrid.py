@@ -658,7 +658,7 @@ class ManageGrid():
         ##012##       
         self.grid[cellNum[0]][cellNum[1]].MTorElement = tempCellData.MTorElement
         self.grid[cellNum[0]][cellNum[1]].variableName = tempCellData.variableName
-        self.grid[cellNum[0]][cellNum[1]].type = tempCellData.type
+        self.grid[cellNum[0]][cellNum[1]].type = tempCellData.type ###ADDED BY TEDDY
         self.grid[cellNum[0]][cellNum[1]].ioAssign = tempCellData.ioAssign
         self.grid[cellNum[0]][cellNum[1]].comment = tempCellData.comment
         self.grid[cellNum[0]][cellNum[1]].setPoint = tempCellData.setPoint
@@ -699,6 +699,7 @@ class ManageGrid():
             self.scene.addRect(self.grid[cellNum[0]][cellNum[1]].midPointX+4, self.grid[cellNum[0]][cellNum[1]].midPointY-64, 12, 8, QtGui.QPen(), offbrush)
             self.scene.addRect(self.grid[cellNum[0]][cellNum[1]].midPointX+38, self.grid[cellNum[0]][cellNum[1]].midPointY-64, 12, 8, QtGui.QPen(), offbrush)
                     
+        #Michael Sharp added this code, distinguishes between on and off elements
         if self.grid[cellNum[0]][cellNum[1]].switch == True:
             self.scene.addRect(self.grid[cellNum[0]][cellNum[1]].midPointX+4, self.grid[cellNum[0]][cellNum[1]].midPointY-64, 12, 8, QtGui.QPen(), onbrush)
             self.scene.addRect(self.grid[cellNum[0]][cellNum[1]].midPointX+38, self.grid[cellNum[0]][cellNum[1]].midPointY-64, 12, 8, QtGui.QPen(), onbrush)

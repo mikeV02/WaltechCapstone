@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'mainwindow.ui'
 #
-# Created by: PyQt4 UI code generator 4.11.4
+# Created by: PyQt4 UI code generator 4.12
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -25,7 +25,9 @@ except AttributeError:
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName(_fromUtf8("MainWindow"))
-        MainWindow.resize(973, 700)
+        MainWindow.resize(1024, 700)
+        MainWindow.setMinimumSize(QtCore.QSize(1024, 700))
+        MainWindow.setMaximumSize(QtCore.QSize(1024, 700))
         self.centralwidget = QtGui.QWidget(MainWindow)
         self.centralwidget.setObjectName(_fromUtf8("centralwidget"))
         self.gridLayout = QtGui.QGridLayout(self.centralwidget)
@@ -33,7 +35,7 @@ class Ui_MainWindow(object):
         self.label_4 = QtGui.QLabel(self.centralwidget)
         self.label_4.setText(_fromUtf8(""))
         self.label_4.setObjectName(_fromUtf8("label_4"))
-        self.gridLayout.addWidget(self.label_4, 0, 8, 1, 1)
+        self.gridLayout.addWidget(self.label_4, 0, 9, 1, 1)
         self.undoBbutton = QtGui.QToolButton(self.centralwidget)
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/icons/icons/CurvedArrowRightDown.svg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
@@ -101,7 +103,8 @@ class Ui_MainWindow(object):
         self.tableWidget.setSizePolicy(sizePolicy)
         self.tableWidget.setSizeIncrement(QtCore.QSize(20, 20))
         font = QtGui.QFont()
-        font.setPointSize(8)
+        font.setFamily(_fromUtf8("Sans Serif"))
+        font.setPointSize(7)
         self.tableWidget.setFont(font)
         self.tableWidget.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
         self.tableWidget.setTabKeyNavigation(False)
@@ -109,7 +112,7 @@ class Ui_MainWindow(object):
         self.tableWidget.setSelectionMode(QtGui.QAbstractItemView.NoSelection)
         self.tableWidget.setShowGrid(True)
         self.tableWidget.setCornerButtonEnabled(False)
-        self.tableWidget.setColumnCount(5)
+        self.tableWidget.setColumnCount(6)
         self.tableWidget.setObjectName(_fromUtf8("tableWidget"))
         self.tableWidget.setRowCount(0)
         item = QtGui.QTableWidgetItem()
@@ -122,10 +125,14 @@ class Ui_MainWindow(object):
         self.tableWidget.setHorizontalHeaderItem(3, item)
         item = QtGui.QTableWidgetItem()
         self.tableWidget.setHorizontalHeaderItem(4, item)
-        self.tableWidget.horizontalHeader().setDefaultSectionSize(50)
+        item = QtGui.QTableWidgetItem()
+        self.tableWidget.setHorizontalHeaderItem(5, item)
+        self.tableWidget.horizontalHeader().setDefaultSectionSize(40)
         self.tableWidget.horizontalHeader().setMinimumSectionSize(20)
-        self.tableWidget.horizontalHeader().setStretchLastSection(False)
-        self.gridLayout.addWidget(self.tableWidget, 2, 7, 1, 3)
+        self.tableWidget.horizontalHeader().setStretchLastSection(True)
+        self.tableWidget.verticalHeader().setVisible(False)
+        self.tableWidget.verticalHeader().setStretchLastSection(False)
+        self.gridLayout.addWidget(self.tableWidget, 2, 7, 1, 4)
         self.textBrowser = QtGui.QTextBrowser(self.centralwidget)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
@@ -133,7 +140,7 @@ class Ui_MainWindow(object):
         sizePolicy.setHeightForWidth(self.textBrowser.sizePolicy().hasHeightForWidth())
         self.textBrowser.setSizePolicy(sizePolicy)
         self.textBrowser.setObjectName(_fromUtf8("textBrowser"))
-        self.gridLayout.addWidget(self.textBrowser, 3, 7, 1, 3)
+        self.gridLayout.addWidget(self.textBrowser, 3, 7, 1, 4)
         MainWindow.setCentralWidget(self.centralwidget)
         self.statusbar = QtGui.QStatusBar(MainWindow)
         self.statusbar.setObjectName(_fromUtf8("statusbar"))
@@ -144,7 +151,7 @@ class Ui_MainWindow(object):
         self.toolBar.setObjectName(_fromUtf8("toolBar"))
         MainWindow.addToolBar(QtCore.Qt.TopToolBarArea, self.toolBar)
         self.menuBar = QtGui.QMenuBar(MainWindow)
-        self.menuBar.setGeometry(QtCore.QRect(0, 0, 973, 20))
+        self.menuBar.setGeometry(QtCore.QRect(0, 0, 1024, 23))
         self.menuBar.setObjectName(_fromUtf8("menuBar"))
         self.menuFile = QtGui.QMenu(self.menuBar)
         self.menuFile.setObjectName(_fromUtf8("menuFile"))
@@ -429,9 +436,11 @@ class Ui_MainWindow(object):
         item = self.tableWidget.horizontalHeaderItem(2)
         item.setText(_translate("MainWindow", "I/O", None))
         item = self.tableWidget.horizontalHeaderItem(3)
-        item.setText(_translate("MainWindow", "Element", None))
+        item.setText(_translate("MainWindow", "Elmnt", None))
         item = self.tableWidget.horizontalHeaderItem(4)
-        item.setText(_translate("MainWindow", "Location", None))
+        item.setText(_translate("MainWindow", "Lctn", None))
+        item = self.tableWidget.horizontalHeaderItem(5)
+        item.setText(_translate("MainWindow", "DoneBit", None))
         self.toolBar.setWindowTitle(_translate("MainWindow", "Elements", None))
         self.menuFile.setTitle(_translate("MainWindow", "File", None))
         self.menuEdit.setTitle(_translate("MainWindow", "Edit", None))
@@ -524,3 +533,13 @@ class Ui_MainWindow(object):
         self.actionArduinoNano_IO.setText(_translate("MainWindow", "Arduino Nano IO", None))
 
 import toolbaricons_rc
+
+if __name__ == "__main__":
+    import sys
+    app = QtGui.QApplication(sys.argv)
+    MainWindow = QtGui.QMainWindow()
+    ui = Ui_MainWindow()
+    ui.setupUi(MainWindow)
+    MainWindow.show()
+    sys.exit(app.exec_())
+

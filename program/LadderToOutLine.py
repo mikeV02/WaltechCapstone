@@ -170,11 +170,9 @@ class ladderToOutLine():
                     #width == position means an output
             print "adding output"
             
-            ###MODIFIED BY MIGUEL
             outLine.append(["output_" + str(self.grid[i][-1].variableName),\
-                        str(self.grid[i][-1].ioAssign),\
-                        str(self.grid[i][-1].doneBit)])
-            ###
+                        str(self.grid[i][-1].ioAssign)])
+
             # outLine.append(["output_" + str(self.grid[i][-1].variableName),\
             #     str(self.grid[i][-1].ioAssign)])
             # print "added", outLine[-1][0]
@@ -456,7 +454,8 @@ class ladderToOutLine():
                 and j<width-1:
             outLine.append(["cont_" + str(self.grid[i][j].variableName),\
                         str(self.grid[i][j].MTorElement), \
-                        str(self.grid[i][j].ioAssign)])
+                        str(self.grid[i][j].ioAssign), \
+                        str(self.grid[i][j].doneBit)]) ###ADDED BY MIGUEL AND MICHAEL
                         
         if self.grid[i][j].MTorElement == "Fall" \
                 and j<width-1:

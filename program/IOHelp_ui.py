@@ -2,8 +2,7 @@
 
 # Form implementation generated from reading ui file 'IOHelp.ui'
 #
-# Created: Mon Sep 15 16:35:13 2014
-#      by: PyQt4 UI code generator 4.10.4
+# Created by: PyQt4 UI code generator 4.12
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -26,15 +25,27 @@ except AttributeError:
 class Ui_IODialog(object):
     def setupUi(self, IODialog):
         IODialog.setObjectName(_fromUtf8("IODialog"))
-        IODialog.resize(539, 316)
+        IODialog.resize(580, 466)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(IODialog.sizePolicy().hasHeightForWidth())
+        IODialog.setSizePolicy(sizePolicy)
+        self.gridLayout = QtGui.QGridLayout(IODialog)
+        self.gridLayout.setObjectName(_fromUtf8("gridLayout"))
+        self.textBrowser = QtGui.QTextBrowser(IODialog)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.textBrowser.sizePolicy().hasHeightForWidth())
+        self.textBrowser.setSizePolicy(sizePolicy)
+        self.textBrowser.setObjectName(_fromUtf8("textBrowser"))
+        self.gridLayout.addWidget(self.textBrowser, 0, 0, 1, 1)
         self.buttonBox = QtGui.QDialogButtonBox(IODialog)
-        self.buttonBox.setGeometry(QtCore.QRect(200, 280, 121, 32))
         self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
         self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
         self.buttonBox.setObjectName(_fromUtf8("buttonBox"))
-        self.textBrowser = QtGui.QTextBrowser(IODialog)
-        self.textBrowser.setGeometry(QtCore.QRect(10, 10, 521, 261))
-        self.textBrowser.setObjectName(_fromUtf8("textBrowser"))
+        self.gridLayout.addWidget(self.buttonBox, 1, 0, 1, 1)
 
         self.retranslateUi(IODialog)
         QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(_fromUtf8("accepted()")), IODialog.accept)

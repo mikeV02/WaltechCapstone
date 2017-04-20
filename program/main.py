@@ -96,12 +96,14 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
         self.items=[QtGui.QGraphicsTextItem(),QtGui.QGraphicsRectItem()]#for squares and indexes that follow mouse
         self.ui.graphicsView.viewport().installEventFilter(self)#for mouse functions
         #Setup IO table on right
-        # self.ui.tableWidget.setColumnWidth(0, 140)
-        # self.ui.tableWidget.setColumnWidth(1, 140)
-        # self.ui.tableWidget.setColumnWidth(2, 140)
-        # self.ui.tableWidget.setColumnWidth(3, 140)
-        Strech = QtGui.QHeaderView.Stretch
-        self.ui.tableWidget.horizontalHeader().setResizeMode(Strech)
+        self.ui.tableWidget.setColumnWidth(0, 50)
+        self.ui.tableWidget.setColumnWidth(1, 45)
+        self.ui.tableWidget.setColumnWidth(2, 50)
+        self.ui.tableWidget.setColumnWidth(3, 40)
+        self.ui.tableWidget.setColumnWidth(4, 30)
+        #self.ui.tableWidget.setColumnWidth(5, 140)
+        #Strech = QtGui.QHeaderView.Stretch
+        #self.ui.tableWidget.horizontalHeader().setResizeMode(Strech)
 		
 		#Setup Data table on right:
         #self.ui.tableDataFiles.setColumnWidth(0, 75)
@@ -432,6 +434,15 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
                     except: pass
                     try: uiList.setItem(numRows-1,4,QtGui.QTableWidgetItem(str(i)+","+str(j)))
                     except: pass
+
+                    ###ADDED BY MIGUEL Done Bit on Left Table
+                    try:
+                        if "Select" not in self.grid[i][j].doneBit:
+                            try: uiList.setItem(numRows-1,5,QtGui.QTableWidgetItem(self.grid[i][j].doneBit))
+                            except: pass
+                    except: pass
+                    ###
+
                     uiList.setSortingEnabled(True)
   
 
@@ -485,7 +496,8 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
         self.ui.liveButton.setText("Stop Live")
 
         
-        
+
+
         CounterLocations = []
         TimerLocations = []
         
@@ -530,6 +542,7 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
                             CounterListLive[counterIndex].preset = self.grid[x][y].setPoint
                             counterIndex = counterIndex + 1
                     if(timerIndex < len(TimerListLive)):
+
                         if (self.grid[x][y].MTorElement+"_"+self.grid[x][y].variableName) == TimerListLive[timerIndex].name:
                             TimerListLive[timerIndex].setLocationType(x,y,self.grid[x][y].type)
                             TimerListLive[timerIndex].preset = int(float(self.grid[x][y].setPoint) * 100)
@@ -543,41 +556,56 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
         #    
         #for x in range(len(TimerListLive)):
         #    print TimerListLive[x].name, TimerListLive[x].x, TimerListLive[x].y, "\n"                   
+
+
                        
         
+
         
         if len(TimerListLive) > 0:
             for timer in range(len(TimerListLive)):
                 x,y = TimerListLive[timer].x, (TimerListLive[timer].y - 1)
-                
+
+
+
                 if y < 0:
                         TimerListLive[timer].setPrevElement(-1,-1,"None")
+
                 
                 while y > -1:
                     if self.grid[x][y].variableName is not None:
                         TimerListLive[timer].setPrevElement(x,y,self.grid[x][y].MTorElement)
+
                         break            
                     elif y == 0:
                         TimerListLive[timer].setPrevElement(-1,-1,"None")
+
                         y = y - 1
         
+
                     y = y - 1
                     
         if len(CounterListLive) > 0:
             for counter in range(len(CounterListLive)):
                 x,y = CounterListLive[counter].x, (CounterListLive[counter].y - 1)
-                
+
+
+
                 if y < 0:
                         CounterListLive[counter].setPrevElement(-1,-1,"None")
+
                 
                 while y > -1:
                     if self.grid[x][y].variableName is not None:
                         CounterListLive[counter].setPrevElement(x,y,self.grid[x][y].MTorElement)
+
                         break            
                     elif y == 0:
                         CounterListLive[counter].setPrevElement(-1,-1,"None")
+
                         y = y - 1
         
+
                     y = y - 1
 
                     
@@ -620,6 +648,8 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
         #for i in range(len(self.CounterList)):
         #    Countervalues.append(0);
         #
+
+
         
         import threading
         
@@ -690,7 +720,7 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
                 #print "{0:0.8f}".format((later - now)), "\n"
                 
                 self.TimeDone = 0
-                #time.sleep(.01)
+                time.sleep(.01)
             
         def TimeKeeping():
             while 1:
@@ -698,20 +728,26 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
                 self.TimeDone = 1
             
         TimerThread = []
+
         
         self.TimeDone = 0
+
+
         
         TimeKeeper = threading.Thread(target = TimeKeeping)
         TimeKeeper.setDaemon(True)
         TimeKeeper.start()
             
+
+
         
+
         for i in range(len(TimerListLive)):
             TimerThread = threading.Thread(target = TimerTracker,args=(TimerListLive[i],CounterListLive,TimerListLive,))
             TimerThread.setDaemon(True)
             TimerThread.start()
-            
-            
+
+
         
         while self.live:
             # if(self.currentHW == "ArduinoNano"):
@@ -790,6 +826,15 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
 					
 		#####END ADDED BY CHRIS
         
+
+
+
+
+
+
+
+
+
             ###MODIFIED BY MIGUEL GO LIVE TIMERS
             if (WaltSerial.getArduinoState() is not None):
                 feedback = WaltSerial.getArduinoState()
@@ -1185,6 +1230,14 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
                     print "const_B:", tempCellData.const_B
                     self.grid[cellNum[0]][cellNum[1]].functType = tempCellData.functType #not used
                     print "functType:", tempCellData.functType #not used
+
+                    ###ADDED BY MIGUEL
+                    self.grid[cellNum[0]][cellNum[1]].doneBit = tempCellData.doneBit
+                    print "doneBit:", tempCellData.doneBit
+
+                    self.grid[cellNum[0]][cellNum[1]].type = tempCellData.type
+                    print "Type:", tempCellData.type
+                    ###
                     
                     if self.grid[cellNum[0]][cellNum[1]].ioAssign != None and self.grid[cellNum[0]][cellNum[1]].ioAssign != "Internal":
                         if self.grid[cellNum[0]][cellNum[1]].ioAssign[:3] == 'in_':
@@ -1349,6 +1402,13 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
             elif self.Tools.toolList[toolToPlace[1]].toolName == "Narrow":
                 #self.ui.graphicsView.prepareGeometryChange()
                 ManageGrid(self.grid, self.scene, self.Tools,self.items).Shrink(cellNum)#then do function to narrow if can
+		    
+		    ##>>>>>toggle an element
+            #if self.grid[cellNum[0]][cellNum[1]].MTorElement != "MT" and self.grid[cellNum[0]][cellNum[1]].MTorElement != "blankOR":
+			#	self.grid[cellNum[0]][cellNum[1]].toggleBit()
+			#	clickSuccssful = True;
+			#	print "Bit currently set to: ", self.grid[cellNum[0]][cellNum[1]].switch
+			##>>>>>end of toggle code
 
             #>>>>>cleanup and redraw:
             if clickSuccssful == False:
@@ -1390,17 +1450,20 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
         elif tool == "Rising" or tool =="Fall":#do dialog for this tool:
             self.dialog = popupDialogs.EdgeDialog(self.grid, cellNum,self.currentHW)
             popUpOKed = self.dialog.exec_()# For Modal dialogs
+
+        ###ADDED/MODIFIED BY CHRIS ____ MODIFIED BY MIGUEL    
         elif tool == "Timer" :#do dialog for this tool:
             switch = 0
 
             if leftOrRight == 1:
+                print "\n\n\n\n\n    PAPAPAPA   "+self.grid[cellNum[0]][cellNum[1]].type
                 if self.grid[cellNum[0]][cellNum[1]].type == "Retentive_Timer_On":
-                       switch = 1
+                    switch = 1
             
             self.dialog = popupDialogs.TimerDialog(self.grid, cellNum,self.currentHW)
 
             if switch == 1:
-                self.dialog.ui.switchCombo()
+                self.dialog.switchCombo()
                     
             popUpOKed = self.dialog.exec_()# For Modal dialogs
             
@@ -1409,14 +1472,16 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
             
             if leftOrRight == 1:
                 if self.grid[cellNum[0]][cellNum[1]].type == "Counter_Down":
-                       switch = 1
+                    switch = 1
         
             self.dialog = popupDialogs.CounterDialog(self.grid, cellNum,self.currentHW)
             
             if switch == 1:
-                self.dialog.ui.switchCombo()
+                self.dialog.switchCombo()
             
             popUpOKed = self.dialog.exec_()# For Modal dialogs
+
+        ###
             
         elif tool == "Plus"or tool =="Minus"or tool =="Divide"or tool =="Mult" or tool == "Move" :#do dialog for this tool:
             self.dialog = popupDialogs.MathDialog(self.grid, cellNum,self.currentHW,tool)
@@ -1439,11 +1504,13 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
             ##008##
             # get all info from popup:
             
+            ###ADDED BY TEDDY
             if tool == "Timer":
                 self.grid[cellNum[0]][cellNum[1]].type = self.dialog.ui.comboBox_3.currentText()
             
             if tool == "Counter":
                 self.grid[cellNum[0]][cellNum[1]].type = self.dialog.ui.comboBox_3.currentText()
+            ###
             
             try: tempCellInfo.ioAssign = self.dialog.ui.comboBox.currentText()#I/O assign
             except: pass
@@ -1454,7 +1521,8 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
                 if not re.match(r'^[a-zA-Z0-9_]+$', tempCellInfo.variableName):
                     print "bad name"
                     tempCellInfo.variableName = "please_rename"
-            try: tempCellInfo.type = self.dialog.ui.comboBox_3.currentText() #type
+
+            try: tempCellInfo.type = self.dialog.ui.comboBox_3.currentText() #type ###ADDED BY TEDDY
             except: pass
             try: tempCellInfo.comment = self.dialog.ui.lineEdit.text()#comment
             except: pass
@@ -1473,13 +1541,13 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
             except: pass
             try: tempCellInfo.const_B = self.dialog.ui.spinBox_B.value()
             except: pass
-
-            ###BY MIGUEL DONE Bit
-            try:
-                tempCellInfo.doneBit = self.dialog.ui.comboBox_3.currentText() #DoneBit
-                print "\n\n\n\n\n"+tempCellInfo+"\n\n\n\n"
-            except: pass
-
+            
+            ###BY MIGUEL DONE BIT
+            if "cont" in tool:
+                try:
+                    tempCellInfo.doneBit = self.dialog.ui.comboBox_3.currentText() #Done Bit
+                except: pass
+            ###
 
             tempCellInfo.MTorElement = tool
             return tempCellInfo

@@ -25,7 +25,9 @@ except AttributeError:
 class Ui_CoilDialog(object):
     def setupUi(self, CoilDialog):
         CoilDialog.setObjectName(_fromUtf8("CoilDialog"))
-        CoilDialog.resize(269, 250)
+        CoilDialog.resize(269, 187)
+        CoilDialog.setMinimumSize(QtCore.QSize(269, 187))
+        CoilDialog.setMaximumSize(QtCore.QSize(269, 187))
         self.gridLayout = QtGui.QGridLayout(CoilDialog)
         self.gridLayout.setObjectName(_fromUtf8("gridLayout"))
         self.label_3 = QtGui.QLabel(CoilDialog)
@@ -47,17 +49,11 @@ class Ui_CoilDialog(object):
         self.label_5 = QtGui.QLabel(CoilDialog)
         self.label_5.setObjectName(_fromUtf8("label_5"))
         self.gridLayout.addWidget(self.label_5, 1, 0, 1, 1)
-        self.label = QtGui.QLabel(CoilDialog)
-        self.label.setObjectName(_fromUtf8("label"))
-        self.gridLayout.addWidget(self.label, 4, 0, 1, 1)
         self.buttonBox = QtGui.QDialogButtonBox(CoilDialog)
         self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
         self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
         self.buttonBox.setObjectName(_fromUtf8("buttonBox"))
-        self.gridLayout.addWidget(self.buttonBox, 5, 1, 1, 1)
-        self.comboBox_3 = QtGui.QComboBox(CoilDialog)
-        self.comboBox_3.setObjectName(_fromUtf8("comboBox_3"))
-        self.gridLayout.addWidget(self.comboBox_3, 4, 1, 1, 1)
+        self.gridLayout.addWidget(self.buttonBox, 4, 1, 1, 1)
 
         self.retranslateUi(CoilDialog)
         QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(_fromUtf8("accepted()")), CoilDialog.accept)
@@ -68,6 +64,15 @@ class Ui_CoilDialog(object):
         CoilDialog.setWindowTitle(_translate("CoilDialog", "Coil Properties", None))
         self.label_3.setText(_translate("CoilDialog", "Comment:", None))
         self.label_7.setText(_translate("CoilDialog", "Name:", None))
-        self.label_5.setText(_translate("CoilDialog", "Output", None))
-        self.label.setText(_translate("CoilDialog", "Done Bit", None))
+        self.label_5.setText(_translate("CoilDialog", "Output:", None))
+
+
+if __name__ == "__main__":
+    import sys
+    app = QtGui.QApplication(sys.argv)
+    CoilDialog = QtGui.QDialog()
+    ui = Ui_CoilDialog()
+    ui.setupUi(CoilDialog)
+    CoilDialog.show()
+    sys.exit(app.exec_())
 
