@@ -660,14 +660,24 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
                 tempPrevy = int(Timer.Prevy)
                 tempPrevElement = self.grid[tempPrevx][tempPrevy].MTorElement
                 
-                if(tempPrevElement == "contNC" and Timer.type == "Timer_On_Delay"):         
-                    if self.grid[tempPrevx][tempPrevy].switch == 1:
+                if((tempPrevElement == "contNC" or tempPrevElement == "contNO") and Timer.type == "Timer_On_Delay"):       
+
+                    SwitchValue = 45
+                    
+                    if(tempPrevElement == "contNC"):
+                        #print "Cont nc\n"
+                        SwitchValue = self.grid[tempPrevx][tempPrevy].switch
+                    else:
+                        #print "Cont no\n"
+                        SwitchValue = (self.grid[tempPrevx][tempPrevy].switch == 0)
+                
+                    if SwitchValue == 1:
                         Timer.currentValue += 1
-                        print Timer.currentValue,"\n"
+                        #print Timer.currentValue, "\n"
                         if Timer.currentValue >= Timer.preset:
                             Timer.done = 1
                             self.grid[Timer.x][Timer.y].switch = 1
-                    elif self.grid[tempPrevx][tempPrevy].switch == 0:
+                    elif SwitchValue == 0:
                         Timer.currentValue = 0
                         Timer.done = 0
                         self.grid[Timer.x][Timer.y].switch = 0
@@ -679,13 +689,26 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
                             if CounterListLive[counter].name == tempVariableName:
                                 if CounterListLive[counter].done == 1:
                                     Timer.currentValue += 1
-                                    print "Timer Done: ", Timer.currentValue, "\n"
                                     if Timer.currentValue >= Timer.preset:
                                         Timer.done = 1
                                         self.grid[Timer.x][Timer.y].switch = 1
                                 elif CounterListLive[counter].done == 0:
                                     Timer.currentValue = 0
                                     Timer.done = 0
+                                    self.grid[Timer.x][Timer.y].switch = 0
+                    elif tempPrevElement == "Timer":
+                        for timer in range(len(TimerListLive)):
+                            if TimerListLive[timer].name == tempVariableName:
+                                if TimerListLive[timer].done == 1:
+                                    Timer.currentValue += 1
+                                    if Timer.currentValue >= Timer.preset:
+                                        Timer.done = 1
+                                        self.grid[Timer.x][Timer.y].switch = 1
+                                elif TimerListLive[timer].done == 0:
+                                    Timer.currentValue = 0
+                                    Timer.done = 0
+                                    self.grid[Timer.x][Timer.y].switch = 0
+
                 #    elif tempPrevElement == "Timer":
                 #            for timer in range(len(TimerListLive)):
                 #                if TimerListLive[timer].name == tempVariableName:
@@ -695,25 +718,33 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
                 #                            CounterListLive[i].done = 1
                 #                    CounterListLive[i].prevInput = TimerListLive[timer].done
                 
-                if(tempPrevElement == "contNC" and Timer.type == "Retentive_Timer_On"):
-                    if self.grid[tempPrevx][tempPrevy].switch == 1:
+                if((tempPrevElement == "contNC" or tempPrevElement == "contNO") and Timer.type == "Retentive_Timer_On"):
+                    
+                    SwitchValue = 45
+                    
+                    if(tempPrevElement == "contNC"):
+                        SwitchValue = self.grid[tempPrevx][tempPrevy].switch
+                    else:
+                        SwitchValue = (self.grid[tempPrevx][tempPrevy].switch == 0)
+                    
+                    if SwitchValue == 1:
                         Timer.currentValue += 1
-                        print Timer.currentValue,"\n"
                         if Timer.currentValue >= Timer.preset:
                             Timer.done = 1
-                            print "Threaded Retentive Done Bit Triggered \n"
-                elif ((tempPrevElement == "Counter" or tempPrevElement == "Timer") and Timer.type == "Timer_On_Delay"):
+                            self.grid[Timer.x][Timer.y].switch = 1
+                            #print "Threaded Retentive Done Bit Triggered \n"
+                elif ((tempPrevElement == "Counter" or tempPrevElement == "Timer") and Timer.type == "Retentive_Timer_On"):
                     tempVariableName = self.grid[tempPrevx][tempPrevy].MTorElement+"_"+self.grid[tempPrevx][tempPrevy].variableName
                     if tempPrevElement == "Counter":
                         for counter in range(len(CounterListLive)):
                             if CounterListLive[counter].name == tempVariableName:
                                 if CounterListLive[counter].done == 1:
                                     Timer.currentValue += 1
-                                    print "Threaded Retentive Done Bit Triggered \n"
+                                    #print "Threaded Retentive Done Bit Triggered \n"
                                     if Timer.currentValue >= Timer.preset:
                                         Timer.done = 1
                                         self.grid[Timer.x][Timer.y].switch = 1
-                                    
+                                   
                 
                 #later = time.time()
                 
@@ -793,6 +824,7 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
                                         CounterListLive[i].currentValue += 1
                                         if CounterListLive[i].currentValue >= CounterListLive[i].preset:
                                             CounterListLive[i].done = 1
+                                            self.grid[CounterListLive[i].x][CounterListLive[i].y].switch = 1
                                     CounterListLive[i].prevInput = TimerListLive[timer].done
                         
                 
@@ -819,6 +851,7 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
                                         CounterListLive[i].preset -= 1
                                         if CounterListLive[i].preset <= 0:
                                             CounterListLive[i].done = 1
+                                            self.grid[CounterListLive[i].x][CounterListLive[i].y].switch = 1
                                     CounterListLive[i].prevInput = TimerListLive[timer].done                
 					
 					
