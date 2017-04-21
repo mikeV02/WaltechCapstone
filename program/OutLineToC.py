@@ -1045,7 +1045,7 @@ class OutLineToC():
         if outline[line][1] == "Constant":
             C_txt = C_txt +"             if("+ str(outline[line][3]) +" == "
         else:
-            C_txt = C_txt +"             if("+self.outputAndName(outline,outline[line] ,1) + "_" +str(outline[line][2]) +" == "
+            C_txt = C_txt +"             if("+self.outputAndName(outline,outline[line] ,1) + " == "
         if outline[line][2] == "Constant":
             C_txt = C_txt + str(outline[line][4])+"){"
         else:
@@ -1161,12 +1161,12 @@ class OutLineToC():
         for i in range (len(outline)):                  
             #print "compare to", str(outline[i][0])
             if len(outline[i])>1 and  str(outline[i][0]) == "Counter_"+str(thisLine[pos]):
-                outputName = "reg_Counter_"+ str(thisLine[pos])
+                outputName = "reg_Counter_"+ str(thisLine[pos])+ "_" +str(outline[i][1])
                 return outputName
         for i in range (len(outline)):                  
             #print "compare to", str(outline[i][0])
             if len(outline[i])>1 and  str(outline[i][0]) == "Timer_"+str(thisLine[pos]):
-                outputName = "reg_Timer_"+ str(thisLine[pos])
+                outputName = "reg_Timer_"+ str(thisLine[pos])+ "_" +str(outline[i][1])
                 return outputName
         for i in range (len(outline)):                  
             #print "compare to", str(outline[i][0])

@@ -157,7 +157,7 @@ class CounterDialog(QtGui.QDialog):
     ###CREATED BY CHIRS ____ ADDED/MODIFIED BY MIGUEL
     def switchCombo(self):
         self.ui.comboBox_3.setItemText(0, "Counter_Down")
-        self.ui.comboBox_3.setItemText(1, "Couter_Up")
+        self.ui.comboBox_3.setItemText(1, "Counter_Up")
     ###
         
 
