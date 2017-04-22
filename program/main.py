@@ -95,15 +95,16 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
         self.ui.graphicsView.setScene(self.scene)
         self.items=[QtGui.QGraphicsTextItem(),QtGui.QGraphicsRectItem()]#for squares and indexes that follow mouse
         self.ui.graphicsView.viewport().installEventFilter(self)#for mouse functions
+
+        ###MODIFIED BY MIGUEL ___ TABLE WIDTH AND DEFAULT SORTING BY NAME
         #Setup IO table on right
         self.ui.tableWidget.setColumnWidth(0, 50)
         self.ui.tableWidget.setColumnWidth(1, 45)
         self.ui.tableWidget.setColumnWidth(2, 50)
         self.ui.tableWidget.setColumnWidth(3, 40)
         self.ui.tableWidget.setColumnWidth(4, 30)
-        #self.ui.tableWidget.setColumnWidth(5, 140)
-        #Strech = QtGui.QHeaderView.Stretch
-        #self.ui.tableWidget.horizontalHeader().setResizeMode(Strech)
+        self.ui.tableWidget.sortByColumn(0,Qt.AscendingOrder)
+        ###
 		
 		#Setup Data table on right:
         #self.ui.tableDataFiles.setColumnWidth(0, 75)
@@ -495,7 +496,10 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
         self.ui.liveButton.clicked.connect(self.stopFeedback)
         self.ui.liveButton.setText("Stop Live")
 
-        
+        ###ADDED BY MIGUEL ____ DEACTIVE GRAPHICS VIEW TO PREVENT EDITIONS WHEN LIVE
+        self.ui.graphicsView.setDisabled(True)
+        self.ui.graphicsView.viewport().removeEventFilter(self)#for mouse functions
+        ###
 
 
         CounterLocations = []
@@ -961,7 +965,11 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
         self.live = False
         self.ui.liveButton.clicked.disconnect()
         self.ui.liveButton.clicked.connect(self.startFeedback)
-        self.ui.liveButton.setText("Go Live") ###ADDED BY MIGUEL
+        self.ui.liveButton.setText("Go Live") ###ADDED BY MIGUEL ____ CHANGE BUTTON NAME
+        ###ADDED BY MIGUEL ____ ACTIVE GRAPHICS VIEW AGAIN
+        self.ui.graphicsView.setDisabled(False)
+        self.ui.graphicsView.viewport().installEventFilter(self)
+        ###
         
         ###ADDED BY MIGUEL ____ CLEAR FEEDBACK AFTER STOP LIFE
         for i in range(len(self.grid)):
