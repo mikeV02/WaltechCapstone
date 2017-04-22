@@ -961,9 +961,16 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
         self.live = False
         self.ui.liveButton.clicked.disconnect()
         self.ui.liveButton.clicked.connect(self.startFeedback)
-        self.ui.liveButton.setText("Go Live")
-        ManageGrid(self.grid, self.scene,self.Tools,self.items).totalRedraw()
+        self.ui.liveButton.setText("Go Live") ###ADDED BY MIGUEL
         
+        ###ADDED BY MIGUEL ____ CLEAR FEEDBACK AFTER STOP LIFE
+        for i in range(len(self.grid)):
+            for j in range(len(self.grid[i])):
+                if self.grid[i][j].variableName is not None:
+                    self.grid[i][j].switch = 0
+
+        ManageGrid(self.grid, self.scene,self.Tools,self.items).totalRedraw()
+        ###
 
     def showInfo(self):
         """
