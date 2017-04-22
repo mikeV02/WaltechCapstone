@@ -694,6 +694,7 @@ class OutLineToC():
                 C_txt = C_txt + "             branch_"+\
                         str(outLine[i][1][0])+"_"+str(outLine[i][1][1])+ " = 1;\n"
                 currentBranchList.append(outLine[i][1])#this keeps track of the nested branches
+
             #print "current branch", currentBranchList
             #COMPARISONS:
             ##027##
@@ -752,15 +753,27 @@ class OutLineToC():
                             else:
                                 C_txt = C_txt + "             if("+varNameStr+ " == 0){W = 0;}\n"
                     #element with parallel (apply to last item in branchlist )
+
+                    ###MODIFIED BY MIGUEL ____ FIXING TIMERS AND COUNTERS IN BRANCHES
                     if  currentBranchList[-1] != None:
                         if (len(outLine[i])>3) and  ("latching" in outLine[i][3]):
-                            C_txt = C_txt + "             if("+\
-                            varNameStr+ " == 0){branch_"+str(currentBranchList[-1][0])+"_"+str(currentBranchList[-1][1])+" = 0;}\n"
-                            C_txt = C_txt + "             else {branch_"+str(currentBranchList[-1][0])+"_"+str(currentBranchList[-1][1])+" = 2;}\n"
+                            if "Counter_" in varNameStr or "Timer_" in varNameStr:
+                                C_txt = C_txt + "             if("+\
+                                varNameStr + "_" + outLine[i][1] + " == 0){branch_"+str(currentBranchList[-1][0])+"_"+str(currentBranchList[-1][1])+" = 0;}\n"
+                                C_txt = C_txt + "             else {branch_"+str(currentBranchList[-1][0])+"_"+str(currentBranchList[-1][1])+" = 2;}\n"
+                            else:
+                                C_txt = C_txt + "             if("+\
+                                varNameStr+" == 0){branch_"+str(currentBranchList[-1][0])+"_"+str(currentBranchList[-1][1])+" = 0;}\n"
+                                C_txt = C_txt + "             else {branch_"+str(currentBranchList[-1][0])+"_"+str(currentBranchList[-1][1])+" = 2;}\n"
                         else:
-                            C_txt = C_txt + "             if("+\
-                                varNameStr+ " == 0){branch_"+str(currentBranchList[-1][0])+"_"+str(currentBranchList[-1][1])+" = 0;}\n"
-
+                            if "Counter_" in varNameStr or "Timer_" in varNameStr:
+                                C_txt = C_txt + "             if("+\
+                                    varNameStr + "_" + outLine[i][1] + " == 0){branch_"+str(currentBranchList[-1][0])+"_"+str(currentBranchList[-1][1])+" = 0;}\n"
+                            else:
+                                C_txt = C_txt + "             if("+\
+                                    varNameStr+ " == 0){branch_"+str(currentBranchList[-1][0])+"_"+str(currentBranchList[-1][1])+" = 0;}\n"
+                                
+                    ###
             
             #NODE:
             #if "node_" in outLine[i][0]:
