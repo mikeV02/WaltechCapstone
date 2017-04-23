@@ -24,8 +24,10 @@ class ladderToOutLine():
     
     def __init__(self,grid):#bring in all the things being sent down here
         self.grid = grid
-        self.CounterList = [];
-        self.TimerList = [];
+        self.CounterList = []
+        self.TimerList = []
+        self.InternalNO = []
+        self.InternalNC = []
 
     def makeOutLine(self):
         #go through the grid and create a text file with if-then and or statements
@@ -109,7 +111,7 @@ class ladderToOutLine():
         for i in range(len(outLine)):
             print outLine[i]
         
-        return outLine, self.CounterList,self.TimerList
+        return outLine, self.CounterList,self.TimerList,self.InternalNC,self.InternalNO
 
 
 #>>>>>>>>>>>>>>>>>>functions below<<<<<<<<<<<<<<<<<<<<<<<
@@ -441,7 +443,7 @@ class ladderToOutLine():
         "Counter"
         "contNO"
         "contNC"
-        "Equals"
+        "Equals" 
         .
         .
         .
@@ -456,6 +458,10 @@ class ladderToOutLine():
                         str(self.grid[i][j].MTorElement), \
                         str(self.grid[i][j].ioAssign), \
                         str(self.grid[i][j].doneBit)]) ###ADDED BY MIGUEL AND MICHAEL
+            if self.grid[i][j].MTorElement == "contNO" and self.grid[i][j].ioAssign == "Internal":
+                self.InternalNO.append("contNO_"+str(self.grid[i][j].variableName))
+            elif self.grid[i][j].MTorElement == "contNC" and self.grid[i][j].ioAssign == "Internal":
+                self.InternalNC.append("contNC_"+str(self.grid[i][j].variableName))
                         
         if self.grid[i][j].MTorElement == "Fall" \
                 and j<width-1:
