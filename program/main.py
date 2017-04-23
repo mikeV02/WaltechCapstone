@@ -966,9 +966,11 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
                         PrevInput = (CounterListLive[i].prevInput == 0);
                 
                     if SwitchValue == 1 and PrevInput == 0:
+                        print "Count: ", CounterListLive[i].preset, "\n"
                         CounterListLive[i].preset -= 1
                         if CounterListLive[i].preset <= 0:
                             CounterListLive[i].done = 1
+                            self.grid[CounterListLive[i].x][CounterListLive[i].y].switch = 1
                     CounterListLive[i].prevInput = self.grid[tempPrevx][tempPrevy].switch
                 elif ((tempPrevElement == "Counter" or tempPrevElement == "Timer") and CounterListLive[i].type == "Counter_Down"):
                     tempVariableName = self.grid[tempPrevx][tempPrevy].MTorElement+"_"+self.grid[tempPrevx][tempPrevy].variableName
