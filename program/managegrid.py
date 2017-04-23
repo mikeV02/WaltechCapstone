@@ -783,16 +783,26 @@ class ManageGrid():
                 self.grid[cellNum[0]][cellNum[1]].MTorElement == "Timer"or\
                 self.grid[cellNum[0]][cellNum[1]].MTorElement == "Counter":
   
-            thisVarName = self.grid[cellNum[0]][cellNum[1]].variableName
+
+            ###MODIFIED BY MIGUEL ___ CHECK DONE BIT WHEN DELETING
+            thisVar = self.grid[cellNum[0]][cellNum[1]]
             height= len(self.grid)
             width = len(self.grid[0]) #just check the legnth of first row
             for i in range(height):
                 for j in range(width):
                     #if cellNum[0] != i and cellNum[1] != j:
-                    if self.grid[i][j].source_A == thisVarName or self.grid[i][j].source_A == thisVarName:
-                        orphan = True
-                        messageBox = QtGui.QMessageBox()
-                        messageBox.information(None,"Error"," Elements share this name")
-                        #messageBox.exec_()
-                        
+
+                    try:
+                        if str(thisVar.MTorElement+"_"+thisVar.variableName+"_"+thisVar.type) == (self.grid[i][j].doneBit) \
+                            or (thisVar.variableName in self.grid[i][j].source_A) \
+                            or (thisVar.variableName in self.grid[i][j].source_B):
+
+                            orphan = True
+                            messageBox = QtGui.QMessageBox()
+                            messageBox.information(None,"Error"," Elements share this name")
+                            #messageBox.exec_()
+                    except:
+                        pass
+            ###
+
         return orphan

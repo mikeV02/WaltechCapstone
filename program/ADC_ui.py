@@ -46,7 +46,7 @@ class Ui_ADCDialog(object):
         self.label_7.setObjectName(_fromUtf8("label_7"))
         self.gridLayout.addWidget(self.label_7, 2, 0, 1, 1)
         self.comboBox_2 = QtGui.QComboBox(ADCDialog)
-        self.comboBox_2.setEditable(True)
+        self.comboBox_2.setEditable(False)
         self.comboBox_2.setObjectName(_fromUtf8("comboBox_2"))
         self.gridLayout.addWidget(self.comboBox_2, 2, 1, 1, 1)
         self.buttonBox = QtGui.QDialogButtonBox(ADCDialog)

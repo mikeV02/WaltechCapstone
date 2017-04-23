@@ -37,7 +37,7 @@ class Ui_CoilDialog(object):
         self.label_7.setObjectName(_fromUtf8("label_7"))
         self.gridLayout.addWidget(self.label_7, 3, 0, 1, 1)
         self.comboBox_2 = QtGui.QComboBox(CoilDialog)
-        self.comboBox_2.setEditable(True)
+        self.comboBox_2.setEditable(False)
         self.comboBox_2.setObjectName(_fromUtf8("comboBox_2"))
         self.gridLayout.addWidget(self.comboBox_2, 3, 1, 1, 1)
         self.lineEdit = QtGui.QLineEdit(CoilDialog)

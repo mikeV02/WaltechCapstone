@@ -492,12 +492,12 @@ class cellSearch(): #Functions for pre-filling the boxes in the Popup dialogs
     def makeNamelistCoil(self,combobox): 
         #scan the grid for names != None, put in comboBox
         shareNameList = self.makeSharedNameList("Coil")
-        combobox.addItems(shareNameList)#put list in combobox
+        combobox.insertItem(0, shareNameList[0]) #MODIFIED BY MIGUEL ____ FIX NAME CONFLICT
     
     def makeNamelistCont(self,combobox): 
         #scan the grid for names != None, put in comboBox
         shareNameList = self.makeSharedNameList("cont")
-        combobox.addItems(shareNameList)#put list in combobox 
+        combobox.insertItem(0, shareNameList[0]) #MODIFIED BY MIGUEL ____ FIX NAME CONFLICT
         
     def makeNamelistComp(self,combobox,thisThing,elType): #fills nams for comparison operators
         shareNameList = self.makeSourceNameList(thisThing,elType)
