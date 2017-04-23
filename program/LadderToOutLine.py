@@ -458,9 +458,10 @@ class ladderToOutLine():
                         str(self.grid[i][j].MTorElement), \
                         str(self.grid[i][j].ioAssign), \
                         str(self.grid[i][j].doneBit)]) ###ADDED BY MIGUEL AND MICHAEL
-            if self.grid[i][j].MTorElement == "contNO" and self.grid[i][j].ioAssign == "Internal":
+                        
+            if ((self.grid[i][j].MTorElement+"_"+str(self.grid[i][j].variableName)) not in self.InternalNO) and self.grid[i][j].ioAssign == "Internal" and (self.grid[i][j].MTorElement == "contNO"):
                 self.InternalNO.append("contNO_"+str(self.grid[i][j].variableName))
-            elif self.grid[i][j].MTorElement == "contNC" and self.grid[i][j].ioAssign == "Internal":
+            elif((self.grid[i][j].MTorElement+"_"+str(self.grid[i][j].variableName)) not in self.InternalNC) and self.grid[i][j].ioAssign == "Internal" and (self.grid[i][j].MTorElement == "contNC"):
                 self.InternalNC.append("contNC_"+str(self.grid[i][j].variableName))
                         
         if self.grid[i][j].MTorElement == "Fall" \
