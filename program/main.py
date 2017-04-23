@@ -552,8 +552,10 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
                 InternalNCLive.append(temp)
             
         if len(self.InternalNOList) > 0:
+            print "length",len(self.InternalNOList), "\n"
             for internal in range(len(self.InternalNOList)):
                 temp = Internal(self.InternalNOList[internal])
+                print temp.name, "\n"
                 InternalNOLive.append(temp)
                 
         counterIndex = 0
@@ -581,7 +583,7 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
                             internalNCIndex = internalNCIndex + 1
                     if(internalNOIndex < len(InternalNOLive)):
                         if(NameGridElement) == InternalNOLive[internalNOIndex].name:
-                            InternalNCLive[internalNOIndex].setLocationType(x,y,self.grid[x][y].type)
+                            InternalNOLive[internalNOIndex].setLocationType(x,y,self.grid[x][y].type)
                             internalNOIndex = internalNOIndex + 1
                      
         counterIndex = 0
@@ -589,24 +591,73 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
         internalNCIndex = 0
         internalNOIndex = 0
                   
-        print "NC List: \n"
-        for x in range(len(InternalNCLive)):
-            print InternalNCLive[x].name, CounterListLive[x].x, CounterListLive[x].y, "\n"
-            
-        print "NO List: \n"
-        for x in range(len(InternalNOLive)):
-            print InternalNOLive[x].name, CounterListLive[x].x, CounterListLive[x].y, "\n"
+        #print "NC List: \n"
+        #for x in range(len(InternalNCLive)):
+        #    print InternalNCLive[x].name, InternalNCLive[x].x, InternalNCLive[x].y, "\n"
+        #    
+        #print "NO List: \n"
+        #for x in range(len(InternalNOLive)):
+        #    print InternalNOLive[x].name, InternalNOLive[x].x, InternalNOLive[x].y, "\n"
                     
         #for x in range(len(CounterListLive)):
         #    print CounterListLive[x].name, CounterListLive[x].x, CounterListLive[x].y, "\n"
         #    
         #for x in range(len(TimerListLive)):
         #    print TimerListLive[x].name, TimerListLive[x].x, TimerListLive[x].y, "\n"                   
+            
+        if len(InternalNCLive) > 0:
+            for internal in range(len(InternalNCLive)):
+                print len(InternalNCLive), "\n"
+                print internal, "\n"           
+                print InternalNCLive[internal].name , "\n"
+                print InternalNCLive[internal].x, "\n"
 
+                tempPrevElement = self.grid[InternalNCLive[internal].x][InternalNCLive[internal].y].doneBit.split("_")
+                #print "Done Name NC ", tempPrevElement, "\n"                
+                #tempPrevElement.split("_")
 
-                       
-        
+                tempDoneName = tempPrevElement[0]+"_"+tempPrevElement[1]+"_"+tempPrevElement[2]
+                print "NC ", tempDoneName, "\n"
+                if tempPrevElement[0] == "Counter":
+                    for counter in range(len(CounterListLive)):
+                        if tempDoneName == CounterListLive[counter].name:
+                            InternalNCLive[internal].setDoneBit(CounterListLive[counter].x,CounterListLive[counter].y,CounterListLive[counter].name)
+                            print "found done counter NC \n"
+                elif tempPrevElement[0] == "Timer":
+                    for timer in range(len(TimerListLive)):
+                        if tempDoneName == TimerListLive[timer].name:
+                            InternalNCLive[internal].setDoneBit(TimerListLive[timer].x,TimerListLive[timer].y,TimerListLive[timer].name)
+                            print "found done timer NC \n"
+                            
+        if len(InternalNOLive) > 0:
+            for internal in range(len(InternalNOLive)):
+                tempPrevElement = self.grid[InternalNOLive[internal].x][InternalNOLive[internal].y].doneBit.split("_")
+                #print "Done Name NO ", tempPrevElement, "\n"                
+                #tempPrevElement.split("_")
 
+                tempDoneName = tempPrevElement[0]+"_"+tempPrevElement[1]+"_"+tempPrevElement[2]
+                print "NO ", tempDoneName, "\n"
+                if tempPrevElement[0] == "Counter":
+                    for counter in range(len(CounterListLive)):
+                        if tempDoneName == CounterListLive[counter].name:
+                            InternalNOLive[internal].setDoneBit(CounterListLive[counter].x,CounterListLive[counter].y,CounterListLive[counter].name)
+                            print "found done counter NO \n"
+                elif tempPrevElement[0] == "Timer":
+                    for timer in range(len(TimerListLive)):
+                        if tempDoneName == TimerListLive[timer].name:
+                            InternalNOLive[internal].setDoneBit(TimerListLive[timer].x,TimerListLive[timer].y,TimerListLive[timer].name)
+                            print "found done timer NO \n"
+                            
+        #print "NC List: \n"
+        #for x in range(len(InternalNCLive)):
+        #    print InternalNCLive[x].name, InternalNCLive[x].x, InternalNCLive[x].y, "\n"
+        #    print InternalNCLive[x].Prevname, InternalNCLive[x].Prevx, InternalNCLive[x].Prevy, "\n"
+        #    
+        #print "NO List: \n"
+        #for x in range(len(InternalNOLive)):
+        #    print InternalNOLive[x].name, InternalNOLive[x].x, InternalNOLive[x].y, "\n"
+        #    print InternalNOLive[x].Prevname, InternalNOLive[x].Prevx, InternalNOLive[x].Prevy, "\n"
+                            
         
         if len(TimerListLive) > 0:
             for timer in range(len(TimerListLive)):
@@ -655,13 +706,13 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
                     y = y - 1
 
                     
-        for x in range(len(CounterListLive)):
-            print CounterListLive[x].name, CounterListLive[x].x, CounterListLive[x].y, CounterListLive[x].type, CounterListLive[x].preset, "\n"
-            print CounterListLive[x].Prevelement, CounterListLive[x].Prevx, CounterListLive[x].Prevy, "\n"
-            
-        for x in range(len(TimerListLive)):
-            print TimerListLive[x].name, TimerListLive[x].x, TimerListLive[x].y,TimerListLive[x].type, TimerListLive[x].preset, "\n"
-            print TimerListLive[x].Prevelement, TimerListLive[x].Prevx, TimerListLive[x].Prevy, "\n"
+        #for x in range(len(CounterListLive)):
+        #    print CounterListLive[x].name, CounterListLive[x].x, CounterListLive[x].y, CounterListLive[x].type, CounterListLive[x].preset, "\n"
+        #    print CounterListLive[x].Prevelement, CounterListLive[x].Prevx, CounterListLive[x].Prevy, "\n"
+        #    
+        #for x in range(len(TimerListLive)):
+        #    print TimerListLive[x].name, TimerListLive[x].x, TimerListLive[x].y,TimerListLive[x].type, TimerListLive[x].preset, "\n"
+        #    print TimerListLive[x].Prevelement, TimerListLive[x].Prevx, TimerListLive[x].Prevy, "\n"
                        
                     
         #        
@@ -837,8 +888,23 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
                 # print "No hardware selected"
             
 
-            
-            
+            for i in range(len(InternalNCLive)):
+                tempPrevx = int(InternalNCLive[i].Prevx)
+                tempPrevy = int(InternalNCLive[i].Prevy)
+                
+                if(self.grid[tempPrevx][tempPrevy].switch == 1):
+                    self.grid[InternalNCLive[i].x][InternalNCLive[i].y].switch = 1
+                if(self.grid[tempPrevx][tempPrevy].switch == 0):
+                    self.grid[InternalNCLive[i].x][InternalNCLive[i].y].switch = 0
+                    
+            for i in range(len(InternalNOLive)):
+                tempPrevx = int(InternalNOLive[i].Prevx)
+                tempPrevy = int(InternalNOLive[i].Prevy)
+                
+                if(self.grid[tempPrevx][tempPrevy].switch == 0):
+                    self.grid[InternalNOLive[i].x][InternalNOLive[i].y].switch = 1
+                elif(self.grid[tempPrevx][tempPrevy].switch == 1):
+                    self.grid[InternalNOLive[i].x][InternalNOLive[i].y].switch = 0
             
             for i in range(len(CounterListLive)):
                 tempPrevx = int(CounterListLive[i].Prevx)
@@ -861,7 +927,7 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
                         CounterListLive[i].currentValue += 1
                         print "Counter: " , CounterListLive[i].currentValue, "\n"                       
                         if CounterListLive[i].currentValue >= CounterListLive[i].preset:
-                            print "Counter done\n"
+                            #print "Counter done\n"
                             CounterListLive[i].done = 1
                             self.grid[CounterListLive[i].x][CounterListLive[i].y].switch = 1
                     CounterListLive[i].prevInput = self.grid[tempPrevx][tempPrevy].switch
@@ -886,8 +952,20 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
                                     CounterListLive[i].prevInput = TimerListLive[timer].done
                         
                 
-                if(self.grid[tempPrevx][tempPrevy].MTorElement == "contNC" and CounterListLive[i].type == "Counter_Down"):  
-                    if self.grid[tempPrevx][tempPrevy].switch == 1 and CounterListLive[i].prevInput == 0:
+                if((self.grid[tempPrevx][tempPrevy].MTorElement == "contNC" or tempPrevElement == "contNO") and CounterListLive[i].type == "Counter_Down"):  
+                    SwitchValue = 45
+                    PrevInput = 45
+                
+                    if(tempPrevElement == "contNC"):
+                        #print "Cont nc\n"
+                        SwitchValue = self.grid[tempPrevx][tempPrevy].switch
+                        PrevInput = CounterListLive[i].prevInput
+                    else:
+                        #print "Cont no\n"
+                        SwitchValue = (self.grid[tempPrevx][tempPrevy].switch == 0)
+                        PrevInput = (CounterListLive[i].prevInput == 0);
+                
+                    if SwitchValue == 1 and PrevInput == 0:
                         CounterListLive[i].preset -= 1
                         if CounterListLive[i].preset <= 0:
                             CounterListLive[i].done = 1
