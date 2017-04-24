@@ -1074,12 +1074,17 @@ class OutLineToC():
         for i in range (len(outline)):                  
             #print "compare to", str(outline[i][0])
             if len(outline[i])>1 and  str(outline[i][0]) == "Counter_"+str(thisLine[pos]):
-                outputName = "reg_Counter_"+ str(thisLine[pos])+ "_" +str(outline[i][1])
+                ###MODIFIED BY MIGUEL
+                if str(outline[i][1]) == "Counter_Up":
+                    outputName = "reg_Counter_"+ str(thisLine[pos])+ "_" +str(outline[i][1])
+                elif str(outline[i][1]) == "Counter_Down":
+                    outputName = "setpoint_Counter_"+ str(thisLine[pos])+ "_" +str(outline[i][1])
+                ###
                 return outputName
         for i in range (len(outline)):                  
             #print "compare to", str(outline[i][0])
             if len(outline[i])>1 and  str(outline[i][0]) == "Timer_"+str(thisLine[pos]):
-                outputName = "reg_Timer_"+ str(thisLine[pos])+ "_" +str(outline[i][1])
+                outputName = "reg_Timer_"+ str(thisLine[pos])+ "_" +str(outline[i][1]) ###MODIFIED BY MIGUEL
                 return outputName
         for i in range (len(outline)):                  
             #print "compare to", str(outline[i][0])
