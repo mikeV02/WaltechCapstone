@@ -778,7 +778,7 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
                     
                         if SwitchValue == 1:
                             Timer.currentValue += 1
-                            print Timer.currentValue, "\n"
+                            #print Timer.currentValue, "\n"
                             if Timer.currentValue >= Timer.preset:
                                 Timer.done = 1
                                 self.grid[Timer.x][Timer.y].switch = 1
