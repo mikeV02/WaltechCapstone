@@ -760,7 +760,7 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
             
             def TimerTracker(Timer, CounterListLive, TimerListLive):
                 while self.live:
-                    now = time.time()
+                    self.TimerStart = time.time()
                     tempPrevx = int(Timer.Prevx)
                     tempPrevy = int(Timer.Prevy)
                     tempPrevElement = self.grid[tempPrevx][tempPrevy].MTorElement
@@ -778,7 +778,7 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
                     
                         if SwitchValue == 1:
                             Timer.currentValue += 1
-                            #print Timer.currentValue, "\n"
+                            print Timer.currentValue, "\n"
                             if Timer.currentValue >= Timer.preset:
                                 Timer.done = 1
                                 self.grid[Timer.x][Timer.y].switch = 1
@@ -854,9 +854,12 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
                     #later = time.time()
                     
                     #print "{0:0.8f}".format((later - now)), "\n"
+                    self.TimerEnd = time.time()
+                    while (self.TimerEnd - self.TimerStart) < .01:
+                        self.TimerEnd = time.time()
                     
-                    self.TimeDone = 0
-                    time.sleep(.01)
+                    #self.TimeDone = 0
+                    #time.sleep(.01)
                 
             def TimeKeeping():
                 while 1:
