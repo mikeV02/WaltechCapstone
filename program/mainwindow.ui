@@ -182,7 +182,7 @@
        <bool>false</bool>
       </property>
       <property name="columnCount">
-       <number>6</number>
+       <number>7</number>
       </property>
       <attribute name="horizontalHeaderDefaultSectionSize">
        <number>40</number>
@@ -227,6 +227,11 @@
       <column>
        <property name="text">
         <string>DoneBit</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>Accumulated</string>
        </property>
       </column>
      </widget>
@@ -290,7 +295,7 @@
      <x>0</x>
      <y>0</y>
      <width>1024</width>
-     <height>23</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">

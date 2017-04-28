@@ -28,6 +28,7 @@ class ladderToOutLine():
         self.TimerList = []
         self.InternalNO = []
         self.InternalNC = []
+        self.ListOfNodesComplete = []
 
     def makeOutLine(self):
         #go through the grid and create a text file with if-then and or statements
@@ -111,7 +112,7 @@ class ladderToOutLine():
         for i in range(len(outLine)):
             print outLine[i]
         
-        return outLine, self.CounterList,self.TimerList,self.InternalNC,self.InternalNO
+        return outLine, self.CounterList,self.TimerList,self.InternalNC,self.InternalNO,self.ListOfNodesComplete
 
 
 #>>>>>>>>>>>>>>>>>>functions below<<<<<<<<<<<<<<<<<<<<<<<
@@ -550,6 +551,7 @@ class ladderToOutLine():
        
     def outputnodelist(self, nodeList):
         for w in range(len(nodeList)):
+            print "branch node list: \n"
             print "      ",nodeList[w]
         #print"\n"
     
@@ -634,6 +636,21 @@ class ladderToOutLine():
             while self.grid[p][j].brchST == False:# go up to brchST
                 p = p-1
             print ">>> and adding start branch: ",  p,j
+            
+            #####Start Chris Change
+            if len(self.ListOfNodesComplete) == 0:
+                self.ListOfNodesComplete.append(nodeList)
+            else:
+                alreadyInNodeList = 0
+                
+                for x in range(len(self.ListOfNodesComplete)):                    
+                    if (nodeList[0][1] == self.ListOfNodesComplete[x][0][1]):
+                        alreadyInNodeList = 1
+                
+                if alreadyInNodeList == 0:
+                    self.ListOfNodesComplete.append(nodeList)
+            ####End Chris Change    
+                
             self.addToNode(activeNode,p,j,nodeList)#add branch from node's i and this j  
 
             #>>>head right

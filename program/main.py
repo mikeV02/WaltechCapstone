@@ -92,6 +92,7 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
         self.TimerList = []
         self.InternalNCList = []
         self.InternalNOList = []
+        ListOfNodesComplete = []
         
         #set it to show in the graphicsview window:
         self.ui.graphicsView.setScene(self.scene)
@@ -468,7 +469,14 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
             font.setWeight(QFont.Normal)
             self.ui.textBrowser.setCurrentFont(font)
             QApplication.processEvents()#this makes the UI update before going on.
-            outLine,self.CounterList,self.TimerList,self.InternalNCList,self.InternalNOList = ladderToOutLine(self.grid).makeOutLine()
+            outLine,self.CounterList,self.TimerList,self.InternalNCList,self.InternalNOList,self.ListOfNodesComplete = ladderToOutLine(self.grid).makeOutLine()
+            
+            #print "Node List:\n"
+            #for i in range(len(self.ListOfNodesComplete)):
+            #    for x in range(len(self.ListOfNodesComplete[i])):
+            #        print self.ListOfNodesComplete[i][x],","
+            #print "\n"
+            
             
             #print "Internal NC List: \n"
             #for i in range(len(self.InternalNCList)):
@@ -487,22 +495,6 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
             #    print self.TimerList[i], "\n"
             OutLineToC(self.grid,self.currentHW).makeC(outLine,self.ui.textBrowser)
             #hexMaker(self).self.saveCfileAndCompile(C_txt,displayOutputPlace)
-		
-    def CounterandTimerCheck(self,outLine):
-        
-        self.CounterList = 0
-        self.TimerList = 0
-    
-        #for i in range (len(outLine)): 
-        #
-        #    if outLine[i][0][:8]== "Counter_"  : 
-        #        print str(outLine[i][0]),"\n",i,"\n\n"
-        #        #if "\n    uint8_t "+ str(outLine[i][0]) +" = 0;\n" not in C_txt and "rungstate_" not in outLine[i][0]:
-        #    
-        #    
-        #    if  outLine[i][0][:6] == "Timer_" : 
-        #        print str(outLine[i][0]),"\n",i,"\n\n"
-        #        #if "\n    uint8_t "+ str(outLine[i][0]) +" = 0;\n" not in C_txt and "rungstate_" not in outLine[i][0]:
         
         
     def startFeedback(self):
@@ -534,13 +526,14 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
 
             ##START ADDED BY CHRIS
             
-            from CounterTimer import Counter,Timer,Internal
+            from CounterTimer import Counter,Timer,Internal,Or
 
             #for timer in range(len(self.grid)):
             TimerListLive = []
             CounterListLive = []
             InternalNCLive = []
             InternalNOLive = []
+            BranchesListLive = []
                 
             if len(self.TimerList) > 0:    
                 for timer in range(len(self.TimerList)):
@@ -560,11 +553,20 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
                     InternalNCLive.append(temp)
                 
             if len(self.InternalNOList) > 0:
-                print "length",len(self.InternalNOList), "\n"
                 for internal in range(len(self.InternalNOList)):
                     temp = Internal(self.InternalNOList[internal])
-                    print temp.name, "\n"
                     InternalNOLive.append(temp)
+                    
+            if len(self.ListOfNodesComplete) > 0:
+                for branches in range(len(self.ListOfNodesComplete)):
+                    for secondDimension in range(len(self.ListOfNodesComplete[branches])):
+                        startx = self.ListOfNodesComplete[branches][secondDimension][3][0]
+                        starty = self.ListOfNodesComplete[branches][secondDimension][3][1]
+                        endx = self.ListOfNodesComplete[branches][secondDimension][1][0]
+                        endy = self.ListOfNodesComplete[branches][secondDimension][1][1]
+                        temp = Or(startx,starty,endx,endy)
+                        BranchesListLive.append(temp)
+                    
                     
             counterIndex = 0
             timerIndex = 0
@@ -575,16 +577,15 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
                 for y in range(len(self.grid[x])):
                     if self.grid[x][y].variableName is not None:
                         NameGridElement = self.grid[x][y].MTorElement+"_"+self.grid[x][y].variableName
-                        if(counterIndex < len(CounterListLive)):
-                            if (NameGridElement) == CounterListLive[counterIndex].name:
-                                CounterListLive[counterIndex].setLocationType(x,y,self.grid[x][y].type)
-                                CounterListLive[counterIndex].preset = self.grid[x][y].setPoint
-                                counterIndex = counterIndex + 1
-                        if(timerIndex < len(TimerListLive)):
-                            if (NameGridElement) == TimerListLive[timerIndex].name:
-                                TimerListLive[timerIndex].setLocationType(x,y,self.grid[x][y].type)
-                                TimerListLive[timerIndex].preset = int(float(self.grid[x][y].setPoint) * 100)
-                                timerIndex = timerIndex + 1
+                        #print NameGridElement, "\n"
+                        for counter in range(len(CounterListLive)):
+                            if (NameGridElement) == CounterListLive[counter].name:
+                                CounterListLive[counter].setLocationType(x,y,self.grid[x][y].type)
+                                CounterListLive[counter].preset = self.grid[x][y].setPoint
+                        for timer in range(len(TimerListLive)):
+                            if (NameGridElement) == TimerListLive[timer].name:
+                                TimerListLive[timer].setLocationType(x,y,self.grid[x][y].type)                            
+                                TimerListLive[timer].preset = int(float(self.grid[x][y].setPoint) * 100)
                         if(internalNCIndex < len(InternalNCLive)):
                             if(NameGridElement) == InternalNCLive[internalNCIndex].name:
                                 InternalNCLive[internalNCIndex].setLocationType(x,y,self.grid[x][y].type)
@@ -598,6 +599,10 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
             timerIndex = 0 
             internalNCIndex = 0
             internalNOIndex = 0
+                    
+            for x in range(len(BranchesListLive)):
+                print BranchesListLive[x].startFirstRungX, BranchesListLive[x].startFirstRungY, "\n"
+                print BranchesListLive[x].endFirstRungX, BranchesListLive[x].endFirstRungY, "\n"
                     
             #print "NC List: \n"
             #for x in range(len(InternalNCLive)):
@@ -669,6 +674,7 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
             
             if len(TimerListLive) > 0:
                 for timer in range(len(TimerListLive)):
+                    #print TimerListLive[timer].name, "\n"
                     x,y = TimerListLive[timer].x, (TimerListLive[timer].y - 1)
 
 
@@ -694,13 +700,13 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
                 for counter in range(len(CounterListLive)):
                     x,y = CounterListLive[counter].x, (CounterListLive[counter].y - 1)
 
-
+                    
 
                     if y < 0:
                             CounterListLive[counter].setPrevElement(-1,-1,"None")
-
                     
                     while y > -1:
+                        
                         if self.grid[x][y].variableName is not None:
                             CounterListLive[counter].setPrevElement(x,y,self.grid[x][y].MTorElement)
 
@@ -853,31 +859,37 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
                     
                     #later = time.time()
                     
-                    #print "{0:0.8f}".format((later - now)), "\n"
-                    self.TimerEnd = time.time()
-                    while (self.TimerEnd - self.TimerStart) < .01:
-                        self.TimerEnd = time.time()
+
+                    #self.TimerEnd = time.time()
+                    ##print "{0:0.8f}".format((self.TimerEnd - self.TimerStart)), "\n"					
+                    #while (self.TimerEnd - self.TimerStart) < .01:
+                    #    print "{0:0.8f}".format((self.TimerEnd - self.TimerStart)), "\n"	
+                    #    self.TimerEnd = time.time()
+					
                     
                     #self.TimeDone = 0
-                    #time.sleep(.01)
+                    time.sleep(0.005)
+                    self.grid[Timer.x][Timer.y].accumulated = Timer.currentValue
                 
-            def TimeKeeping():
-                while 1:
-                    time.sleep(.1)
-                    self.TimeDone = 1
+            #def TimeKeeping():
+			#	while self.live:
+			#		self.TimerStart = time.time()
+			#		self.TimerEnd = time.time()
+			#		while (self.TimerEnd - self.TimerStart) < .01:
+			#			self.TimerEnd = time.time()
+            #    
+            #TimerThread = []
+            #
+            #
+            #self.TimeDone = 0
+            #
+            #
+            #
+            #TimeKeeper = threading.Thread(target = TimeKeeping)
+            #TimeKeeper.setDaemon(True)
+            #TimeKeeper.start()
                 
-            TimerThread = []
-
-            
-            self.TimeDone = 0
-
-
-            
-            TimeKeeper = threading.Thread(target = TimeKeeping)
-            TimeKeeper.setDaemon(True)
-            TimeKeeper.start()
-                
-
+			
 
             
 
@@ -897,7 +909,31 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
                     # print "Hardware is Mega"
                 # else:
                     # print "No hardware selected"
-                
+                #print len(BranchesListLive),"\n"
+                if len(BranchesListLive) > 0:
+                    OrAlive = 1
+                    for node in range(len(BranchesListLive)):
+                        x,y = BranchesListLive[node].endFirstRungX + 1,BranchesListLive[node].endFirstRungY 
+                        
+                        BranchesListLive[node].endFirstRungX - BranchesListLive[node].startFirstRungX
+                        
+                        #while ((x >= ListOfNodesComplete[node].startFirstRungX) and (y >= ListOfNodesComplete[node].startFirstRungY)):
+                        #print 
+                        for internalX in range(2):
+                            #print "X: ",x,"\n"
+                            y = BranchesListLive[node].endFirstRungY 
+                            for internaly in range((BranchesListLive[node].endFirstRungY - BranchesListLive[node].startFirstRungY) + 1):
+                                #print "Y: ",y,"\n"
+
+                                if self.grid[x][y].variableName is not None:
+                                    #print self.grid[x][y].MTorElement+"_"+self.grid[x][y].variableName,"\n"                                
+                                    if self.grid[x][y].switch == 0:
+                                        OrAlive = 0    
+                                y = y - 1
+                            x = x - 1
+                        
+                        BranchesListLive[node].done = OrAlive
+                    
 
                 for i in range(len(InternalNCLive)):
                     tempPrevx = int(InternalNCLive[i].Prevx)
@@ -921,7 +957,11 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
                     tempPrevx = int(CounterListLive[i].Prevx)
                     tempPrevy = int(CounterListLive[i].Prevy)
                     tempPrevElement = self.grid[tempPrevx][tempPrevy].MTorElement
-                    if((tempPrevElement == "contNC" or tempPrevElement == "contNO") and CounterListLive[i].type == "Counter_Up"):     
+                    
+                    if CounterListLive[i].Or == 1 and CounterListLive[i].type == "Counter_Up" :
+                        print CounterListLive[i].name , "Or before this element\n"
+                    
+                    elif((tempPrevElement == "contNC" or tempPrevElement == "contNO") and CounterListLive[i].type == "Counter_Up"):     
                         SwitchValue = 45
                         PrevInput = 45
                         
@@ -963,7 +1003,10 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
                                         CounterListLive[i].prevInput = TimerListLive[timer].done
                             
                     
-                    if((self.grid[tempPrevx][tempPrevy].MTorElement == "contNC" or tempPrevElement == "contNO") and CounterListLive[i].type == "Counter_Down"):  
+                    if CounterListLive[i].Or == 1 and CounterListLive[i].type == "Counter_Down":
+                        print CounterListLive[i].name,"Or before this element \n"
+                    
+                    elif((self.grid[tempPrevx][tempPrevy].MTorElement == "contNC" or tempPrevElement == "contNO") and CounterListLive[i].type == "Counter_Down"):  
                         SwitchValue = 45
                         PrevInput = 45
                     
@@ -1003,7 +1046,7 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
                                                 self.grid[CounterListLive[i].x][CounterListLive[i].y].switch = 1
                                         CounterListLive[i].prevInput = TimerListLive[timer].done                
                         
-                        
+                    self.grid[CounterListLive[i].x][CounterListLive[i].y].accumulated = CounterListLive[i].currentValue
                     
                         
             #####END ADDED BY CHRIS

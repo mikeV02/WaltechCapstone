@@ -43,6 +43,7 @@ class cellStruct():
 
         ###BY MIGUEL
         self. doneBit = doneBit
+        self. accumulated = -500
         
         
 class ManageGrid():
@@ -719,17 +720,23 @@ class ManageGrid():
             item.setFont( QtGui.QFont("Arial",8))
             item.setPos(self.grid[i][j].midPointX,self.grid[i][j].midPointY-88)
             self.scene.addItem(item)
-        if self.grid[i][j].setPoint != None:
-            elmtTxt = str(self.grid[i][j].setPoint)
-            item = QtGui.QGraphicsTextItem(elmtTxt)
-            item.setFont( QtGui.QFont("Arial",8))
-            item.setPos(self.grid[i][j].midPointX,self.grid[i][j].midPointY-40)
-            self.scene.addItem(item)
         if self.grid[i][j].ioAssign != None and self.grid[i][j].ioAssign != "Internal":
             elmtTxt = self.grid[i][j].ioAssign
             item = QtGui.QGraphicsTextItem(elmtTxt)
             item.setFont( QtGui.QFont("Arial",6))
             item.setPos(self.grid[i][j].midPointX-5,self.grid[i][j].midPointY-78)
+            self.scene.addItem(item)
+        if self.grid[i][j].accumulated != -500:
+            elmtTxt = str(self.grid[i][j].accumulated)
+            item = QtGui.QGraphicsTextItem(elmtTxt)
+            item.setFont( QtGui.QFont("Arial",6))
+            item.setPos(self.grid[i][j].midPointX,self.grid[i][j].midPointY-78)
+            self.scene.addItem(item)
+        if self.grid[i][j].setPoint != None:
+            elmtTxt = str(self.grid[i][j].setPoint*100)
+            item = QtGui.QGraphicsTextItem(elmtTxt)
+            item.setFont( QtGui.QFont("Arial",6))
+            item.setPos(self.grid[i][j].midPointX+35,self.grid[i][j].midPointY-78)
             self.scene.addItem(item)
         #print "source_A:", self.grid[i][j].source_A
         #print "const_A:", self.grid[i][j].const_A
