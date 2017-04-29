@@ -528,19 +528,19 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
             
             from CounterTimer import Counter,Timer,Internal,Or
 
-            #for timer in range(len(self.grid)):
+            ###create Array for Elements to be managed
             TimerListLive = []
             CounterListLive = []
             InternalNCLive = []
             InternalNOLive = []
             BranchesListLive = []
                 
+                
+            ###Gather Name of Elements to be managed
             if len(self.TimerList) > 0:    
                 for timer in range(len(self.TimerList)):
                     temp = Timer(self.TimerList[timer])
                     TimerListLive.append(temp)
-                    
-            #print len(self.TimerList) , "\n"
                     
             if len(self.CounterList) > 0:
                 for counter in range(len(self.CounterList)):
@@ -568,16 +568,15 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
                         BranchesListLive.append(temp)
                     
                     
-            counterIndex = 0
-            timerIndex = 0
             internalNCIndex = 0
             internalNOIndex = 0
             
+            
+            ###Gather location where Elements are stored in grid
             for x in range(len(self.grid)):
                 for y in range(len(self.grid[x])):
                     if self.grid[x][y].variableName is not None:
                         NameGridElement = self.grid[x][y].MTorElement+"_"+self.grid[x][y].variableName
-                        #print NameGridElement, "\n"
                         for counter in range(len(CounterListLive)):
                             if (NameGridElement) == CounterListLive[counter].name:
                                 CounterListLive[counter].setLocationType(x,y,self.grid[x][y].type)
@@ -595,14 +594,12 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
                                 InternalNOLive[internalNOIndex].setLocationType(x,y,self.grid[x][y].type)
                                 internalNOIndex = internalNOIndex + 1
                         
-            counterIndex = 0
-            timerIndex = 0 
             internalNCIndex = 0
             internalNOIndex = 0
                     
-            for x in range(len(BranchesListLive)):
-                print BranchesListLive[x].startFirstRungX, BranchesListLive[x].startFirstRungY, "\n"
-                print BranchesListLive[x].endFirstRungX, BranchesListLive[x].endFirstRungY, "\n"
+            #for x in range(len(BranchesListLive)):
+            #    print BranchesListLive[x].startFirstRungX, BranchesListLive[x].startFirstRungY, "\n"
+            #    print BranchesListLive[x].endFirstRungX, BranchesListLive[x].endFirstRungY, "\n"
                     
             #print "NC List: \n"
             #for x in range(len(InternalNCLive)):
@@ -618,6 +615,7 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
             #for x in range(len(TimerListLive)):
             #    print TimerListLive[x].name, TimerListLive[x].x, TimerListLive[x].y, "\n"                   
                 
+            ###Get Done Bit for both examine if open and examine if open internal 
             if len(InternalNCLive) > 0:
                 for internal in range(len(InternalNCLive)):
                     print len(InternalNCLive), "\n"
@@ -626,8 +624,6 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
                     print InternalNCLive[internal].x, "\n"
 
                     tempPrevElement = self.grid[InternalNCLive[internal].x][InternalNCLive[internal].y].doneBit.split("_")
-                    #print "Done Name NC ", tempPrevElement, "\n"                
-                    #tempPrevElement.split("_")
 
                     tempDoneName = tempPrevElement[0]+"_"+tempPrevElement[1]+"_"+tempPrevElement[2]
                     print "NC ", tempDoneName, "\n"
@@ -645,8 +641,6 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
             if len(InternalNOLive) > 0:
                 for internal in range(len(InternalNOLive)):
                     tempPrevElement = self.grid[InternalNOLive[internal].x][InternalNOLive[internal].y].doneBit.split("_")
-                    #print "Done Name NO ", tempPrevElement, "\n"                
-                    #tempPrevElement.split("_")
 
                     tempDoneName = tempPrevElement[0]+"_"+tempPrevElement[1]+"_"+tempPrevElement[2]
                     print "NO ", tempDoneName, "\n"
@@ -672,9 +666,9 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
             #    print InternalNOLive[x].Prevname, InternalNOLive[x].Prevx, InternalNOLive[x].Prevy, "\n"
                                 
             
+            ####Get previous element of Timer
             if len(TimerListLive) > 0:
                 for timer in range(len(TimerListLive)):
-                    #print TimerListLive[timer].name, "\n"
                     x,y = TimerListLive[timer].x, (TimerListLive[timer].y - 1)
 
 
@@ -696,6 +690,7 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
 
                         y = y - 1
                         
+            ###Get previous element of counter
             if len(CounterListLive) > 0:
                 for counter in range(len(CounterListLive)):
                     x,y = CounterListLive[counter].x, (CounterListLive[counter].y - 1)
@@ -761,7 +756,7 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
             #
 
 
-            
+            #####Emulates a timer 
             import threading
             
             def TimerTracker(Timer, CounterListLive, TimerListLive):
@@ -856,38 +851,8 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
                                             Timer.done = 1
                                             self.grid[Timer.x][Timer.y].switch = 1
                                     
-                    
-                    #later = time.time()
-                    
-
-                    #self.TimerEnd = time.time()
-                    ##print "{0:0.8f}".format((self.TimerEnd - self.TimerStart)), "\n"					
-                    #while (self.TimerEnd - self.TimerStart) < .01:
-                    #    print "{0:0.8f}".format((self.TimerEnd - self.TimerStart)), "\n"	
-                    #    self.TimerEnd = time.time()
-					
-                    
-                    #self.TimeDone = 0
                     time.sleep(0.005)
                     self.grid[Timer.x][Timer.y].accumulated = Timer.currentValue
-                
-            #def TimeKeeping():
-			#	while self.live:
-			#		self.TimerStart = time.time()
-			#		self.TimerEnd = time.time()
-			#		while (self.TimerEnd - self.TimerStart) < .01:
-			#			self.TimerEnd = time.time()
-            #    
-            #TimerThread = []
-            #
-            #
-            #self.TimeDone = 0
-            #
-            #
-            #
-            #TimeKeeper = threading.Thread(target = TimeKeeping)
-            #TimeKeeper.setDaemon(True)
-            #TimeKeeper.start()
                 
 			
 
@@ -901,15 +866,8 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
 
             
             while self.live:
-                # if(self.currentHW == "ArduinoNano"):
-                    # print "Hardware is Nano"
-                # elif(self.currentHW == "ArduinoUno"):
-                    # print "Hardware is Uno"
-                # elif(self.currentHW == "ArduinoMega"):
-                    # print "Hardware is Mega"
-                # else:
-                    # print "No hardware selected"
-                #print len(BranchesListLive),"\n"
+            
+                ###Check state of all elements in a branch
                 if len(BranchesListLive) > 0:
                     OrAlive = 1
                     for node in range(len(BranchesListLive)):
@@ -917,8 +875,6 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
                         
                         BranchesListLive[node].endFirstRungX - BranchesListLive[node].startFirstRungX
                         
-                        #while ((x >= ListOfNodesComplete[node].startFirstRungX) and (y >= ListOfNodesComplete[node].startFirstRungY)):
-                        #print 
                         for internalX in range(2):
                             #print "X: ",x,"\n"
                             y = BranchesListLive[node].endFirstRungY 
@@ -935,6 +891,7 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
                         BranchesListLive[node].done = OrAlive
                     
 
+                ###Emulate an internal Normally closed switch
                 for i in range(len(InternalNCLive)):
                     tempPrevx = int(InternalNCLive[i].Prevx)
                     tempPrevy = int(InternalNCLive[i].Prevy)
@@ -944,6 +901,7 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
                     if(self.grid[tempPrevx][tempPrevy].switch == 0):
                         self.grid[InternalNCLive[i].x][InternalNCLive[i].y].switch = 0
                         
+                ###Emulate an internal Normally open switch
                 for i in range(len(InternalNOLive)):
                     tempPrevx = int(InternalNOLive[i].Prevx)
                     tempPrevy = int(InternalNOLive[i].Prevy)
@@ -953,6 +911,7 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
                     elif(self.grid[tempPrevx][tempPrevy].switch == 1):
                         self.grid[InternalNOLive[i].x][InternalNOLive[i].y].switch = 0
                 
+                ###Emulate a counter
                 for i in range(len(CounterListLive)):
                     tempPrevx = int(CounterListLive[i].Prevx)
                     tempPrevy = int(CounterListLive[i].Prevy)
