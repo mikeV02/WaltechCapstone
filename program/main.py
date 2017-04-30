@@ -1016,7 +1016,8 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
                                         elif TimerListLive[timer].done == 0:
                                             self.grid[CounterListLive[i].x][CounterListLive[i].y].switch = 0
                                         CounterListLive[i].prevInput = TimerListLive[timer].done                
-                        
+                                        
+                    self.grid[CounterListLive[i].x][CounterListLive[i].y].setPointLive = CounterListLive[i].preset
                     self.grid[CounterListLive[i].x][CounterListLive[i].y].accumulated = CounterListLive[i].currentValue
                     
                         

@@ -46,6 +46,7 @@ class cellStruct():
         self. doneBit = doneBit
         ###
         self. accumulated = -500
+        self. setPointLive = setPoint
         
         
 class ManageGrid():
@@ -730,13 +731,19 @@ class ManageGrid():
             item.setPos(self.grid[i][j].midPointX-5,self.grid[i][j].midPointY-78)
             self.scene.addItem(item)
         if self.grid[i][j].accumulated != -500:
-            elmtTxt = str(self.grid[i][j].accumulated)
+            if self.grid[i][j].MTorElement == "Timer":
+                elmtTxt = str(float(self.grid[i][j].accumulated) / 100)
+            else:
+                elmtTxt = str(self.grid[i][j].accumulated)
             item = QtGui.QGraphicsTextItem(elmtTxt)
             item.setFont( QtGui.QFont("Arial",6))
             item.setPos(self.grid[i][j].midPointX,self.grid[i][j].midPointY-78)
             self.scene.addItem(item)
         if self.grid[i][j].setPoint != None:
-            elmtTxt = str(self.grid[i][j].setPoint*100)
+            if self.grid[i][j].type == "Counter_Down":
+                elmtTxt = str(self.grid[i][j].setPointLive)
+            else:
+                elmtTxt = str(self.grid[i][j].setPoint)
             item = QtGui.QGraphicsTextItem(elmtTxt)
             item.setFont( QtGui.QFont("Arial",6))
             item.setPos(self.grid[i][j].midPointX+35,self.grid[i][j].midPointY-78)
