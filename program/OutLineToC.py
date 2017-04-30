@@ -56,7 +56,8 @@ class OutLineToC():
                             ,["PINB",0],["PINB",2]\
                             ,["PINL",0],["PINL",2],["PINL",4],["PINL",6]\
                             ,["PING",0],["PING",2]\
-                            ,["PINC",0],["PINC",2],["PINC",4],["PINC",6]
+                            ,["PINC",0],["PINC",2],["PINC",4],["PINC",6]\
+                            ,["PIND",0],["PIND",1]
             #>>>outputs:                
             self.outPutList= ["PORTB",1],["PORTB",3]\
                             ,["PORTL",1],["PORTL",3],["PORTL",5],["PORTL",7]\
@@ -132,7 +133,10 @@ class OutLineToC():
         THIS SAME LOGIC APPLIES TO THE OUTPUTS. THE LAST SECTION OF THE CODE, SENDS THE 6 CHARACTERS PLUS A "\n"
         CHARACTER TO INDICATE THE END OF THE TRANSMISSION. EACH CHAR IS SENT INDIVIDUALLY USING THE uart_putc FUNCTION
         TO REDUCE THE OVERHEAD DELAY OF SENDING THE CHARACTERS THROUGH SERIAL. THE uart_puts FUNCTION COULD BE USED,
-        BUT IT ADDS SOME MORE INSTRUCTIONS THAT COULD INCREASE THE DELAY. 
+        BUT IT ADDS SOME MORE INSTRUCTIONS THAT COULD INCREASE THE DELAY.
+        LINE if(TimerSetup > 5)  //sets speed to a quarter of a second\n" IS SPECIAL IN THE MEGA, AS IT REDUCES THE
+        DELAY WHEN TIMERS ARE PRESENT ON THE GRID. HOWEVER, THIS MAKE THE SERIAL SLOWER FOR THE MEGA, ALTHOUGH IT IS
+        ALMOST NOT NOTICEABLE.
         '''
         if self.currentHW == "ArduinoMega":
             C_txt = C_txt +"inline ISR(TIMER0_OVF_vect)\n"
@@ -141,7 +145,7 @@ class OutLineToC():
             C_txt = C_txt +"    \n"
             C_txt = C_txt +"    TimerSetup = TimerSetup + 1;\n"
             C_txt = C_txt +"    \n"
-            C_txt = C_txt +"    if(TimerSetup > 1)  //sets speed to a quarter of a second\n"
+            C_txt = C_txt +"    if(TimerSetup > 5)  //sets speed to a quarter of a second\n"
             C_txt = C_txt +"    {    \n"
             C_txt = C_txt + "        if(uart_buffer_empty())\n"
             C_txt = C_txt + "        {   \n"
