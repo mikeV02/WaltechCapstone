@@ -7,7 +7,14 @@ import time
 import subprocess
 
 from subprocess import PIPE
-#purpose of this class is to Communicate with the Arduino serially 
+#purpose of this class is to Communicate with the Arduino serially
+
+
+''' ORIGINALLY CREATED BY CHRIS, THIS FUNCTION USES THE serial LIBRARY GIVEN BY PySerial TO GET THE INFORMATION
+    SENT BY THE ARDUINO. MIGUEL MODIFIED THE CODE TO USE THE SERIAL FUNCTION readline() TO HAVE AN ACCURATE
+    VALUE RECEIVED, AS THE BUFFER TENDED TO FLUCTUATE.
+'''
+# MIGUEL 32
 
 class SerialCommunicator():
 
@@ -21,45 +28,26 @@ class SerialCommunicator():
             timeout=1)
             
         self.HW = HW
-        #self.PN = PortNumber
 
         #needed to finish the setup
         time.sleep(1)
-        #self.ser.write("ready")
        
        
     #gets the state of the arduino        
     def getArduinoState(self):
-        #self.ser.write("ready")
-
-        # global last_received
-        # buffer_string = ''
-
-        # buffer_string = buffer_string + self.ser.read(self.ser.inWaiting())
-        # if '\n' in buffer_string:
-        #     lines = buffer_string.split('\n') # Guaranteed to have at least 2 entries
-        #     last_received = lines[-2]
-        #     #If the Arduino sends lots of empty lines, you'll lose the
-        #     #last filled line, so you could make the above statement conditional
-        #     #like so: if lines[-2]: last_received = lines[-2]
-        #     buffer_string = lines[-1]
-
-        #     return last_received
                 
-        self.ser.write("ready")
+        self.ser.write("ready") #ALWAS SENT TO THE ARDUINO TO KEEP IT AWAKE
         received = ''
 
-        #self.ser.reset_input_buffer()    #when put together it flushes everything
-
-        received = self.ser.readline()     #but the read size
-        #time.sleep(.1)
+        received = self.ser.readline()
 
         if self.HW == "ArduinoNano" or self.HW == "ArduinoUno":
             return received
                 
         if self.HW == "ArduinoMega":
             return received
-        
+
+''' CODE TO THEST THE MODULE INDIVIDUALLY '''        
 # se = SerialCommunicator("/dev/ttyACM0", "ArduinoMega")
 
 # #while 1:#se.ser.inWaiting() > 0:

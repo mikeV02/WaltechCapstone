@@ -41,8 +41,10 @@ class cellStruct():
         self. functType = functType
         self. switch = switch
 
-        ###BY MIGUEL
+        ###BY MIGUEL ___ ADDS DONE BIT PARAMETER TO ELEMENTS.
+        # MIGUEL 15
         self. doneBit = doneBit
+        ###
         self. accumulated = -500
         
         
@@ -670,7 +672,8 @@ class ManageGrid():
         self.grid[cellNum[0]][cellNum[1]].const_B = tempCellData.const_B
         self.grid[cellNum[0]][cellNum[1]].functType = tempCellData.functType # not used
 
-        ###BY MIGUEL
+        ###BY MIGUEL ___ ADDS DONE BIT PARAMENTERS TO ELEMENTS
+        # MIGUEL 16
         self.grid[cellNum[0]][cellNum[1]].doneBit = tempCellData.doneBit
         ###
 
@@ -792,6 +795,11 @@ class ManageGrid():
   
 
             ###MODIFIED BY MIGUEL ___ CHECK DONE BIT WHEN DELETING
+            # MIGUEL 17
+            ''' ORIGINALLY THIS CODE CHECKED WHEN ELEMENTS WERE GOING TO BE DELETED AND SHOWED MESSAGE IF
+                OTHER ELEMENTS (ONLY COMPARATORS) WERE DEPENDENT ON THE GOING TO BE DELETED ONE.
+                MIGUEL EXPANDED THIS CODE TO INCLUDE DONE BITS. SO ELEMENTS WHICH HAD OTHER DEPENDENT ONES, WERE NOT DELETED ACCIDENTALLY.
+            '''
             thisVar = self.grid[cellNum[0]][cellNum[1]]
             height= len(self.grid)
             width = len(self.grid[0]) #just check the legnth of first row
@@ -810,6 +818,6 @@ class ManageGrid():
                             #messageBox.exec_()
                     except:
                         pass
-            ###
+            ### END MIGUEL
 
         return orphan

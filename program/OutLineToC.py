@@ -98,7 +98,8 @@ class OutLineToC():
         
         C_txt = "#include <stdint.h>\n#include <stdlib.h>\n#include <string.h>\n#include <avr/io.h>\n#include <avr/interrupt.h>\n\n"
 
-        ###ADDED BY MIGUEL
+        ###ADDED BY MIGUEL ___ INCLUDE LIBRARIES FOR SERIAL AND TIME DELAY.
+        # MIGUEL 18
         C_txt = C_txt + '#include "uart.c"\n\n'
         C_txt = C_txt + '#include <util/delay.h>\n\n'
         ###
@@ -115,6 +116,24 @@ class OutLineToC():
             C_txt = C_txt +"static volatile uint8_t sample_count;\n"
         
         ###MODIFIED BY MIGUEL
+        # MIGUEL 19
+        ''' ORIGINALLY THIS CODE WAS AN ADAPTATION FROM CHRIS CODE FOR THE MEGA. MIGUEL EXPANDED AND IMPROVED
+        THE CODE TO BE LESS HEAVY ON THE ARDUINO MICRO-CONTROLLER. THE ORIGINAL CODE HAD STRING CONCATENATIONS
+        OF 0S OR 1S FOR EACH IF-STATEMENT. FOR THE MEGA AN ARRAY OF 44 CHARS WAS CREATED AND THEN CONCATENATED
+        USING strcat FUNCTION. THIS IMPLEMENTATION WAS SIGNIFICANTLY COSTLY FOR THE ARDUINO MICRO-CONTROLLER MAKING
+        A CONSIDERABLE DELAY WHEN USING THE GO LIVE FUNCTION AND TIMERS IN THE GRID.
+        MIGUEL'S IMPROVEMENTS GOT RID OF ALL CONCATENATIONS AND THE ARRAY ITSELF.
+        THE NEW APPROACH USES SEVERAL CHARACTERS TO SAVE THE DATA. IN THE CODE BELOW, THE IF-STATEMENTS CHECK
+        THE STATE OF THE REGISTERS MAPPED TO THE DIFFERENT PORTS, AND USES A BIT-WISE OR TO CHANGE THE VALUE
+        OF AN INDIVIDUAL BIT OF THE CHAR. THUS, THE CHARACTERS ARE NOT BEING USED AS CHARACTERS, BUT AS A SERIES
+        OF 8 BITS. INPUTS 1-8 USE THE FIRST CHAR, 9-16 THE SECOND CHAR AND 17-22 THE THIRD CHAR. EACH GROUP OF INPUTS
+        DOES AN OR OPERATIONS WITH THE VALUES 128, 64, 32, 16, 8, 4, 2 1 TO CHANGE THE VALUES OF THE 8 BITS.
+        SPECIAL CASE IS THE LAST GROUP AS THERE ARE ONLY 6 INPUTS, SO THE LAST 2 BITS OF THE CHAR ARE NOT USED.
+        THIS SAME LOGIC APPLIES TO THE OUTPUTS. THE LAST SECTION OF THE CODE, SENDS THE 6 CHARACTERS PLUS A "\n"
+        CHARACTER TO INDICATE THE END OF THE TRANSMISSION. EACH CHAR IS SENT INDIVIDUALLY USING THE uart_putc FUNCTION
+        TO REDUCE THE OVERHEAD DELAY OF SENDING THE CHARACTERS THROUGH SERIAL. THE uart_puts FUNCTION COULD BE USED,
+        BUT IT ADDS SOME MORE INSTRUCTIONS THAT COULD INCREASE THE DELAY. 
+        '''
         if self.currentHW == "ArduinoMega":
             C_txt = C_txt +"inline ISR(TIMER0_OVF_vect)\n"
             C_txt = C_txt +"{\n"
@@ -382,9 +401,13 @@ class OutLineToC():
             C_txt = C_txt +"    }\n"
             C_txt = C_txt +"    \n"
             C_txt = C_txt +"}\n"
-        ###
+        ### MIGUEL
 
         ###ADDED BY CHRIS
+        # MIGUEL 20
+        ''' ALSO INCLUDES MIGUEL's IMPROVEMENTS. ONLY TWO CHARS ARE USED FOR ARDUINOS UNO/NANO, AS THEY HAVE
+            A REDUCED NUMBER OF PORTS.
+        '''
         if self.currentHW == "ArduinoUno" or self.currentHW == "ArduinoNano":
             C_txt = C_txt +"inline ISR(TIMER0_OVF_vect)\n"
             C_txt = C_txt +"{\n"
@@ -521,6 +544,7 @@ class OutLineToC():
         C_txt = C_txt +"{\n"
 
         ###ADDED BY MIGUEL
+        # MIGUEL 21
         C_txt = C_txt + "    // Initialise USART\n"
         C_txt = C_txt + "    uart_init();\n"
         ###
@@ -611,11 +635,11 @@ class OutLineToC():
                 varNameStr = str(outLine[i][0])
 
                 ###ADDED BY MICHAEL ___ MODIFIED BY MIGUEL
-                ''' Miguel: Reducing Code and Differenciating
-                    between Internal EIO and Internal EIC
+                # MIGUEL 22
+                ''' MIGUEL: REDUCING CODE AND DIFFERENTIATING BETWEEN INTERNAL EXIO AND INTERNAL EXIC.
 
-                    Michalel: Appliying done bit through
-                    Internal Inputs'''
+                    MICHAEL: APPLYING DONE BIT THROUGH INTERNAL INPUTS.
+                '''
 
                 try:
                     if "Select" not in outLine[i][3]:
@@ -655,6 +679,11 @@ class OutLineToC():
                     #element with parallel (apply to last item in branchlist )
 
                     ###MODIFIED BY MIGUEL ____ FIXING TIMERS AND COUNTERS IN BRANCHES
+                    # MIGUEL 23
+                    ''' WHEN TEDDY INTRODUCED HIS CHANGES FOR THE DIFFERENT TYPES OF TIMERS AND COUNTERS, OTHER PARTS OF THE CODE THAT ANALYZE THESE ELEMENTS
+                        NEEDED TO BE UPDATED. MIGUEL's CHANGES IN THE CODE BELOW INCLUDES ADDING "_"+str(currentBranchList[-1][1]), WHICH IS THE PART THAT
+                        HAS THE TYPE OF TIMER/COUNTER, TO THE LINE WHERE THE NAME OF THE ELEMENT WAS PARSED.
+                    '''
                     if  currentBranchList[-1] != None:
                         if (len(outLine[i])>3) and  ("latching" in outLine[i][3]):
                             if "Counter_" in varNameStr or "Timer_" in varNameStr:
@@ -673,7 +702,7 @@ class OutLineToC():
                                 C_txt = C_txt + "             if("+\
                                     varNameStr+ " == 0){branch_"+str(currentBranchList[-1][0])+"_"+str(currentBranchList[-1][1])+" = 0;}\n"
                                 
-                    ###
+                    ### END MIGUEL
             
             #NODE:
             #if "node_" in outLine[i][0]:
@@ -801,6 +830,12 @@ class OutLineToC():
 
 
     ### ADDED BY TEDDY ___ MODIFIED BY MIGUEL
+    # MIGUEL 24
+    ''' THE CODE BELOW INCLUDES TEDDY'S ADAPTION FOR THE NEW TYPES OF TIMERS AND COUNTERS.
+        THE TWO FUNCTIONS (addCounter AND addTimer) RECEIVE THE OUTLINE ENTRY (PLACE IN THE OUTLINE)
+        OF THE ELEMENT TO BE ADDED. TEDDY DIFFERENTIATES THE TYPE BY CHECKING THE NAME OF THE ELEMENTS
+        TO BE ADDED. MIGUEL'S MODIFICATIONS FIX THE LOGIC OF COUNTER DOWN AND RETENTIVE TIMERS.
+    '''
     def addCounter(self,outline, C_txt, outlineEntry, wholeOutline):
         C_txt = C_txt +"             "+  outlineEntry +" = W;\n"
         baseName = outlineEntry[10:]
@@ -939,7 +974,7 @@ class OutLineToC():
             C_txt = C_txt +"             prev_rungstate_"+baseName+" = rungstate_"+baseName+";\n"
             return C_txt
             
-        ###
+        ### TEDDY/MIGUEL
     
     def addFall(self,outline, C_txt, outlineEntry):
         baseName = outlineEntry[10:]
@@ -1075,16 +1110,18 @@ class OutLineToC():
             #print "compare to", str(outline[i][0])
             if len(outline[i])>1 and  str(outline[i][0]) == "Counter_"+str(thisLine[pos]):
                 ###MODIFIED BY MIGUEL
+                # MIGUEL 25
+                ''' FIX TO DIFFERENTIATE BETWEEN THE TYPE OF COUNTER AND HOW THEY ARE TO BE CHECKED BY COMPARATORS. '''
                 if str(outline[i][1]) == "Counter_Up":
                     outputName = "reg_Counter_"+ str(thisLine[pos])+ "_" +str(outline[i][1])
                 elif str(outline[i][1]) == "Counter_Down":
                     outputName = "setpoint_Counter_"+ str(thisLine[pos])+ "_" +str(outline[i][1])
-                ###
+                ### END MIGUEL
                 return outputName
         for i in range (len(outline)):                  
             #print "compare to", str(outline[i][0])
             if len(outline[i])>1 and  str(outline[i][0]) == "Timer_"+str(thisLine[pos]):
-                outputName = "reg_Timer_"+ str(thisLine[pos])+ "_" +str(outline[i][1]) ###MODIFIED BY MIGUEL
+                outputName = "reg_Timer_"+ str(thisLine[pos])+ "_" +str(outline[i][1]) ###MODIFIED BY MIGUEL ___ FIX TIMER TYPES. SEE MIGUEL 23 AND MIGUEL 27 FOR REFERENCE. # MIGUEL 26
                 return outputName
         for i in range (len(outline)):                  
             #print "compare to", str(outline[i][0])
@@ -1188,6 +1225,8 @@ class OutLineToC():
                     C_txt = C_txt + "\n    uint8_t "+ str(outLine[i][0]) +" = 0;\n" #inits the element name
            
             #WAS if "Counter_" in outLine[i][0] ==  :
+            # MIGUEL 27
+            ''' THE FOLLOWING CODE WAS MODIFIED BY MIGUEL TO FIX THE TYPE OF ELEMENT ADDED TO THE C FILE. '''
             if outLine[i][0][:8]== "Counter_"  : 
 
                 if "\n    uint8_t "+ outLine[i][0] + "_" +str(outLine[i][1]) +" = 0;\n" not in C_txt and "rungstate_" not in outLine[i][0]:
@@ -1215,6 +1254,8 @@ class OutLineToC():
                     pwmList.append(outLine[i][1])
 
             #WAS if "Timer_" in outLine[i][0] :
+            # MIGUEL 28
+            ''' THE FOLLOWING CODE WAS MODIFIE DBY MIGUEL TO FIX THE TYPE OF ELEMENT ADDED TO THE C FILE '''
             if  outLine[i][0][:6] == "Timer_" : 
 
                 if "\n    uint8_t "+ outLine[i][0] + "_" +str(outLine[i][1]) +" = 0;\n" not in C_txt and "rungstate_" not in outLine[i][0]:

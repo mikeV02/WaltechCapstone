@@ -107,6 +107,10 @@ class hexMaker():
         filename = 'LLCode'
 
         ###ADDED BY MIGUEL
+        # MIGUEL 13
+        ''' THIS CODE COPIES THE uart.c and uark.h FILES TO THE HEXES FOLDER TO COMPILE THE GENERATED
+            C CODE. THE LAST SECTION AIMS TO ADD PORTABLE FEATURES TO THE PROGRAM IN LINUX SYSTEMS.
+        '''
         from shutil import copy2
         if self.opSys == "NIX":
             copy2("../uart.h", os.getcwd())
@@ -125,7 +129,7 @@ class hexMaker():
             Lib = "../avr/lib"
             os.environ['LD_LIBRARY_PATH'] = Lib
         
-        ###
+        ### END MIGUEL
       
         commandwfile = commandListo
         commandwfile = commandwfile + filename

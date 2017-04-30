@@ -100,6 +100,7 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
         self.ui.graphicsView.viewport().installEventFilter(self)#for mouse functions
 
         ###MODIFIED BY MIGUEL ___ TABLE WIDTH AND DEFAULT SORTING BY NAME
+        # MIGUEL 1
         #Setup IO table on right
         self.ui.tableWidget.setColumnWidth(0, 50)
         self.ui.tableWidget.setColumnWidth(1, 45)
@@ -254,7 +255,7 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
             self.ui.actionADC.setEnabled(True)
             self.ui.actionArduinoMega.setChecked(True)
         print "Hardware:", HW
-        ##ADDED BY MIGUEL
+        ###ADDED BY MIGUEL
         self.checkHW()
         ###
            
@@ -342,6 +343,8 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
         self.dialog.setWindowTitle('About')
         self.dialog.exec_()# For Modal dialogs
        
+    ''' THIS FUNCTION CHECKS FOR ANY ARDUINO CONNECTED TO THE COMPUTER '''
+    # MIGUEL 2
     def checkHW(self):
         plat = sys.platform.lower()    # try to detect the OS so that a device can be selected...
         print "checked platform"
@@ -351,9 +354,13 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
         else: opSys = "WIN"
         
         ###MODIFIED BY MIGUEL
+        # MIGUEL 3
+        ''' CATCH RETURNS VALUES. self.PORT IS A NEW RETURN VALUE TO CATCH THE INTERNAL PORT
+            ASSIGNED TO THE ARDUINO. IT IS ESSENTIAL TO MAKE THE GO LIVE FUNCTION WORK.
+        '''
         DUDE, self.PORT = tester(opSys,self.currentHW).test1(self.ui.textBrowser)
         self.CheckPort(self.PORT)
-        ###
+        ### END MIGUEL
     
     ###ADDED BY MIGUEL
     def CheckPort(self, DUDE):
@@ -440,6 +447,10 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
                     except: pass
 
                     ###ADDED BY MIGUEL Done Bit on Left Table
+                    # MIGUEL 4
+                    ''' ADD DONE BIT THE DONE BIT TABLE IN THE GUI. IT IS ENCLOSED IN A TRY-CATCH BLOCK AS NOT ALL ELEMENTS
+                        HAVE DONE BITS ASSIGNED. OTHERWISE, A NONE VALUE WOULD CRASH THE PROGRAM.
+                    '''
                     try:
                         if "Select" not in self.grid[i][j].doneBit:
                             try: uiList.setItem(numRows-1,5,QtGui.QTableWidgetItem(self.grid[i][j].doneBit))
@@ -507,10 +518,11 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
             self.ui.liveButton.clicked.connect(self.stopFeedback)
             self.ui.liveButton.setText("Stop Live")
 
-            ###ADDED BY MIGUEL ____ DEACTIVE GRAPHICS VIEW TO PREVENT EDITIONS WHEN LIVE
+            ###ADDED BY MIGUEL ____ DEACTIVATE GRAPHICS VIEW TO PREVENT EDITIONS WHEN LIVE.
+            # MIGUEL 5
             self.ui.graphicsView.setDisabled(True)
             self.ui.graphicsView.viewport().removeEventFilter(self)#for mouse functions
-            ###
+            ### END MIGUEL
 
 
             CounterLocations = []
@@ -1009,17 +1021,16 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
                     
                         
             #####END ADDED BY CHRIS
-            
-
-
-
-
-
-
 
 
 
                 ###MODIFIED BY MIGUEL GO LIVE TIMERS
+                # MIGUEL 6
+                ''' THIS CODE TAKES THE INFORMATION SENT BY THE DIFFERENT TYPES OF ARDUINO (6 CHARS FOR MEGA, 2 CHARS FOR UNO/NANO) AND PARSES
+                    THE INDIVIDUAL BITS OF EACH CHAR TO CREATE THE STRING OF BITS INTO FEEDBACK. FOR MEGA, THE LAST 2 BITS OF THE LAST INPUT CHAR (CHAR 3)
+                    AND THE LAST OUTPUT CHAR (CHAR 6) ARE DELETED AS THESE BITS WILL BE ALWAYS EMPTY. THE SAME APPLIES FOR UNO/NANO, BUT TAKING DOWN THE
+                    LAST 3 BITS OF THE FIRST CHAR AND THE LAST 1 BIT OF THE SECOND CHAR.
+                '''
                 if (WaltSerial.getArduinoState() is not None):
                     feedback = WaltSerial.getArduinoState()
                 
@@ -1031,54 +1042,17 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
                     feedback = "{0:08b}".format(ord(feedback[0]))[0:5] + "{0:08b}".format(ord(feedback[1]))[0:7]
 
                 print feedback
+
+                ### END MIGUEL
                 
 
                 ####check counters current value
-
-                
-                
-                ###
-                
-                #########################ADDED/MODIFIED BY MIGUEL OPTIONAL THREADING
-                # import threading
-                
-                # def INS():
-                #     if self.currentHW == "ArduinoNano" or self.currentHW == "ArduinoUno":
-                #         for i in range(5):
-                #             if self.inputs[i+1] != None:
-                #                 self.grid[self.inputs[i+1][0]][self.inputs[i+1][1]].switch = int(feedback[i])
-                                
-                #     if self.currentHW == "ArduinoMega":
-                #         for i in range(22):
-                #             if self.inputs[i+1] != None:
-                #                 self.grid[self.inputs[i+1][0]][self.inputs[i+1][1]].switch = int(feedback[i])
-                            
-                            
-                # def OUTS():
-                #     if self.currentHW == "ArduinoNano" or self.currentHW == "ArduinoUno":
-                #         for i in range(7):
-                #             if self.outputs[i+1] != None:
-                #                 self.grid[self.outputs[i+1][0]][self.outputs[i+1][1]].switch = int(feedback[i+5])
-                                
-                #     if self.currentHW == "ArduinoMega":
-                #         for i in range(22):
-                #             if self.outputs[i+1] != None:
-                #                 self.grid[self.outputs[i+1][0]][self.outputs[i+1][1]].switch = int(feedback[i+22])
-                                
-                # thdIN = threading.Thread(target = INS)
-                # thdOUT = threading.Thread(target = OUTS)
-                
-                # thdIN.setDaemon(True)
-                # thdOUT.setDaemon(True)
-                
-                # thdIN.start()
-                # thdOUT.start()
-                
-                # thdIN.join()
-                # thdOUT.join()
-                ####################################################################
                 
                 ####ADDED BY MICHAEL, MODIFIED BY MIGUEL (IF STATEMENT)
+                # MIGUEL 7
+                ''' MICHAEL CREATED THIS CODE TO LOOP THE feedback STRING AND SET THE VALUES FOR THE SWITCH VARIABLE
+                    DEPENDING ON THE SPACE IN THE STRING. MIGUEL MODIFIED THIS CODE TO ADD SUPPORT FOR THE MEGA.
+                '''
                 if self.currentHW == "ArduinoNano" or self.currentHW == "ArduinoUno":
                     for i in range(5):
                         if self.inputs[i+1] != None:
@@ -1094,17 +1068,20 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
                     for i in range(22):
                         if self.outputs[i+1] != None:
                             self.grid[self.outputs[i+1][0]][self.outputs[i+1][1]].switch = int(feedback[i+22])
-                ####
+                #### END MIGUEL
 
 
                 #x += 1
             
                 ###ADDED BY MIGUEL (FIXING DELAY)
+                # MIGUEL 8
+                ''' THIS LINE REDRAWS THE GRID EACH ITERATION OF THE TOP WHILE LOOP TO FIX A DELAY OCCURRING WHEN
+                    THE GRID ACCUMULATES TOO MANY UPDATES.
+                '''
                 ManageGrid(self.grid, self.scene,self.Tools,self.items).totalRedraw()
-                ###
+                ### END MIGUEL
                 
                 ManageGrid(self.grid, self.scene,self.Tools,self.items).updateIOelements(self.inputs, self.outputs)
-                #time.sleep(.1)
                 
                 QApplication.processEvents()
                 
@@ -1116,16 +1093,17 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
         ###ADDED BY MIGUEL ____ ACTIVE GRAPHICS VIEW AGAIN
         self.ui.graphicsView.setDisabled(False)
         self.ui.graphicsView.viewport().installEventFilter(self)
-        ###
+        ### MIGUEL
         
         ###ADDED BY MIGUEL ____ CLEAR FEEDBACK AFTER STOP LIFE
+        # MIGUEL 9
         for i in range(len(self.grid)):
             for j in range(len(self.grid[i])):
                 if self.grid[i][j].variableName is not None:
                     self.grid[i][j].switch = 0
 
         ManageGrid(self.grid, self.scene,self.Tools,self.items).totalRedraw()
-        ###
+        ### END MIGUEL
 
     def showInfo(self):
         """
@@ -1427,12 +1405,15 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
                     print "functType:", tempCellData.functType #not used
 
                     ###ADDED BY MIGUEL
+                    # MIGUEL 10
+                    ''' THIS ASSIGNMENT PUTS THE DONE BIT AND TYPE VALUES TO THE ELEMENTS IN THE GRID.
+                    '''
                     self.grid[cellNum[0]][cellNum[1]].doneBit = tempCellData.doneBit
                     print "doneBit:", tempCellData.doneBit
 
                     self.grid[cellNum[0]][cellNum[1]].type = tempCellData.type
                     print "Type:", tempCellData.type
-                    ###
+                    ### END MIGUEL
                     
                     if self.grid[cellNum[0]][cellNum[1]].ioAssign != None and self.grid[cellNum[0]][cellNum[1]].ioAssign != "Internal":
                         if self.grid[cellNum[0]][cellNum[1]].ioAssign[:3] == 'in_':
@@ -1646,12 +1627,16 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
             self.dialog = popupDialogs.EdgeDialog(self.grid, cellNum,self.currentHW)
             popUpOKed = self.dialog.exec_()# For Modal dialogs
 
-        ###ADDED/MODIFIED BY CHRIS ____ MODIFIED BY MIGUEL    
-        elif tool == "Timer" :#do dialog for this tool:
+        ###ADDED/MODIFIED BY CHRIS ____ MODIFIED BY MIGUEL
+        # MIGUEL 11
+        ''' THE FOLLOWING CODE CREATED BY CHRIS FIXES THE COMBO BOX ORDER OF THE LAST SELECTED ITEM FOR
+            TIMERS AND COUNTERS. MIGUEL MOVED THE CODE TO THIS PLACE, AS THE ORIGINAL LOCATION WAS OVERRIDDEN
+            WHEN A NEW GUI MODIFICATION WAS MADE.
+        '''
+        if tool == "Timer" :#do dialog for this tool:
             switch = 0
 
             if leftOrRight == 1:
-                print "\n\n\n\n\n    PAPAPAPA   "+self.grid[cellNum[0]][cellNum[1]].type
                 if self.grid[cellNum[0]][cellNum[1]].type == "Retentive_Timer_On":
                     switch = 1
             
@@ -1676,7 +1661,7 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
             
             popUpOKed = self.dialog.exec_()# For Modal dialogs
 
-        ###
+        ### END MIGUEL
             
         elif tool == "Plus"or tool =="Minus"or tool =="Divide"or tool =="Mult" or tool == "Move" :#do dialog for this tool:
             self.dialog = popupDialogs.MathDialog(self.grid, cellNum,self.currentHW,tool)
@@ -1738,6 +1723,10 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
             except: pass
             
             ###BY MIGUEL DONE BIT
+            # MIGUEL 12
+            ''' ADDS DONE BIT INFORMATION TO THE INPUTS' COMBO BOX. IT IS ENCLOSED IN A TRY-CATCH BLOCK TO
+                PREVENT CRASHES WHEN None VALUES ARE PRESENT.
+            '''
             if "cont" in tool:
                 try:
                     tempCellInfo.doneBit = self.dialog.ui.comboBox_3.currentText() #Done Bit

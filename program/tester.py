@@ -44,6 +44,9 @@ class tester():
         print "looking for programming hardware on usb"
         dudeCommand  = None
         QApplication.processEvents()#this makes the UI update before going on.
+
+        ''' THE CODE BELOW INCLUDES A NEW RETURN VALUE "Port" TO BE USED BY THE GO LIVE FUNCTION. '''
+        # MIGUEL 33
         if self.opSys == "NIX" and self.currentHW == "ArduinoUno": dudeCommand, Port = self.testArduinoUnoNIX(displayOutputPlace)
         if self.opSys == "WIN" and self.currentHW == "ArduinoUno": dudeCommand, Port = self.testArduinoUnoWIN(displayOutputPlace)
         if self.opSys == "MAC" and self.currentHW == "ArduinoUno": dudeCommand, Port = self.testArduinoUnoMAC(displayOutputPlace)
@@ -127,12 +130,13 @@ class tester():
         if USBserialPort == None: 
             self.boldLine(displayOutputPlace,"Arduino not found")
             displayOutputPlace.append("or is numbered greater than COM9")
-            ###MODIFIED BY MIGUEL
+            ###MODIFIED BY MIGUEL ___ ADDED SECOND RETURN VALUE.
             return None, None
             ###
         else: 
             commandAvrDude = r"..\\WinAVR\\bin\\avrdude.exe  -C ../avrdude.conf -p m2560 -P " + USBserialPort + " -c wiring -F -D"
-            ###MODIFIED BY MIGUEL
+            ###MODIFIED BY MIGUEL ___ ADDED SECOND RETURN VALUE.
+            # MIGUEL 34
             return commandAvrDude, USBserialPort
             ###
 

@@ -74,7 +74,10 @@ class ContDialog(QtGui.QDialog):
         cellSearch(grid,cellNum,self.currentHW).fillComment(self.ui.lineEdit)
 
         ###ADDED BY MIGUEL and MICHAEL
-
+        # MIGUEL 29
+        ''' MICHAEL AND MIGUEL ADDED BE CODE BELLOW TO INCLUDE THE LIST OF THE ELEMENTS
+            WHOSE DONE BIT CAN BE ASSIGNED.
+        '''
         COMBO3 = self.ui.comboBox_3
         cellSearch(grid,cellNum,self.currentHW).makeDoneBitLis(COMBO3)
 
@@ -130,6 +133,7 @@ class TimerDialog(QtGui.QDialog):
         cellSearch(grid,cellNum,self.currentHW).fillSpinBox(self.ui.doubleSpinBox)
 
     ###CREATED BY CHIRS ____ ADDED/MODIFIED BY MIGUEL
+    # MIGUEL CHECK COMMENT AT MIGUEL 11
     def switchCombo(self):
         self.ui.comboBox_3.setItemText(0, "Retentive_Timer_On")
         self.ui.comboBox_3.setItemText(1, "Timer_On_Delay")
@@ -155,6 +159,7 @@ class CounterDialog(QtGui.QDialog):
         cellSearch(grid,cellNum,self.currentHW).fillSpinBox(self.ui.spinBox)
 
     ###CREATED BY CHIRS ____ ADDED/MODIFIED BY MIGUEL
+    # MIGUEL CHECK COMMENT AT MIGUEL 11
     def switchCombo(self):
         self.ui.comboBox_3.setItemText(0, "Counter_Down")
         self.ui.comboBox_3.setItemText(1, "Counter_Up")
@@ -376,6 +381,10 @@ class cellSearch(): #Functions for pre-filling the boxes in the Popup dialogs
 
 
     ###ADDED BY MIGUEL and MICHAEL
+    # MIGUEL 30
+    ''' THIS FUNCTION CREATES A LIST OF ELEMENTS (TIMERS / COUNTERS) TO BE USED BY INTERNAL INPUTS
+        AS DONE BITS.
+    '''
     def makeDoneBitLis(self, combobox):
         doneBitList = []
         doneBitList.append("Select Item For Done Bit")
@@ -400,7 +409,7 @@ class cellSearch(): #Functions for pre-filling the boxes in the Popup dialogs
             
         combobox.addItems(doneBitList)
 
-    ###
+    ### END MIGUEL / MICHAEL
 
         
     def makeSharedNameList(self,elType):# elType is a string like "Coil" 
@@ -493,6 +502,11 @@ class cellSearch(): #Functions for pre-filling the boxes in the Popup dialogs
         #scan the grid for names != None, put in comboBox
         shareNameList = self.makeSharedNameList("Coil")
         combobox.insertItem(0, shareNameList[0]) #MODIFIED BY MIGUEL ____ FIX NAME CONFLICT
+        ''' ORIGINALLY THIS COMBOBOX LISTED ALL NAMES PRESENT IN THE GRID AND ALLOWED THE USER TO CHANGE THE NAME
+            OF AN ELEMENT CREATING A CONFLICT OF TWO ELEMENTS HAVING THE SAME NAME. MIGUEL CHANGED THIS SO THE
+            COMBOBOX ONLY SHOWED THE LAST NAME CREATED BEING IT THE NAME OF ONLY THAT ELEMENT.
+        '''
+        # MIGUEL 31
     
     def makeNamelistCont(self,combobox): 
         #scan the grid for names != None, put in comboBox
