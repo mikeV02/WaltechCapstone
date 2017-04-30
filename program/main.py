@@ -805,12 +805,12 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
                         if tempPrevElement == "Counter":
                             for counter in range(len(CounterListLive)):
                                 if CounterListLive[counter].name == tempVariableName:
-                                    if CounterListLive[counter].done == 1:
+                                    if CounterListLive[counter].done == 1 and (self.grid[CounterListLive[counter].x][CounterListLive[counter].y].switch == 1):
                                         Timer.currentValue += 1
                                         if Timer.currentValue >= Timer.preset:
                                             Timer.done = 1
                                             self.grid[Timer.x][Timer.y].switch = 1
-                                    elif CounterListLive[counter].done == 0:
+                                    else:
                                         Timer.currentValue = 0
                                         Timer.done = 0
                                         self.grid[Timer.x][Timer.y].switch = 0
@@ -888,13 +888,10 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
                         BranchesListLive[node].endFirstRungX - BranchesListLive[node].startFirstRungX
                         
                         for internalX in range(2):
-                            #print "X: ",x,"\n"
                             y = BranchesListLive[node].endFirstRungY 
                             for internaly in range((BranchesListLive[node].endFirstRungY - BranchesListLive[node].startFirstRungY) + 1):
-                                #print "Y: ",y,"\n"
 
-                                if self.grid[x][y].variableName is not None:
-                                    #print self.grid[x][y].MTorElement+"_"+self.grid[x][y].variableName,"\n"                                
+                                if self.grid[x][y].variableName is not None:                          
                                     if self.grid[x][y].switch == 0:
                                         OrAlive = 0    
                                 y = y - 1
@@ -937,11 +934,9 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
                         PrevInput = 45
                         
                         if(tempPrevElement == "contNC"):
-                            #print "Cont nc\n"
                             SwitchValue = self.grid[tempPrevx][tempPrevy].switch
                             PrevInput = CounterListLive[i].prevInput
                         else:
-                            #print "Cont no\n"
                             SwitchValue = (self.grid[tempPrevx][tempPrevy].switch == 0)
                             PrevInput = (CounterListLive[i].prevInput == 0);
                     
@@ -949,9 +944,10 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
                             CounterListLive[i].currentValue += 1
                             print "Counter: " , CounterListLive[i].currentValue, "\n"                       
                             if CounterListLive[i].currentValue >= CounterListLive[i].preset:
-                                #print "Counter done\n"
                                 CounterListLive[i].done = 1
                                 self.grid[CounterListLive[i].x][CounterListLive[i].y].switch = 1
+                        elif SwitchValue == 0:
+                            self.grid[CounterListLive[i].x][CounterListLive[i].y].switch = 0
                         CounterListLive[i].prevInput = self.grid[tempPrevx][tempPrevy].switch
                     elif ((tempPrevElement == "Counter" or tempPrevElement == "Timer") and CounterListLive[i].type == "Counter_Up"):
                         tempVariableName = self.grid[tempPrevx][tempPrevy].MTorElement+"_"+self.grid[tempPrevx][tempPrevy].variableName
@@ -971,6 +967,8 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
                                             if CounterListLive[i].currentValue >= CounterListLive[i].preset:
                                                 CounterListLive[i].done = 1
                                                 self.grid[CounterListLive[i].x][CounterListLive[i].y].switch = 1
+                                        elif TimerListLive[timer].done == 0:
+                                            self.grid[CounterListLive[i].x][CounterListLive[i].y].switch = 0
                                         CounterListLive[i].prevInput = TimerListLive[timer].done
                             
                     
@@ -982,20 +980,20 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
                         PrevInput = 45
                     
                         if(tempPrevElement == "contNC"):
-                            #print "Cont nc\n"
                             SwitchValue = self.grid[tempPrevx][tempPrevy].switch
                             PrevInput = CounterListLive[i].prevInput
                         else:
-                            #print "Cont no\n"
                             SwitchValue = (self.grid[tempPrevx][tempPrevy].switch == 0)
                             PrevInput = (CounterListLive[i].prevInput == 0);
                     
                         if SwitchValue == 1 and PrevInput == 0:
-                            print "Count: ", CounterListLive[i].preset, "\n"
+                            #print "Count: ", CounterListLive[i].preset, "\n"
                             CounterListLive[i].preset -= 1
                             if CounterListLive[i].preset <= 0:
                                 CounterListLive[i].done = 1
                                 self.grid[CounterListLive[i].x][CounterListLive[i].y].switch = 1
+                        elif SwitchValue == 0:
+                            self.grid[CounterListLive[i].x][CounterListLive[i].y].switch = 0
                         CounterListLive[i].prevInput = self.grid[tempPrevx][tempPrevy].switch
                     elif ((tempPrevElement == "Counter" or tempPrevElement == "Timer") and CounterListLive[i].type == "Counter_Down"):
                         tempVariableName = self.grid[tempPrevx][tempPrevy].MTorElement+"_"+self.grid[tempPrevx][tempPrevy].variableName
@@ -1015,6 +1013,8 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
                                             if CounterListLive[i].preset <= 0:
                                                 CounterListLive[i].done = 1
                                                 self.grid[CounterListLive[i].x][CounterListLive[i].y].switch = 1
+                                        elif TimerListLive[timer].done == 0:
+                                            self.grid[CounterListLive[i].x][CounterListLive[i].y].switch = 0
                                         CounterListLive[i].prevInput = TimerListLive[timer].done                
                         
                     self.grid[CounterListLive[i].x][CounterListLive[i].y].accumulated = CounterListLive[i].currentValue
