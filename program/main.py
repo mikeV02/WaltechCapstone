@@ -101,7 +101,6 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
 
         ###MODIFIED BY MIGUEL ___ TABLE WIDTH AND DEFAULT SORTING BY NAME
         # MIGUEL 1
-        #Setup IO table on right
         self.ui.tableWidget.setColumnWidth(0, 50)
         self.ui.tableWidget.setColumnWidth(1, 45)
         self.ui.tableWidget.setColumnWidth(2, 50)
@@ -241,21 +240,34 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
         if str(HW)=="Waltech":
             self.ui.actionPWM.setEnabled(False)
             self.ui.actionADC.setEnabled(False) 
-            self.ui.actionWaltech.setChecked(True)
+            self.ui.actionWaltech.setChecked(True)	
+            ## Added by: Fabian M.			
+            self.ui.stackedWidget.setCurrentWidget(self.ui.waltechF)
+			
         if str(HW)=="ArduinoUno": 
             self.ui.actionPWM.setEnabled(True)
             self.ui.actionADC.setEnabled(True)
             self.ui.actionArduinoUno.setChecked(True)
+			##Added by: Fabian M.
+            self.ui.stackedWidget.setCurrentWidget(self.ui.unoF)
+			
         if str(HW)=="ArduinoNano": 
             self.ui.actionPWM.setEnabled(True)
             self.ui.actionADC.setEnabled(True)
             self.ui.actionArduinoNano.setChecked(True)
+			## Added by: Fabian M.
+            self.ui.stackedWidget.setCurrentWidget(self.ui.nanoF)
+			
         if str(HW)=="ArduinoMega": 
             self.ui.actionPWM.setEnabled(True)
             self.ui.actionADC.setEnabled(True)
             self.ui.actionArduinoMega.setChecked(True)
+			##Added by: Fabian M.
+            self.ui.stackedWidget.setCurrentWidget(self.ui.megaF)
+			
+			
         print "Hardware:", HW
-        ###ADDED BY MIGUEL
+        ##ADDED BY MIGUEL
         self.checkHW()
         ###
            
@@ -361,6 +373,7 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
         DUDE, self.PORT = tester(opSys,self.currentHW).test1(self.ui.textBrowser)
         self.CheckPort(self.PORT)
         ### END MIGUEL
+        ###
     
     ###ADDED BY MIGUEL
     def CheckPort(self, DUDE):
@@ -449,7 +462,7 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
                     ###ADDED BY MIGUEL Done Bit on Left Table
                     # MIGUEL 4
                     ''' ADD DONE BIT THE DONE BIT TABLE IN THE GUI. IT IS ENCLOSED IN A TRY-CATCH BLOCK AS NOT ALL ELEMENTS
-                        HAVE DONE BITS ASSIGNED. OTHERWISE, A NONE VALUE WOULD CRASH THE PROGRAM.
+                    HAVE DONE BITS ASSIGNED. OTHERWISE, A NONE VALUE WOULD CRASH THE PROGRAM.
                     '''
                     try:
                         if "Select" not in self.grid[i][j].doneBit:
@@ -488,6 +501,7 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
             #        print self.ListOfNodesComplete[i][x],","
             #print "\n"
             
+      
             
             #print "Internal NC List: \n"
             #for i in range(len(self.InternalNCList)):
@@ -506,7 +520,7 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
             #    print self.TimerList[i], "\n"
             OutLineToC(self.grid,self.currentHW).makeC(outLine,self.ui.textBrowser)
             #hexMaker(self).self.saveCfileAndCompile(C_txt,displayOutputPlace)
-        
+		
         
     def startFeedback(self):
         if (self.currentHW == "Waltech") and (self.live is not True):
@@ -523,7 +537,6 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
             self.ui.graphicsView.setDisabled(True)
             self.ui.graphicsView.viewport().removeEventFilter(self)#for mouse functions
             ### END MIGUEL
-
 
             CounterLocations = []
             TimerLocations = []
@@ -546,14 +559,13 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
             InternalNCLive = []
             InternalNOLive = []
             BranchesListLive = []
-                
-                
+			
             ###Gather Name of Elements to be managed
             if len(self.TimerList) > 0:    
                 for timer in range(len(self.TimerList)):
                     temp = Timer(self.TimerList[timer])
                     TimerListLive.append(temp)
-                    
+
             if len(self.CounterList) > 0:
                 for counter in range(len(self.CounterList)):
                     temp = Counter(self.CounterList[counter])
@@ -568,7 +580,7 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
                 for internal in range(len(self.InternalNOList)):
                     temp = Internal(self.InternalNOList[internal])
                     InternalNOLive.append(temp)
-                    
+                  
             if len(self.ListOfNodesComplete) > 0:
                 for branches in range(len(self.ListOfNodesComplete)):
                     for secondDimension in range(len(self.ListOfNodesComplete[branches])):
@@ -582,8 +594,8 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
                     
             internalNCIndex = 0
             internalNOIndex = 0
-            
-            
+
+				  
             ###Gather location where Elements are stored in grid
             for x in range(len(self.grid)):
                 for y in range(len(self.grid[x])):
@@ -612,7 +624,7 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
             #for x in range(len(BranchesListLive)):
             #    print BranchesListLive[x].startFirstRungX, BranchesListLive[x].startFirstRungY, "\n"
             #    print BranchesListLive[x].endFirstRungX, BranchesListLive[x].endFirstRungY, "\n"
-                    
+                 
             #print "NC List: \n"
             #for x in range(len(InternalNCLive)):
             #    print InternalNCLive[x].name, InternalNCLive[x].x, InternalNCLive[x].y, "\n"
@@ -677,7 +689,6 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
             #    print InternalNOLive[x].name, InternalNOLive[x].x, InternalNOLive[x].y, "\n"
             #    print InternalNOLive[x].Prevname, InternalNOLive[x].Prevx, InternalNOLive[x].Prevy, "\n"
                                 
-            
             ####Get previous element of Timer
             if len(TimerListLive) > 0:
                 for timer in range(len(TimerListLive)):
@@ -701,19 +712,19 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
             
 
                         y = y - 1
-                        
+						
             ###Get previous element of counter
             if len(CounterListLive) > 0:
                 for counter in range(len(CounterListLive)):
                     x,y = CounterListLive[counter].x, (CounterListLive[counter].y - 1)
 
-                    
+
 
                     if y < 0:
                             CounterListLive[counter].setPrevElement(-1,-1,"None")
+
                     
                     while y > -1:
-                        
                         if self.grid[x][y].variableName is not None:
                             CounterListLive[counter].setPrevElement(x,y,self.grid[x][y].MTorElement)
 
@@ -907,8 +918,12 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
                     
                     if(self.grid[tempPrevx][tempPrevy].switch == 1):
                         self.grid[InternalNCLive[i].x][InternalNCLive[i].y].switch = 1
+						##Added by Fabian M.
+                        self.changeButtonColor(self.grid[InternalNCLive[i].x][InternalNCLive[i].y].ioAssign, 1)
                     if(self.grid[tempPrevx][tempPrevy].switch == 0):
                         self.grid[InternalNCLive[i].x][InternalNCLive[i].y].switch = 0
+                        ##Added by: Fabian M.
+                        self.changeButtonColor(self.grid[InternalNCLive[i].x][InternalNCLive[i].y].ioAssign, 0)
                         
                 ###Emulate an internal Normally open switch
                 for i in range(len(InternalNOLive)):
@@ -917,9 +932,12 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
                     
                     if(self.grid[tempPrevx][tempPrevy].switch == 0):
                         self.grid[InternalNOLive[i].x][InternalNOLive[i].y].switch = 1
+						##Added by: Fabian M.
+                        self.changeButtonColor(self.grid[InternalNOLive[i].x][InternalNOLive[i].y].ioAssign, 1)
                     elif(self.grid[tempPrevx][tempPrevy].switch == 1):
                         self.grid[InternalNOLive[i].x][InternalNOLive[i].y].switch = 0
-                
+						##Added by: Fabian M.
+                        self.changeButtonColor(self.grid[InternalNOLive[i].x][InternalNOLive[i].y].ioAssign, 0)    
                 ###Emulate a counter
                 for i in range(len(CounterListLive)):
                     tempPrevx = int(CounterListLive[i].Prevx)
@@ -1085,6 +1103,8 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
                 ManageGrid(self.grid, self.scene,self.Tools,self.items).updateIOelements(self.inputs, self.outputs)
                 
                 QApplication.processEvents()
+                    
+
                 
     def stopFeedback(self):
         self.live = False
@@ -1104,7 +1124,7 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
                     self.grid[i][j].switch = 0
 
         ManageGrid(self.grid, self.scene,self.Tools,self.items).totalRedraw()
-        ### END MIGUEL
+        ###
 
     def showInfo(self):
         """
@@ -1205,6 +1225,12 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
     def whatsThis(self):
         QtGui.QWhatsThis.enterWhatsThisMode()
 
+## Added by: Fabian Monasterio		
+    def dragEnterEvent(self, e):
+        e.accept()
+        print "dragEnterEvent"
+		
+		
     def eventFilter(self, source, event):
         if event.type() == QtCore.QEvent.MouseMove:
             self.eraseMarker()
@@ -1222,13 +1248,289 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
                 elif event.button() == QtCore.Qt.RightButton:
                     print "right"
                     self.rightClick(cellNum)  
-            #if cellNum == [None,None,None,None]:
+
+####################################################################
+## Added by: Fabian Monasterio
+## Since a DropEvent cannot be made on a graphicsView with a specific scene set 
+## we grab the coordinates of the last dragMove made on the graphicsView
+## when the dragged button is dropped it performs a DragLeave event 
+## then we call the function objexist() to check if such switch can be made or not 
+##		
+        elif event.type() == QtCore.QEvent.DragMove:
+            #self.cur = QtGui.QCursor()
+            self.cursor().setShape(13)
+            self.b_pos = event.pos()
+            self.b_source = event.source()
+            self.b_text = event.source().text()
+            self.b_button = event.source().objectName()
+		
+        elif event.type() == QtCore.QEvent.DragLeave:
+            if(self.objexist(self.b_pos, self.b_text, self.b_button)):
+                ManageGrid(self.grid, self.scene, self.Tools,self.items).totalRedraw()
+                self.reFillList(self.ui.tableWidget)
+            else:
+                self.dialog = popupDialogs.ButtonErrorDialog()
+                popUpOKed = self.dialog.exec_()
+                if popUpOKed == True:
+                    print "ButtonErrorAccepted"
+
+######################################################################
         else:
             pass # do other stuff
 
         return QtGui.QMainWindow.eventFilter(self, source, event)
         #self.ui.graphicsView.viewport().installEventFilter(self)
 
+		
+		
+############################################################################################
+## Added by: Fabian Monasterio
+## Function to check if dragged button is dropped in the correct object to later switch its inputs or outputs
+##
+    def objexist(self, point, n_button, button):
+        popUpOKed = False
+        dropx = point.x() -42
+        dropy = point.y() -128
+        if (button.startsWith("uno") and self.currentHW == "ArduinoUno") or (button.startsWith("mega") and self.currentHW == "ArduinoMega") or (button.startsWith("nano") and self.currentHW == "ArduinoNano"):
+            for i in range(len(self.grid)): 
+                for j in range(len(self.grid[i])):
+                    if(self.grid[i][j].ioAssign != None): 
+                        if (self.grid[i][j].midPointX-30< dropx < self.grid[i][j].midPointX+30) and (self.grid[i][j].midPointY-30< dropy < self.grid[i][j].midPointY+30):					
+                                if(button.contains("in")):                            
+                                    if(self.grid[i][j].MTorElement == "contNO") or (self.grid[i][j].MTorElement == "contNC"):
+                                        if((n_button.contains("in_")) == False):
+                                            n_button = "in_" + n_button
+                                        self.dialog = popupDialogs.ChangeInputDialog(self.grid[i][j], self.grid[i][j].ioAssign, n_button)
+                                        popUpOKed = self.dialog.exec_()
+                                        if popUpOKed == True:
+                                            print "Switching input..."
+                                            try: self.grid[i][j].ioAssign = n_button
+                                            except: pass
+                                            return True
+                                elif(button.contains("out")):      
+                                    if(self.grid[i][j].MTorElement == "Coil") or (self.grid[i][j].MTorElement == "CoilNot"):
+                                        if((n_button.contains("out_")) == False):
+                                            n_button = "out_" + n_button									
+                                        self.dialog = popupDialogs.ChangeOutputDialog(self.grid[i][j], self.grid[i][j].ioAssign, n_button)
+                                        popUpOKed = self.dialog.exec_()
+                                        if popUpOKed == True:
+                                            print "Switching output..."
+                                            try: self.grid[i][j].ioAssign = n_button
+                                            except: pass
+                                            return True											
+        return False
+                        
+				
+## Added by: Fabian M.
+## changes the Button's color for the live inputs/outputs
+			
+    def changeButtonColor(self, assigned, switch):
+        color = "background-color: green; color: white"
+        in_color = "background-color: blue; color: white"
+        out_color = "background-color: red; color: white"
+        if(assigned.contains("in_")):
+            if self.currentHW == "ArduinoUno":
+                if assigned.endsWith("1"):
+                    if(switch == 1): self.ui.uno_in1.setStyleSheet(color)
+                    else: self.ui.uno_in1.setStyleSheet(in_color)
+                if assigned.endsWith("2"):
+                    if(switch == 1): self.ui.uno_in2.setStyleSheet(color)
+                    else: self.ui.uno_in2.setStyleSheet(in_color)
+                if assigned.endsWith("3"):
+                    if(switch == 1): self.ui.uno_in3.setStyleSheet(color)
+                    else: self.ui.uno_in3.setStyleSheet(in_color)
+                if assigned.endsWith("4"):
+                    if(switch == 1): self.ui.uno_in4.setStyleSheet(color)
+                    else: self.ui.uno_in4.setStyleSheet(in_color)
+                if assigned.endsWith("5"):
+                    if(switch == 1): self.ui.uno_in5.setStyleSheet(color)
+                    else: self.ui.uno_in5.setStyleSheet(in_color)
+            if self.currentHW == "ArduinoNano":
+                if assigned.endsWith("1"):
+                    if(switch == 1): self.ui.nano_in1.setStyleSheet(color)
+                    else: self.ui.nano_in1.setStyleSheet(in_color)
+                if assigned.endsWith("2"):
+                    if(switch == 1): self.ui.nano_in2.setStyleSheet(color)
+                    else: self.ui.nano_in2.setStyleSheet(in_color)
+                if assigned.endsWith("3"):
+                    if(switch == 1): self.ui.nano_in3.setStyleSheet(color)
+                    else: self.ui.nano_in3.setStyleSheet(in_color)
+                if assigned.endsWith("4"):
+                    if(switch == 1): self.ui.nano_in4.setStyleSheet(color)
+                    else: self.ui.nano_in4.setStyleSheet(in_color)
+                if assigned.endsWith("5"):
+                    if(switch == 1): self.ui.nano_in5.setStyleSheet(color)
+                    else: self.ui.nano_in5.setStyleSheet(in_color)
+            if self.currentHW == "ArduinoMega":
+                if assigned.endsWith("1"):
+                    if(switch == 1): self.ui.mega_in1.setStyleSheet(color)
+                    else: self.ui.mega_in1.setStyleSheet(in_color)
+                if assigned.endsWith("2"):
+                    if(switch == 1): self.ui.mega_in2.setStyleSheet(color)
+                    else: self.ui.mega_in2.setStyleSheet(in_color)
+                if assigned.endsWith("3"):
+                    if(switch == 1): self.ui.mega_in3.setStyleSheet(color)
+                    else: self.ui.mega_in3.setStyleSheet(in_color)
+                if assigned.endsWith("4"):
+                    if(switch == 1): self.ui.mega_in4.setStyleSheet(color)
+                    else: self.ui.mega_in4.setStyleSheet(in_color)
+                if assigned.endsWith("5"):
+                    if(switch == 1): self.ui.mega_in5.setStyleSheet(color)
+                    else: self.ui.mega_in5.setStyleSheet(in_color)
+                if assigned.endsWith("6"):
+                    if(switch == 1): self.ui.mega_in6.setStyleSheet(color)
+                    else: self.ui.mega_in6.setStyleSheet(in_color)
+                if assigned.endsWith("7"):
+                    if(switch == 1): self.ui.mega_in7.setStyleSheet(color)
+                    else: self.ui.mega_in7.setStyleSheet(in_color)
+                if assigned.endsWith("8"):
+                    if(switch == 1): self.ui.mega_in8.setStyleSheet(color)
+                    else: self.ui.mega_in8.setStyleSheet(in_color)
+                if assigned.endsWith("9"):
+                    if(switch == 1): self.ui.mega_in9.setStyleSheet(color)
+                    else: self.ui.mega_in9.setStyleSheet(in_color)
+                if assigned.endsWith("10"):
+                    if(switch == 1): self.ui.mega_in10.setStyleSheet(color)
+                    else: self.ui.mega_in10.setStyleSheet(in_color)
+                if assigned.endsWith("11"):
+                    if(switch == 1): self.ui.mega_in11.setStyleSheet(color)
+                    else: self.ui.mega_in11.setStyleSheet(in_color)
+                if assigned.endsWith("12"):
+                    if(switch == 1): self.ui.mega_in12.setStyleSheet(color)
+                    else: self.ui.mega_in12.setStyleSheet(in_color)
+                if assigned.endsWith("13"):
+                    if(switch == 1): self.ui.mega_in13.setStyleSheet(color)
+                    else: self.ui.mega_in13.setStyleSheet(in_color)
+                if assigned.endsWith("14"):
+                    if(switch == 1): self.ui.mega_in14.setStyleSheet(color)
+                    else: self.ui.mega_in14.setStyleSheet(in_color)
+                if assigned.endsWith("15"):
+                    if(switch == 1): self.ui.mega_in15.setStyleSheet(color)
+                    else: self.ui.mega_in15.setStyleSheet(in_color)
+                if assigned.endsWith("16"):
+                    if(switch == 1): self.ui.mega_in16.setStyleSheet(color)
+                    else: self.ui.mega_in16.setStyleSheet(in_color)
+                if assigned.endsWith("17"):
+                    if(switch == 1): self.ui.mega_in17.setStyleSheet(color)
+                    else: self.ui.mega_in17.setStyleSheet(in_color)
+                if assigned.endsWith("18"):
+                    if(switch == 1): self.ui.mega_in18.setStyleSheet(color)
+                    else: self.ui.mega_in18.setStyleSheet(in_color)
+                if assigned.endsWith("19"):
+                    if(switch == 1): self.ui.mega_in19.setStyleSheet(color)
+                    else: self.ui.mega_in19.setStyleSheet(in_color)
+                if assigned.endsWith("20"):
+                    if(switch == 1): self.ui.mega_in20.setStyleSheet(color)
+                    else: self.ui.mega_in20.setStyleSheet(in_color)
+                if assigned.endsWith("21"):
+                    if(switch == 1): self.ui.mega_in21.setStyleSheet(color)
+                    else: self.ui.mega_in21.setStyleSheet(in_color)
+                if assigned.endsWith("22"):
+                    if(switch == 1): self.ui.mega_in22.setStyleSheet(color)
+                    else: self.ui.mega_in22.setStyleSheet(in_color)
+        if(assigned.contains("out_")):	
+            if self.currentHW == "ArduinoUno":
+                if assigned.endsWith("1"):
+                    if(switch == 1): self.ui.uno_out1.setStyleSheet(color)
+                    else: self.ui.uno_out1.setStyleSheet(out_color)
+                if assigned.endsWith("2"):
+                    if(switch == 1): self.ui.uno_out2.setStyleSheet(color)
+                    else: self.ui.uno_out2.setStyleSheet(out_color)
+                if assigned.endsWith("3"):
+                    if(switch == 1): self.ui.uno_out3.setStyleSheet(color)
+                    else: self.ui.uno_out3.setStyleSheet(out_color)
+                if assigned.endsWith("4"):
+                    if(switch == 1): self.ui.uno_out4.setStyleSheet(color)
+                    else: self.ui.uno_out4.setStyleSheet(out_color)
+                if assigned.endsWith("5"):
+                    if(switch == 1): self.ui.uno_out5.setStyleSheet(color)
+                    else: self.ui.uno_out5.setStyleSheet(out_color)
+            if self.currentHW == "ArduinoNano":
+                if assigned.endsWith("1"):
+                    if(switch == 1): self.ui.nano_out1.setStyleSheet(color)
+                    else: self.ui.nano_out1.setStyleSheet(out_color)
+                if assigned.endsWith("2"):
+                    if(switch == 1): self.ui.nano_out2.setStyleSheet(color)
+                    else: self.ui.nano_out2.setStyleSheet(out_color)
+                if assigned.endsWith("3"):
+                    if(switch == 1): self.ui.nano_out3.setStyleSheet(color)
+                    else: self.ui.nano_out3.setStyleSheet(out_color)
+                if assigned.endsWith("4"):
+                    if(switch == 1): self.ui.nano_out4.setStyleSheet(color)
+                    else: self.ui.nano_out4.setStyleSheet(out_color)
+                if assigned.endsWith("5"):
+                    if(switch == 1): self.ui.nano_out5.setStyleSheet(color)
+                    else: self.ui.nano_out5.setStyleSheet(out_color)
+            if self.currentHW == "ArduinoMega":
+                if assigned.endsWith("1"):
+                    if(switch == 1): self.ui.mega_out1.setStyleSheet(color)
+                    else: self.ui.mega_out1.setStyleSheet(out_color)
+                if assigned.endsWith("2"):
+                    if(switch == 1): self.ui.mega_out2.setStyleSheet(color)
+                    else: self.ui.mega_out2.setStyleSheet(out_color)
+                if assigned.endsWith("3"):
+                    if(switch == 1): self.ui.mega_out3.setStyleSheet(color)
+                    else: self.ui.mega_out3.setStyleSheet(out_color)
+                if assigned.endsWith("4"):
+                    if(switch == 1): self.ui.mega_out4.setStyleSheet(color)
+                    else: self.ui.mega_out4.setStyleSheet(out_color)
+                if assigned.endsWith("5"):
+                    if(switch == 1): self.ui.mega_out5.setStyleSheet(color)
+                    else: self.ui.mega_out5.setStyleSheet(out_color)
+                if assigned.endsWith("6"):
+                    if(switch == 1): self.ui.mega_out6.setStyleSheet(color)
+                    else: self.ui.mega_out6.setStyleSheet(out_color)
+                if assigned.endsWith("7"):
+                    if(switch == 1): self.ui.mega_out7.setStyleSheet(color)
+                    else: self.ui.mega_out7.setStyleSheet(out_color)
+                if assigned.endsWith("8"):
+                    if(switch == 1): self.ui.mega_out8.setStyleSheet(color)
+                    else: self.ui.mega_out8.setStyleSheet(out_color)
+                if assigned.endsWith("9"):
+                    if(switch == 1): self.ui.mega_out9.setStyleSheet(color)
+                    else: self.ui.mega_out9.setStyleSheet(out_color)
+                if assigned.endsWith("10"):
+                    if(switch == 1): self.ui.mega_out10.setStyleSheet(color)
+                    else: self.ui.mega_out10.setStyleSheet(out_color)
+                if assigned.endsWith("11"):
+                    if(switch == 1): self.ui.mega_out11.setStyleSheet(color)
+                    else: self.ui.mega_out11.setStyleSheet(out_color)
+                if assigned.endsWith("12"):
+                    if(switch == 1): self.ui.mega_out12.setStyleSheet(color)
+                    else: self.ui.mega_out12.setStyleSheet(out_color)
+                if assigned.endsWith("13"):
+                    if(switch == 1): self.ui.mega_out13.setStyleSheet(color)
+                    else: self.ui.mega_out13.setStyleSheet(out_color)
+                if assigned.endsWith("14"):
+                    if(switch == 1): self.ui.mega_out14.setStyleSheet(color)
+                    else: self.ui.mega_out14.setStyleSheet(out_color)
+                if assigned.endsWith("15"):
+                    if(switch == 1): self.ui.mega_out15.setStyleSheet(color)
+                    else: self.ui.mega_out15.setStyleSheet(out_color)
+                if assigned.endsWith("16"):
+                    if(switch == 1): self.ui.mega_out16.setStyleSheet(color)
+                    else: self.ui.mega_out16.setStyleSheet(out_color)
+                if assigned.endsWith("17"):
+                    if(switch == 1): self.ui.mega_out17.setStyleSheet(color)
+                    else: self.ui.mega_out17.setStyleSheet(out_color)
+                if assigned.endsWith("18"):
+                    if(switch == 1): self.ui.mega_out18.setStyleSheet(color)
+                    else: self.ui.mega_out18.setStyleSheet(out_color)
+                if assigned.endsWith("19"):
+                    if(switch == 1): self.ui.mega_out19.setStyleSheet(color)
+                    else: self.ui.mega_out19.setStyleSheet(out_color)
+                if assigned.endsWith("20"):
+                    if(switch == 1): self.ui.mega_out20.setStyleSheet(color)
+                    else: self.ui.mega_out20.setStyleSheet(out_color)
+                if assigned.endsWith("21"):
+                    if(switch == 1): self.ui.mega_out21.setStyleSheet(color)
+                    else: self.ui.mega_out21.setStyleSheet(out_color)
+                if assigned.endsWith("22"):
+                    if(switch == 1): self.ui.mega_out22.setStyleSheet(color)
+                    else: self.ui.mega_out22.setStyleSheet(out_color)
+	
+###################################################################################################
+								
     def findCell(self,event):
         #Pos = event.globalPos() #doesn't stay when window moves
         #Pos = event.pos()# offset -60,-50 
@@ -1798,6 +2100,3 @@ if __name__=='__main__':
     window.show()
     sys.exit(app.exec_())
     
-    
-    
-
