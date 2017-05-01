@@ -1,12 +1,8 @@
 """
 Waltech Ladder Maker is distributed under the MIT License. 
-
 Copyright (c) 2014 Karl Walter.  karl (at) waltech.com
-
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from PyQt4 import QtCore, QtGui
@@ -28,6 +24,9 @@ from math_ui import Ui_MathDialog
 from ADC_ui import Ui_ADCDialog
 from PWM_ui import Ui_PWMDialog
 from wrongVersion_ui import Ui_wrongVersionDialog
+from ChangeInput_ui import Ui_ChangeInputDialog
+from ChangeOutput_ui import Ui_ChangeOutputDialog
+from ButtonError_ui import Ui_ButtonErrorDialog
 
 
 ##007##
@@ -51,6 +50,62 @@ class CoilDialog(QtGui.QDialog):
         cellSearch(grid,cellNum,self.currentHW).makeIOlist(self.ui.comboBox,False)
         cellSearch(grid,cellNum,self.currentHW).fillComment(self.ui.lineEdit)
             
+
+            
+class ChangeInputDialog(QtGui.QDialog):
+    def __init__(self, grid, p_input, n_input):
+        QDialog.__init__(self)
+        # Set up the UI from Designer:
+        self.ui = Ui_ChangeInputDialog()
+        self.ui.setupUi(self)
+        self.grid = grid
+        self.p_input = p_input
+        self.n_input = n_input
+        #what is in dialog:
+        #   Warning and Verification of Input Change
+        font = QtGui.QFont()
+        font.setFamily("SansSerif")
+        font.setBold(True)
+        self.ui.warning_label.setFont(font)
+        self.ui.p_label.setFont(font)
+        self.ui.n_label.setFont(font)
+        self.ui.p_label.setText(""+self.p_input)
+        self.ui.n_label.setText(""+self.n_input)		
+		
+class ChangeOutputDialog(QtGui.QDialog):
+    def __init__(self, grid, p_output, n_output):
+        QDialog.__init__(self)
+        # Set up the UI from Designer:
+        self.ui = Ui_ChangeOutputDialog()
+        self.ui.setupUi(self)
+        self.grid = grid
+        self.p_output = p_output
+        self.n_output = n_output
+        font = QtGui.QFont()
+        font.setFamily("SansSerif")
+        font.setBold(True)
+        self.ui.warning_label.setFont(font)
+        self.ui.p_label.setFont(font)
+        self.ui.n_label.setFont(font)
+        self.ui.p_label.setText(""+self.p_output)
+        self.ui.n_label.setText(""+self.n_output)
+        #what is in dialog:
+        #   Warning and Verification of Output Change
+
+class ButtonErrorDialog(QtGui.QDialog):
+    def __init__(self):
+        QDialog.__init__(self)
+        # Set up the UI from Designer:
+        self.ui = Ui_ButtonErrorDialog()
+        self.ui.setupUi(self)
+        font = QtGui.QFont()
+        font.setFamily("SansSerif")
+        font.setBold(True)
+        self.ui.warning_label.setFont(font)
+        #what is in dialog:
+        #   When dragged button is not compatible with object		
+ 
+
 
        
 class ContDialog(QtGui.QDialog):
@@ -597,4 +652,3 @@ class cellSearch(): #Functions for pre-filling the boxes in the Popup dialogs
         if self.grid[self.cellNum[0]][self.cellNum[1]].setPoint != None:
             spinBox.setValue(self.grid[self.cellNum[0]][self.cellNum[1]].setPoint/100)       
     
- 
