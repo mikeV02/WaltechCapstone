@@ -547,69 +547,67 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
             InternalNOLive = []
             BranchesListLive = []
                 
-            try:
-                ###Gather Name of Elements to be managed
-                if len(self.TimerList) > 0:    
-                    for timer in range(len(self.TimerList)):
-                        temp = Timer(self.TimerList[timer])
-                        TimerListLive.append(temp)
-                        
-                if len(self.CounterList) > 0:
-                    for counter in range(len(self.CounterList)):
-                        temp = Counter(self.CounterList[counter])
-                        CounterListLive.append(temp)
-        
-                if len(self.InternalNCList) > 0:
-                    for internal in range(len(self.InternalNCList)):
-                        temp = Internal(self.InternalNCList[internal])
-                        InternalNCLive.append(temp)
+                
+            ###Gather Name of Elements to be managed
+            if len(self.TimerList) > 0:    
+                for timer in range(len(self.TimerList)):
+                    temp = Timer(self.TimerList[timer])
+                    TimerListLive.append(temp)
                     
-                if len(self.InternalNOList) > 0:
-                    for internal in range(len(self.InternalNOList)):
-                        temp = Internal(self.InternalNOList[internal])
-                        InternalNOLive.append(temp)
-                        
-                if len(self.ListOfNodesComplete) > 0:
-                    for branches in range(len(self.ListOfNodesComplete)):
-                        for secondDimension in range(len(self.ListOfNodesComplete[branches])):
-                            startx = self.ListOfNodesComplete[branches][secondDimension][3][0]
-                            starty = self.ListOfNodesComplete[branches][secondDimension][3][1]
-                            endx = self.ListOfNodesComplete[branches][secondDimension][1][0]
-                            endy = self.ListOfNodesComplete[branches][secondDimension][1][1]
-                            temp = Or(startx,starty,endx,endy)
-                            BranchesListLive.append(temp)
-                        
-                        
-                internalNCIndex = 0
-                internalNOIndex = 0
+            if len(self.CounterList) > 0:
+                for counter in range(len(self.CounterList)):
+                    temp = Counter(self.CounterList[counter])
+                    CounterListLive.append(temp)
+    
+            if len(self.InternalNCList) > 0:
+                for internal in range(len(self.InternalNCList)):
+                    temp = Internal(self.InternalNCList[internal])
+                    InternalNCLive.append(temp)
                 
-                
-                ###Gather location where Elements are stored in grid
-                for x in range(len(self.grid)):
-                    for y in range(len(self.grid[x])):
-                        if self.grid[x][y].variableName is not None:
-                            NameGridElement = self.grid[x][y].MTorElement+"_"+self.grid[x][y].variableName
-                            for counter in range(len(CounterListLive)):
-                                if (NameGridElement) == CounterListLive[counter].name:
-                                    CounterListLive[counter].setLocationType(x,y,self.grid[x][y].type)
-                                    CounterListLive[counter].preset = self.grid[x][y].setPoint
-                            for timer in range(len(TimerListLive)):
-                                if (NameGridElement) == TimerListLive[timer].name:
-                                    TimerListLive[timer].setLocationType(x,y,self.grid[x][y].type)                            
-                                    TimerListLive[timer].preset = int(float(self.grid[x][y].setPoint) * 100)
-                            if(internalNCIndex < len(InternalNCLive)):
-                                if(NameGridElement) == InternalNCLive[internalNCIndex].name:
-                                    InternalNCLive[internalNCIndex].setLocationType(x,y,self.grid[x][y].type)
-                                    internalNCIndex = internalNCIndex + 1
-                            if(internalNOIndex < len(InternalNOLive)):
-                                if(NameGridElement) == InternalNOLive[internalNOIndex].name:
-                                    InternalNOLive[internalNOIndex].setLocationType(x,y,self.grid[x][y].type)
-                                    internalNOIndex = internalNOIndex + 1
-                            
-                internalNCIndex = 0
-                internalNOIndex = 0
-            except:
-                print "error"
+            if len(self.InternalNOList) > 0:
+                for internal in range(len(self.InternalNOList)):
+                    temp = Internal(self.InternalNOList[internal])
+                    InternalNOLive.append(temp)
+                    
+            if len(self.ListOfNodesComplete) > 0:
+                for branches in range(len(self.ListOfNodesComplete)):
+                    for secondDimension in range(len(self.ListOfNodesComplete[branches])):
+                        startx = self.ListOfNodesComplete[branches][secondDimension][3][0]
+                        starty = self.ListOfNodesComplete[branches][secondDimension][3][1]
+                        endx = self.ListOfNodesComplete[branches][secondDimension][1][0]
+                        endy = self.ListOfNodesComplete[branches][secondDimension][1][1]
+                        temp = Or(startx,starty,endx,endy)
+                        BranchesListLive.append(temp)
+                    
+                    
+            internalNCIndex = 0
+            internalNOIndex = 0
+            
+            
+            ###Gather location where Elements are stored in grid
+            for x in range(len(self.grid)):
+                for y in range(len(self.grid[x])):
+                    if self.grid[x][y].variableName is not None:
+                        NameGridElement = self.grid[x][y].MTorElement+"_"+self.grid[x][y].variableName
+                        for counter in range(len(CounterListLive)):
+                            if (NameGridElement) == CounterListLive[counter].name:
+                                CounterListLive[counter].setLocationType(x,y,self.grid[x][y].type)
+                                CounterListLive[counter].preset = self.grid[x][y].setPoint
+                        for timer in range(len(TimerListLive)):
+                            if (NameGridElement) == TimerListLive[timer].name:
+                                TimerListLive[timer].setLocationType(x,y,self.grid[x][y].type)                            
+                                TimerListLive[timer].preset = int(float(self.grid[x][y].setPoint) * 100)
+                        if(internalNCIndex < len(InternalNCLive)):
+                            if(NameGridElement) == InternalNCLive[internalNCIndex].name:
+                                InternalNCLive[internalNCIndex].setLocationType(x,y,self.grid[x][y].type)
+                                internalNCIndex = internalNCIndex + 1
+                        if(internalNOIndex < len(InternalNOLive)):
+                            if(NameGridElement) == InternalNOLive[internalNOIndex].name:
+                                InternalNOLive[internalNOIndex].setLocationType(x,y,self.grid[x][y].type)
+                                internalNOIndex = internalNOIndex + 1
+                        
+            internalNCIndex = 0
+            internalNOIndex = 0
                     
             #for x in range(len(BranchesListLive)):
             #    print BranchesListLive[x].startFirstRungX, BranchesListLive[x].startFirstRungY, "\n"
@@ -629,41 +627,46 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
             #for x in range(len(TimerListLive)):
             #    print TimerListLive[x].name, TimerListLive[x].x, TimerListLive[x].y, "\n"                   
                 
-                
             ###Get Done Bit for both examine if open and examine if open internal 
-            try:
-                if len(InternalNCLive) > 0:
-                    for internal in range(len(InternalNCLive)):
-                
-                        tempPrevElement = self.grid[InternalNCLive[internal].x][InternalNCLive[internal].y].doneBit.split("_")
-                
-                        tempDoneName = tempPrevElement[0]+"_"+tempPrevElement[1]+"_"+tempPrevElement[2]
-                        if tempPrevElement[0] == "Counter":
-                            for counter in range(len(CounterListLive)):
-                                if tempDoneName == CounterListLive[counter].name:
-                                    InternalNCLive[internal].setDoneBit(CounterListLive[counter].x,CounterListLive[counter].y,CounterListLive[counter].name)
-                                    print "found done counter NC \n"
-                        elif tempPrevElement[0] == "Timer":
-                            for timer in range(len(TimerListLive)):
-                                if tempDoneName == TimerListLive[timer].name:
-                                    InternalNCLive[internal].setDoneBit(TimerListLive[timer].x,TimerListLive[timer].y,TimerListLive[timer].name)
-                                    print "found done timer NC \n"
-                                    
-                if len(InternalNOLive) > 0:
-                    for internal in range(len(InternalNOLive)):
-                        tempPrevElement = self.grid[InternalNOLive[internal].x][InternalNOLive[internal].y].doneBit.split("_")
-                
-                        tempDoneName = tempPrevElement[0]+"_"+tempPrevElement[1]+"_"+tempPrevElement[2]
-                        if tempPrevElement[0] == "Counter":
-                            for counter in range(len(CounterListLive)):
-                                if tempDoneName == CounterListLive[counter].name:
-                                    InternalNOLive[internal].setDoneBit(CounterListLive[counter].x,CounterListLive[counter].y,CounterListLive[counter].name)
-                        elif tempPrevElement[0] == "Timer":
-                            for timer in range(len(TimerListLive)):
-                                if tempDoneName == TimerListLive[timer].name:
-                                    InternalNOLive[internal].setDoneBit(TimerListLive[timer].x,TimerListLive[timer].y,TimerListLive[timer].name)
-            except:
-                print "error"
+            if len(InternalNCLive) > 0:
+                for internal in range(len(InternalNCLive)):
+                    print len(InternalNCLive), "\n"
+                    print internal, "\n"           
+                    print InternalNCLive[internal].name , "\n"
+                    print InternalNCLive[internal].x, "\n"
+
+                    tempPrevElement = self.grid[InternalNCLive[internal].x][InternalNCLive[internal].y].doneBit.split("_")
+
+                    tempDoneName = tempPrevElement[0]+"_"+tempPrevElement[1]+"_"+tempPrevElement[2]
+                    print "NC ", tempDoneName, "\n"
+                    if tempPrevElement[0] == "Counter":
+                        for counter in range(len(CounterListLive)):
+                            if tempDoneName == CounterListLive[counter].name:
+                                InternalNCLive[internal].setDoneBit(CounterListLive[counter].x,CounterListLive[counter].y,CounterListLive[counter].name)
+                                print "found done counter NC \n"
+                    elif tempPrevElement[0] == "Timer":
+                        for timer in range(len(TimerListLive)):
+                            if tempDoneName == TimerListLive[timer].name:
+                                InternalNCLive[internal].setDoneBit(TimerListLive[timer].x,TimerListLive[timer].y,TimerListLive[timer].name)
+                                print "found done timer NC \n"
+                                
+            if len(InternalNOLive) > 0:
+                for internal in range(len(InternalNOLive)):
+                    tempPrevElement = self.grid[InternalNOLive[internal].x][InternalNOLive[internal].y].doneBit.split("_")
+
+                    tempDoneName = tempPrevElement[0]+"_"+tempPrevElement[1]+"_"+tempPrevElement[2]
+                    print "NO ", tempDoneName, "\n"
+                    if tempPrevElement[0] == "Counter":
+                        for counter in range(len(CounterListLive)):
+                            if tempDoneName == CounterListLive[counter].name:
+                                InternalNOLive[internal].setDoneBit(CounterListLive[counter].x,CounterListLive[counter].y,CounterListLive[counter].name)
+                                print "found done counter NO \n"
+                    elif tempPrevElement[0] == "Timer":
+                        for timer in range(len(TimerListLive)):
+                            if tempDoneName == TimerListLive[timer].name:
+                                InternalNOLive[internal].setDoneBit(TimerListLive[timer].x,TimerListLive[timer].y,TimerListLive[timer].name)
+                                print "found done timer NO \n"
+                                
             #print "NC List: \n"
             #for x in range(len(InternalNCLive)):
             #    print InternalNCLive[x].name, InternalNCLive[x].x, InternalNCLive[x].y, "\n"
@@ -676,57 +679,54 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
                                 
             
             ####Get previous element of Timer
-            
-            try:
-            
-                if len(TimerListLive) > 0:
-                    for timer in range(len(TimerListLive)):
-                        x,y = TimerListLive[timer].x, (TimerListLive[timer].y - 1)
-    
-    
-    
-                        if y < 0:
-                                TimerListLive[timer].setPrevElement(-1,-1,"None")
-    
-                        
-                        while y > -1:
-                            if self.grid[x][y].variableName is not None:
-                                TimerListLive[timer].setPrevElement(x,y,self.grid[x][y].MTorElement)
-    
-                                break            
-                            elif y == 0:
-                                TimerListLive[timer].setPrevElement(-1,-1,"None")
-    
-                                y = y - 1
-                
-    
+            if len(TimerListLive) > 0:
+                for timer in range(len(TimerListLive)):
+                    x,y = TimerListLive[timer].x, (TimerListLive[timer].y - 1)
+
+
+
+                    if y < 0:
+                            TimerListLive[timer].setPrevElement(-1,-1,"None")
+
+                    
+                    while y > -1:
+                        if self.grid[x][y].variableName is not None:
+                            TimerListLive[timer].setPrevElement(x,y,self.grid[x][y].MTorElement)
+
+                            break            
+                        elif y == 0:
+                            TimerListLive[timer].setPrevElement(-1,-1,"None")
+
                             y = y - 1
-                            
-                ###Get previous element of counter
-                if len(CounterListLive) > 0:
-                    for counter in range(len(CounterListLive)):
-                        x,y = CounterListLive[counter].x, (CounterListLive[counter].y - 1)
-    
+            
+
+                        y = y - 1
                         
-    
-                        if y < 0:
-                                CounterListLive[counter].setPrevElement(-1,-1,"None")
+            ###Get previous element of counter
+            if len(CounterListLive) > 0:
+                for counter in range(len(CounterListLive)):
+                    x,y = CounterListLive[counter].x, (CounterListLive[counter].y - 1)
+
+                    
+
+                    if y < 0:
+                            CounterListLive[counter].setPrevElement(-1,-1,"None")
+                    
+                    while y > -1:
                         
-                        while y > -1:
-                            
-                            if self.grid[x][y].variableName is not None:
-                                CounterListLive[counter].setPrevElement(x,y,self.grid[x][y].MTorElement)
-    
-                                break            
-                            elif y == 0:
-                                CounterListLive[counter].setPrevElement(-1,-1,"None")
-    
-                                y = y - 1
-                
-    
+                        if self.grid[x][y].variableName is not None:
+                            CounterListLive[counter].setPrevElement(x,y,self.grid[x][y].MTorElement)
+
+                            break            
+                        elif y == 0:
+                            CounterListLive[counter].setPrevElement(-1,-1,"None")
+
                             y = y - 1
-            except:
-                print "error"
+            
+
+                        y = y - 1
+
+                        
             #for x in range(len(CounterListLive)):
             #    print CounterListLive[x].name, CounterListLive[x].x, CounterListLive[x].y, CounterListLive[x].type, CounterListLive[x].preset, "\n"
             #    print CounterListLive[x].Prevelement, CounterListLive[x].Prevx, CounterListLive[x].Prevy, "\n"
@@ -869,160 +869,158 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
 			
 
             
-            try:
-                
-                for i in range(len(TimerListLive)):
-                    TimerThread = threading.Thread(target = TimerTracker,args=(TimerListLive[i],CounterListLive,TimerListLive,))
-                    TimerThread.setDaemon(True)
-                    TimerThread.start()
-            except:
-                print "error"
+
+            for i in range(len(TimerListLive)):
+                TimerThread = threading.Thread(target = TimerTracker,args=(TimerListLive[i],CounterListLive,TimerListLive,))
+                TimerThread.setDaemon(True)
+                TimerThread.start()
+
+
             
             while self.live:
             
-                try:
-                    ###Check state of all elements in a branch
-                    if len(BranchesListLive) > 0:
-                        OrAlive = 1
-                        for node in range(len(BranchesListLive)):
-                            x,y = BranchesListLive[node].endFirstRungX + 1,BranchesListLive[node].endFirstRungY 
-                            
-                            BranchesListLive[node].endFirstRungX - BranchesListLive[node].startFirstRungX
-                            
-                            for internalX in range(2):
-                                y = BranchesListLive[node].endFirstRungY 
-                                for internaly in range((BranchesListLive[node].endFirstRungY - BranchesListLive[node].startFirstRungY) + 1):
-    
-                                    if self.grid[x][y].variableName is not None:                          
-                                        if self.grid[x][y].switch == 0:
-                                            OrAlive = 0    
-                                    y = y - 1
-                                x = x - 1
-                            
-                            BranchesListLive[node].done = OrAlive
+                ###Check state of all elements in a branch
+                if len(BranchesListLive) > 0:
+                    OrAlive = 1
+                    for node in range(len(BranchesListLive)):
+                        x,y = BranchesListLive[node].endFirstRungX + 1,BranchesListLive[node].endFirstRungY 
                         
-    
-                    ###Emulate an internal Normally closed switch
-                    for i in range(len(InternalNCLive)):
-                        tempPrevx = int(InternalNCLive[i].Prevx)
-                        tempPrevy = int(InternalNCLive[i].Prevy)
+                        BranchesListLive[node].endFirstRungX - BranchesListLive[node].startFirstRungX
                         
-                        if(self.grid[tempPrevx][tempPrevy].switch == 1):
-                            self.grid[InternalNCLive[i].x][InternalNCLive[i].y].switch = 1
-                        if(self.grid[tempPrevx][tempPrevy].switch == 0):
-                            self.grid[InternalNCLive[i].x][InternalNCLive[i].y].switch = 0
-                            
-                    ###Emulate an internal Normally open switch
-                    for i in range(len(InternalNOLive)):
-                        tempPrevx = int(InternalNOLive[i].Prevx)
-                        tempPrevy = int(InternalNOLive[i].Prevy)
+                        for internalX in range(2):
+                            y = BranchesListLive[node].endFirstRungY 
+                            for internaly in range((BranchesListLive[node].endFirstRungY - BranchesListLive[node].startFirstRungY) + 1):
+
+                                if self.grid[x][y].variableName is not None:                          
+                                    if self.grid[x][y].switch == 0:
+                                        OrAlive = 0    
+                                y = y - 1
+                            x = x - 1
                         
-                        if(self.grid[tempPrevx][tempPrevy].switch == 0):
-                            self.grid[InternalNOLive[i].x][InternalNOLive[i].y].switch = 1
-                        elif(self.grid[tempPrevx][tempPrevy].switch == 1):
-                            self.grid[InternalNOLive[i].x][InternalNOLive[i].y].switch = 0
+                        BranchesListLive[node].done = OrAlive
                     
-                    ###Emulate a counter
-                    for i in range(len(CounterListLive)):
-                        tempPrevx = int(CounterListLive[i].Prevx)
-                        tempPrevy = int(CounterListLive[i].Prevy)
-                        tempPrevElement = self.grid[tempPrevx][tempPrevy].MTorElement
+
+                ###Emulate an internal Normally closed switch
+                for i in range(len(InternalNCLive)):
+                    tempPrevx = int(InternalNCLive[i].Prevx)
+                    tempPrevy = int(InternalNCLive[i].Prevy)
+                    
+                    if(self.grid[tempPrevx][tempPrevy].switch == 1):
+                        self.grid[InternalNCLive[i].x][InternalNCLive[i].y].switch = 1
+                    if(self.grid[tempPrevx][tempPrevy].switch == 0):
+                        self.grid[InternalNCLive[i].x][InternalNCLive[i].y].switch = 0
                         
-                        if CounterListLive[i].Or == 1 and CounterListLive[i].type == "Counter_Up" :
-                            print CounterListLive[i].name , "Or before this element\n"
+                ###Emulate an internal Normally open switch
+                for i in range(len(InternalNOLive)):
+                    tempPrevx = int(InternalNOLive[i].Prevx)
+                    tempPrevy = int(InternalNOLive[i].Prevy)
+                    
+                    if(self.grid[tempPrevx][tempPrevy].switch == 0):
+                        self.grid[InternalNOLive[i].x][InternalNOLive[i].y].switch = 1
+                    elif(self.grid[tempPrevx][tempPrevy].switch == 1):
+                        self.grid[InternalNOLive[i].x][InternalNOLive[i].y].switch = 0
+                
+                ###Emulate a counter
+                for i in range(len(CounterListLive)):
+                    tempPrevx = int(CounterListLive[i].Prevx)
+                    tempPrevy = int(CounterListLive[i].Prevy)
+                    tempPrevElement = self.grid[tempPrevx][tempPrevy].MTorElement
+                    
+                    if CounterListLive[i].Or == 1 and CounterListLive[i].type == "Counter_Up" :
+                        print CounterListLive[i].name , "Or before this element\n"
+                    
+                    elif((tempPrevElement == "contNC" or tempPrevElement == "contNO") and CounterListLive[i].type == "Counter_Up"):     
+                        SwitchValue = 45
+                        PrevInput = 45
                         
-                        elif((tempPrevElement == "contNC" or tempPrevElement == "contNO") and CounterListLive[i].type == "Counter_Up"):     
-                            SwitchValue = 45
-                            PrevInput = 45
-                            
-                            if(tempPrevElement == "contNC"):
-                                SwitchValue = self.grid[tempPrevx][tempPrevy].switch
-                                PrevInput = CounterListLive[i].prevInput
-                            else:
-                                SwitchValue = (self.grid[tempPrevx][tempPrevy].switch == 0)
-                                PrevInput = (CounterListLive[i].prevInput == 0);
-                        
-                            if SwitchValue == 1 and PrevInput == 0:
-                                CounterListLive[i].currentValue += 1
-                                print "Counter: " , CounterListLive[i].currentValue, "\n"                       
-                                if CounterListLive[i].currentValue >= CounterListLive[i].preset:
-                                    CounterListLive[i].done = 1
-                                    self.grid[CounterListLive[i].x][CounterListLive[i].y].switch = 1
-                            elif SwitchValue == 0:
-                                self.grid[CounterListLive[i].x][CounterListLive[i].y].switch = 0
-                            CounterListLive[i].prevInput = self.grid[tempPrevx][tempPrevy].switch
-                        elif ((tempPrevElement == "Counter" or tempPrevElement == "Timer") and CounterListLive[i].type == "Counter_Up"):
-                            tempVariableName = self.grid[tempPrevx][tempPrevy].MTorElement+"_"+self.grid[tempPrevx][tempPrevy].variableName
-                            if tempPrevElement == "Counter":
-                                for counter in range(len(CounterListLive)):
-                                    if CounterListLive[counter].name == tempVariableName:
-                                        if CounterListLive[counter].done == 1:
+                        if(tempPrevElement == "contNC"):
+                            SwitchValue = self.grid[tempPrevx][tempPrevy].switch
+                            PrevInput = CounterListLive[i].prevInput
+                        else:
+                            SwitchValue = (self.grid[tempPrevx][tempPrevy].switch == 0)
+                            PrevInput = (CounterListLive[i].prevInput == 0);
+                    
+                        if SwitchValue == 1 and PrevInput == 0:
+                            CounterListLive[i].currentValue += 1
+                            print "Counter: " , CounterListLive[i].currentValue, "\n"                       
+                            if CounterListLive[i].currentValue >= CounterListLive[i].preset:
+                                CounterListLive[i].done = 1
+                                self.grid[CounterListLive[i].x][CounterListLive[i].y].switch = 1
+                        elif SwitchValue == 0:
+                            self.grid[CounterListLive[i].x][CounterListLive[i].y].switch = 0
+                        CounterListLive[i].prevInput = self.grid[tempPrevx][tempPrevy].switch
+                    elif ((tempPrevElement == "Counter" or tempPrevElement == "Timer") and CounterListLive[i].type == "Counter_Up"):
+                        tempVariableName = self.grid[tempPrevx][tempPrevy].MTorElement+"_"+self.grid[tempPrevx][tempPrevy].variableName
+                        if tempPrevElement == "Counter":
+                            for counter in range(len(CounterListLive)):
+                                if CounterListLive[counter].name == tempVariableName:
+                                    if CounterListLive[counter].done == 1:
+                                        CounterListLive[i].currentValue += 1
+                                        if CounterListLive[i].currentValue >= CounterListLive[i].preset:
+                                            CounterListLive[i].done = 1
+                                    CounterListLive[i].prevInput = CounterListLive[counter].done
+                        elif tempPrevElement == "Timer":
+                                for timer in range(len(TimerListLive)):
+                                    if TimerListLive[timer].name == tempVariableName:
+                                        if TimerListLive[timer].done == 1 and CounterListLive[i].prevInput == 0:
                                             CounterListLive[i].currentValue += 1
                                             if CounterListLive[i].currentValue >= CounterListLive[i].preset:
                                                 CounterListLive[i].done = 1
-                                        CounterListLive[i].prevInput = CounterListLive[counter].done
-                            elif tempPrevElement == "Timer":
-                                    for timer in range(len(TimerListLive)):
-                                        if TimerListLive[timer].name == tempVariableName:
-                                            if TimerListLive[timer].done == 1 and CounterListLive[i].prevInput == 0:
-                                                CounterListLive[i].currentValue += 1
-                                                if CounterListLive[i].currentValue >= CounterListLive[i].preset:
-                                                    CounterListLive[i].done = 1
-                                                    self.grid[CounterListLive[i].x][CounterListLive[i].y].switch = 1
-                                            elif TimerListLive[timer].done == 0:
-                                                self.grid[CounterListLive[i].x][CounterListLive[i].y].switch = 0
-                                            CounterListLive[i].prevInput = TimerListLive[timer].done
-                                
-                        
-                        if CounterListLive[i].Or == 1 and CounterListLive[i].type == "Counter_Down":
-                            print CounterListLive[i].name,"Or before this element \n"
-                        
-                        elif((self.grid[tempPrevx][tempPrevy].MTorElement == "contNC" or tempPrevElement == "contNO") and CounterListLive[i].type == "Counter_Down"):  
-                            SwitchValue = 45
-                            PrevInput = 45
-                        
-                            if(tempPrevElement == "contNC"):
-                                SwitchValue = self.grid[tempPrevx][tempPrevy].switch
-                                PrevInput = CounterListLive[i].prevInput
-                            else:
-                                SwitchValue = (self.grid[tempPrevx][tempPrevy].switch == 0)
-                                PrevInput = (CounterListLive[i].prevInput == 0);
-                        
-                            if SwitchValue == 1 and PrevInput == 0:
-                                #print "Count: ", CounterListLive[i].preset, "\n"
-                                CounterListLive[i].preset -= 1
-                                if CounterListLive[i].preset <= 0:
-                                    CounterListLive[i].done = 1
-                                    self.grid[CounterListLive[i].x][CounterListLive[i].y].switch = 1
-                            elif SwitchValue == 0:
-                                self.grid[CounterListLive[i].x][CounterListLive[i].y].switch = 0
-                            CounterListLive[i].prevInput = self.grid[tempPrevx][tempPrevy].switch
-                        elif ((tempPrevElement == "Counter" or tempPrevElement == "Timer") and CounterListLive[i].type == "Counter_Down"):
-                            tempVariableName = self.grid[tempPrevx][tempPrevy].MTorElement+"_"+self.grid[tempPrevx][tempPrevy].variableName
+                                                self.grid[CounterListLive[i].x][CounterListLive[i].y].switch = 1
+                                        elif TimerListLive[timer].done == 0:
+                                            self.grid[CounterListLive[i].x][CounterListLive[i].y].switch = 0
+                                        CounterListLive[i].prevInput = TimerListLive[timer].done
                             
-                            if tempPrevElement == "Counter":    ###Probaly will not be used                                                
-                                for counter in range(len(CounterListLive)):
-                                    if CounterListLive[counter].name == tempVariableName:
-                                        if CounterListLive[counter].done == 1:
+                    
+                    if CounterListLive[i].Or == 1 and CounterListLive[i].type == "Counter_Down":
+                        print CounterListLive[i].name,"Or before this element \n"
+                    
+                    elif((self.grid[tempPrevx][tempPrevy].MTorElement == "contNC" or tempPrevElement == "contNO") and CounterListLive[i].type == "Counter_Down"):  
+                        SwitchValue = 45
+                        PrevInput = 45
+                    
+                        if(tempPrevElement == "contNC"):
+                            SwitchValue = self.grid[tempPrevx][tempPrevy].switch
+                            PrevInput = CounterListLive[i].prevInput
+                        else:
+                            SwitchValue = (self.grid[tempPrevx][tempPrevy].switch == 0)
+                            PrevInput = (CounterListLive[i].prevInput == 0);
+                    
+                        if SwitchValue == 1 and PrevInput == 0:
+                            #print "Count: ", CounterListLive[i].preset, "\n"
+                            CounterListLive[i].preset -= 1
+                            if CounterListLive[i].preset <= 0:
+                                CounterListLive[i].done = 1
+                                self.grid[CounterListLive[i].x][CounterListLive[i].y].switch = 1
+                        elif SwitchValue == 0:
+                            self.grid[CounterListLive[i].x][CounterListLive[i].y].switch = 0
+                        CounterListLive[i].prevInput = self.grid[tempPrevx][tempPrevy].switch
+                    elif ((tempPrevElement == "Counter" or tempPrevElement == "Timer") and CounterListLive[i].type == "Counter_Down"):
+                        tempVariableName = self.grid[tempPrevx][tempPrevy].MTorElement+"_"+self.grid[tempPrevx][tempPrevy].variableName
+                        
+                        if tempPrevElement == "Counter":    ###Probaly will not be used                                                
+                            for counter in range(len(CounterListLive)):
+                                if CounterListLive[counter].name == tempVariableName:
+                                    if CounterListLive[counter].done == 1:
+                                        CounterListLive[i].preset -= 1
+                                        if CounterListLive[i].preset >= CounterListLive[i].preset:
+                                            CounterListLive[i].done = 1
+                        elif tempPrevElement == "Timer":
+                                for timer in range(len(TimerListLive)):
+                                    if TimerListLive[timer].name == tempVariableName:
+                                        if TimerListLive[timer].done == 1 and CounterListLive[i].prevInput == 0:
                                             CounterListLive[i].preset -= 1
-                                            if CounterListLive[i].preset >= CounterListLive[i].preset:
+                                            if CounterListLive[i].preset <= 0:
                                                 CounterListLive[i].done = 1
-                            elif tempPrevElement == "Timer":
-                                    for timer in range(len(TimerListLive)):
-                                        if TimerListLive[timer].name == tempVariableName:
-                                            if TimerListLive[timer].done == 1 and CounterListLive[i].prevInput == 0:
-                                                CounterListLive[i].preset -= 1
-                                                if CounterListLive[i].preset <= 0:
-                                                    CounterListLive[i].done = 1
-                                                    self.grid[CounterListLive[i].x][CounterListLive[i].y].switch = 1
-                                            elif TimerListLive[timer].done == 0:
-                                                self.grid[CounterListLive[i].x][CounterListLive[i].y].switch = 0
-                                            CounterListLive[i].prevInput = TimerListLive[timer].done                
-                                            
-                        self.grid[CounterListLive[i].x][CounterListLive[i].y].setPointLive = CounterListLive[i].preset
-                        self.grid[CounterListLive[i].x][CounterListLive[i].y].accumulated = CounterListLive[i].currentValue
-                except:    
-                    print "error"
+                                                self.grid[CounterListLive[i].x][CounterListLive[i].y].switch = 1
+                                        elif TimerListLive[timer].done == 0:
+                                            self.grid[CounterListLive[i].x][CounterListLive[i].y].switch = 0
+                                        CounterListLive[i].prevInput = TimerListLive[timer].done                
+                                        
+                    self.grid[CounterListLive[i].x][CounterListLive[i].y].setPointLive = CounterListLive[i].preset
+                    self.grid[CounterListLive[i].x][CounterListLive[i].y].accumulated = CounterListLive[i].currentValue
+                    
+                        
             #####END ADDED BY CHRIS
 
 
