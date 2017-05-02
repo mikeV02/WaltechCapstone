@@ -243,6 +243,7 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
             self.ui.actionWaltech.setChecked(True)	
             ## Added by: Fabian M.			
             self.ui.stackedWidget.setCurrentWidget(self.ui.waltechF)
+            self.ui.stackedWidget.setVisible(True)
 			
         if str(HW)=="ArduinoUno": 
             self.ui.actionPWM.setEnabled(True)
@@ -250,6 +251,7 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
             self.ui.actionArduinoUno.setChecked(True)
 			##Added by: Fabian M.
             self.ui.stackedWidget.setCurrentWidget(self.ui.unoF)
+            self.ui.stackedWidget.setVisible(True)
 			
         if str(HW)=="ArduinoNano": 
             self.ui.actionPWM.setEnabled(True)
@@ -257,6 +259,7 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
             self.ui.actionArduinoNano.setChecked(True)
 			## Added by: Fabian M.
             self.ui.stackedWidget.setCurrentWidget(self.ui.nanoF)
+            self.ui.stackedWidget.setVisible(True)
 			
         if str(HW)=="ArduinoMega": 
             self.ui.actionPWM.setEnabled(True)
@@ -264,6 +267,7 @@ class mainWindowUI(QMainWindow): #mainwindow inheriting from QMainWindow here.
             self.ui.actionArduinoMega.setChecked(True)
 			##Added by: Fabian M.
             self.ui.stackedWidget.setCurrentWidget(self.ui.megaF)
+            self.ui.stackedWidget.setVisible(True)
 			
 			
         print "Hardware:", HW

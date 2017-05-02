@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'mainwindow.ui'
+# Form implementation generated from reading ui file 'mainwindow2.ui'
 #
 # Created by: PyQt4 UI code generator 4.12
 #
@@ -25,9 +25,6 @@ except AttributeError:
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName(_fromUtf8("MainWindow"))
-        ##MainWindow.resize(1024, 700)
-        ##MainWindow.setMinimumSize(QtCore.QSize(1024, 700))
-        ##MainWindow.setMaximumSize(QtCore.QSize(1024, 700))
         MainWindow.resize(1439, 800)
         MainWindow.setMinimumSize(QtCore.QSize(1439, 800))
         MainWindow.setMaximumSize(QtCore.QSize(1600, 900))
@@ -115,7 +112,7 @@ class Ui_MainWindow(object):
         self.tableWidget.setSelectionMode(QtGui.QAbstractItemView.NoSelection)
         self.tableWidget.setShowGrid(True)
         self.tableWidget.setCornerButtonEnabled(False)
-        self.tableWidget.setColumnCount(6)
+        self.tableWidget.setColumnCount(7)
         self.tableWidget.setObjectName(_fromUtf8("tableWidget"))
         self.tableWidget.setRowCount(0)
         item = QtGui.QTableWidgetItem()
@@ -130,6 +127,8 @@ class Ui_MainWindow(object):
         self.tableWidget.setHorizontalHeaderItem(4, item)
         item = QtGui.QTableWidgetItem()
         self.tableWidget.setHorizontalHeaderItem(5, item)
+        item = QtGui.QTableWidgetItem()
+        self.tableWidget.setHorizontalHeaderItem(6, item)
         self.tableWidget.horizontalHeader().setDefaultSectionSize(40)
         self.tableWidget.horizontalHeader().setMinimumSectionSize(20)
         self.tableWidget.horizontalHeader().setStretchLastSection(True)
@@ -144,18 +143,29 @@ class Ui_MainWindow(object):
         self.textBrowser.setSizePolicy(sizePolicy)
         self.textBrowser.setObjectName(_fromUtf8("textBrowser"))
         self.gridLayout.addWidget(self.textBrowser, 3, 7, 1, 4)
+        self.stackedWidget = QtGui.QStackedWidget(self.centralwidget)
+        self.stackedWidget.setVisible(False)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Expanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.stackedWidget.sizePolicy().hasHeightForWidth())
+        self.stackedWidget.setSizePolicy(sizePolicy)
+        self.stackedWidget.setMinimumSize(QtCore.QSize(381, 678))
+        self.stackedWidget.setObjectName(_fromUtf8("stackedWidget"))
+        self.gridLayout.addWidget(self.stackedWidget, 2, 11, 2, 2)
+
 
 #################################################################################################
 ## Added by: Fabian M.
 ##
 		#Stacked Widget
-        self.stackedWidget = QtGui.QStackedWidget(self.centralwidget)
-        self.stackedWidget.setObjectName(_fromUtf8("stackedWidget"))
-        sizePolicy1 = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Expanding)
-        sizePolicy1.setHorizontalStretch(0)
-        sizePolicy1.setVerticalStretch(0)
-        sizePolicy1.setHeightForWidth(self.stackedWidget.sizePolicy().hasHeightForWidth())
-        self.stackedWidget.setSizePolicy(sizePolicy1)
+        #self.stackedWidget = QtGui.QStackedWidget(self.centralwidget)
+        #self.stackedWidget.setObjectName(_fromUtf8("stackedWidget"))
+        #sizePolicy1 = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Expanding)
+        #sizePolicy1.setHorizontalStretch(0)
+        #sizePolicy1.setVerticalStretch(0)
+        #sizePolicy1.setHeightForWidth(self.stackedWidget.sizePolicy().hasHeightForWidth())
+        #self.stackedWidget.setSizePolicy(sizePolicy1)
         #Waltech
         self.waltechF = QtGui.QWidget(self.stackedWidget)
         self.waltechHW = QtGui.QGraphicsView(self.waltechF)
@@ -544,10 +554,11 @@ class Ui_MainWindow(object):
         self.nano_out7.setObjectName(_fromUtf8("nano_out7"))
         self.stackedWidget.addWidget(self.nanoF)
 		
-        self.gridLayout.addWidget(self.stackedWidget, 2, 10, 2, 3)
+        #self.gridLayout.addWidget(self.stackedWidget, 2, 10, 2, 3)
 		
-#######################################################################################################			
-		
+#######################################################################################################	
+
+
         MainWindow.setCentralWidget(self.centralwidget)
         self.statusbar = QtGui.QStatusBar(MainWindow)
         self.statusbar.setObjectName(_fromUtf8("statusbar"))
@@ -558,7 +569,7 @@ class Ui_MainWindow(object):
         self.toolBar.setObjectName(_fromUtf8("toolBar"))
         MainWindow.addToolBar(QtCore.Qt.TopToolBarArea, self.toolBar)
         self.menuBar = QtGui.QMenuBar(MainWindow)
-        self.menuBar.setGeometry(QtCore.QRect(0, 0, 1024, 23))
+        self.menuBar.setGeometry(QtCore.QRect(0, 0, 1439, 23))
         self.menuBar.setObjectName(_fromUtf8("menuBar"))
         self.menuFile = QtGui.QMenu(self.menuBar)
         self.menuFile.setObjectName(_fromUtf8("menuFile"))
@@ -847,6 +858,8 @@ class Ui_MainWindow(object):
         item = self.tableWidget.horizontalHeaderItem(4)
         item.setText(_translate("MainWindow", "Lctn", None))
         item = self.tableWidget.horizontalHeaderItem(5)
+        item.setText(_translate("MainWindow", "Accu", None))
+        item = self.tableWidget.horizontalHeaderItem(6)
         item.setText(_translate("MainWindow", "DoneBit", None))
         self.toolBar.setWindowTitle(_translate("MainWindow", "Elements", None))
         self.menuFile.setTitle(_translate("MainWindow", "File", None))
@@ -933,7 +946,7 @@ class Ui_MainWindow(object):
         self.actionPWM.setText(_translate("MainWindow", "PWM", None))
         self.actionPWM.setWhatsThis(_translate("MainWindow", "<html><head/><body><p><span style=\" color:#000000;\">Pulse width modulated output. </span></p><p><span style=\" color:#000000;\">Must be placed on far right.</span></p><p><span style=\" color:#000000;\">Active if rung in state True.</span></p><p><span style=\" color:#000000;\">Menu item will be greyed if PWM not available on this hardware.</span></p><p><span style=\" color:#000000;\">If output set to &quot;Internal&quot; PWM will be de-activated</span></p><p><span style=\" color:#000000;\">NOTES:</span></p><p><span style=\" color:#000000;\">If two PWM elements exist in the ladder with the same hardware output, the first active one will apply. This allows to set a single output to different levels.</span></p><p><span style=\" color:#000000;\">The PWM frequency is fixed at 16khz. </span></p></body></html>", None))
         self.actionADC.setText(_translate("MainWindow", "ADC", None))
-        self.actionADC.setWhatsThis(_translate("MainWindow", "<html><head/><body><span style=\" font-size:11pt; color:#000000;\"><p>ADC. Measure Voltage.</p><p>Ten bit output (0 to 1024)</p><p>5v (AVcc) refrence.  value = (Vin x 1024)?5</p><p>Must be placed on far right.</p><p>Active if rung in state True.</p><p>Menu item will be greyed if ADC not available on this hardware.</p><p>if input set to &quot;Internal&quot; ADC will be de-activated.</p><p><br/></p></body></html>", None))
+        self.actionADC.setWhatsThis(_translate("MainWindow", "<html><head/><body><span style=\" font-size:11pt; color:#000000;\"><p>ADC. Measure Voltage.</p><p>Ten bit output (0 to 1024)</p><p>5v (AVcc) refrence.  value = (Vin x 1024)÷5</p><p>Must be placed on far right.</p><p>Active if rung in state True.</p><p>Menu item will be greyed if ADC not available on this hardware.</p><p>if input set to &quot;Internal&quot; ADC will be de-activated.</p><p><br/></p></body></html>", None))
         self.actionArduinoMega_IO.setText(_translate("MainWindow", "Arduino Mega IO", None))
         self.actionArduinoMega.setText(_translate("MainWindow", "Arduino Mega", None))
         self.actionArduinoNano.setText(_translate("MainWindow", "Arduino Nano", None))
@@ -979,5 +992,3 @@ if __name__ == "__main__":
     ui.setupUi(MainWindow)
     MainWindow.show()
     sys.exit(app.exec_())
-
-		
