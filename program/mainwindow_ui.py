@@ -112,7 +112,7 @@ class Ui_MainWindow(object):
         self.tableWidget.setSelectionMode(QtGui.QAbstractItemView.NoSelection)
         self.tableWidget.setShowGrid(True)
         self.tableWidget.setCornerButtonEnabled(False)
-        self.tableWidget.setColumnCount(7)
+        self.tableWidget.setColumnCount(6)
         self.tableWidget.setObjectName(_fromUtf8("tableWidget"))
         self.tableWidget.setRowCount(0)
         item = QtGui.QTableWidgetItem()
@@ -127,8 +127,6 @@ class Ui_MainWindow(object):
         self.tableWidget.setHorizontalHeaderItem(4, item)
         item = QtGui.QTableWidgetItem()
         self.tableWidget.setHorizontalHeaderItem(5, item)
-        item = QtGui.QTableWidgetItem()
-        self.tableWidget.setHorizontalHeaderItem(6, item)
         self.tableWidget.horizontalHeader().setDefaultSectionSize(40)
         self.tableWidget.horizontalHeader().setMinimumSectionSize(20)
         self.tableWidget.horizontalHeader().setStretchLastSection(True)
@@ -144,7 +142,7 @@ class Ui_MainWindow(object):
         self.textBrowser.setObjectName(_fromUtf8("textBrowser"))
         self.gridLayout.addWidget(self.textBrowser, 3, 7, 1, 4)
         self.stackedWidget = QtGui.QStackedWidget(self.centralwidget)
-        self.stackedWidget.setVisible(False)
+        self.stackedWidget.setEnabled(True)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -153,6 +151,7 @@ class Ui_MainWindow(object):
         self.stackedWidget.setMinimumSize(QtCore.QSize(381, 678))
         self.stackedWidget.setObjectName(_fromUtf8("stackedWidget"))
         self.gridLayout.addWidget(self.stackedWidget, 2, 11, 2, 2)
+
 
 
 #################################################################################################
@@ -553,10 +552,14 @@ class Ui_MainWindow(object):
         self.nano_out7.setGeometry(QtCore.QRect(5, 53, 110, 25))
         self.nano_out7.setObjectName(_fromUtf8("nano_out7"))
         self.stackedWidget.addWidget(self.nanoF)
+        ###MIGUEL HERE and EVERYWHERE xD
+        self.stackedWidget.setVisible(False)
+        ###
 		
         #self.gridLayout.addWidget(self.stackedWidget, 2, 10, 2, 3)
 		
 #######################################################################################################	
+
 
 
         MainWindow.setCentralWidget(self.centralwidget)
@@ -858,8 +861,6 @@ class Ui_MainWindow(object):
         item = self.tableWidget.horizontalHeaderItem(4)
         item.setText(_translate("MainWindow", "Lctn", None))
         item = self.tableWidget.horizontalHeaderItem(5)
-        item.setText(_translate("MainWindow", "Accu", None))
-        item = self.tableWidget.horizontalHeaderItem(6)
         item.setText(_translate("MainWindow", "DoneBit", None))
         self.toolBar.setWindowTitle(_translate("MainWindow", "Elements", None))
         self.menuFile.setTitle(_translate("MainWindow", "File", None))
@@ -951,6 +952,7 @@ class Ui_MainWindow(object):
         self.actionArduinoMega.setText(_translate("MainWindow", "Arduino Mega", None))
         self.actionArduinoNano.setText(_translate("MainWindow", "Arduino Nano", None))
         self.actionArduinoNano_IO.setText(_translate("MainWindow", "Arduino Nano IO", None))
+
 
 #########################################################################
 ## 		Added by: Fabian M.

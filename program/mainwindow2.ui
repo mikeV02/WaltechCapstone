@@ -182,7 +182,7 @@
        <bool>false</bool>
       </property>
       <property name="columnCount">
-       <number>7</number>
+       <number>6</number>
       </property>
       <attribute name="horizontalHeaderDefaultSectionSize">
        <number>40</number>
@@ -222,11 +222,6 @@
       <column>
        <property name="text">
         <string>Lctn</string>
-       </property>
-      </column>
-      <column>
-       <property name="text">
-        <string>Accu</string>
        </property>
       </column>
       <column>
