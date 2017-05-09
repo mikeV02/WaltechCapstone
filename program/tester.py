@@ -140,7 +140,12 @@ class tester():
             return commandAvrDude, USBserialPort
             ###
 
-    def testArduinoMegaNIX(self,displayOutputPlace): 
+    def testArduinoMegaNIX(self,displayOutputPlace):
+        if self.opSys == "NIX":
+            print "Setting Envirenment Path for library in Linux"
+            Lib = "../avr/lib"
+            os.environ['LD_LIBRARY_PATH'] = Lib
+
         USBserialPort = None
         ardOnUsb = False
         output,error = subprocess.Popen(r"lsusb",stdout = subprocess.PIPE, stderr= subprocess.PIPE,shell=True).communicate()
@@ -326,6 +331,11 @@ class tester():
             ###
             
     def testArduinoUnoNIX(self,displayOutputPlace): 
+        if self.opSys == "NIX":
+            print "Setting Envirenment Path for library in Linux"
+            Lib = "../avr/lib"
+            os.environ['LD_LIBRARY_PATH'] = Lib
+
         USBserialPort = None
         ardOnUsb = False
         output,error = subprocess.Popen(r"lsusb",stdout = subprocess.PIPE, stderr= subprocess.PIPE,shell=True).communicate()
@@ -486,6 +496,11 @@ class tester():
             ###
             
     def testArduinoNanoNIX(self,displayOutputPlace): 
+        if self.opSys == "NIX":
+            print "Setting Envirenment Path for library in Linux"
+            Lib = "../avr/lib"
+            os.environ['LD_LIBRARY_PATH'] = Lib
+            
         USBserialPort = None
         #ardOnUsb = False
         ardOnUsb = True
